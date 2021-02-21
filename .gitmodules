@@ -1,0 +1,6 @@
+[submodule "sgdk"]
+	path = ext/sgdk
+	url = https://github.com/Stephane-D/SGDK.git
+	branch = master
+	ignore = dirty
+	shallow = true

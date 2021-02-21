@@ -1,0 +1,40 @@
+name: update-license
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/update-license.yml
+  schedule:
+    - cron: '0 0 1 1 *'
+jobs:
+  update-license:
+    name: update-license
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+        with:
+          persist-credentials: false
+      - name: Update license
+        run: |
+          sed -i -E "s/^(Copyright.*)[0-9]{4}(.*)$/\1$(date +%Y)\2/" LICENSE
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --exit-code LICENSE || echo "::set-output name=exist::true"
+      - name: Push commit
+        if: steps.changes.outputs.exist
+        run: |
+          git config user.name $COMMIT_USERNAME
+          git config user.email $COMMIT_EMAIL
+          git add LICENSE
+          git commit -m "Update license year to $(date +%Y)"
+          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
+          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
+          git remote set-url origin $URL
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{secrets.UPDATE_LICENSE_TOKEN}}
+          COMMIT_USERNAME: github-actions[bot]
+          COMMIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com

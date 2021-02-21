@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    rebase-strategy: auto
+    labels:
+      - auto
+      - dependencies
+    reviewers:
+      - devpow112
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: daily
+    rebase-strategy: auto
+    labels:
+      - auto
+      - dependencies
+    reviewers:
+      - devpow112

@@ -1,0 +1,10 @@
+BasedOnStyle: Google
+Language: Cpp
+AllowShortBlocksOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: None
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+IndentCaseLabels: true
+ColumnLimit: 80

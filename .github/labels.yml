@@ -1,0 +1,36 @@
+- name: auto
+  description: Opened by an automated process
+  color: bdce3b
+- name: bug
+  description: Something isn't working
+  color: d73a4a
+- name: clean-up
+  description: Clean-up or refactor of something already existing
+  color: a7afe5
+- name: dependencies
+  description: Update dependencies
+  color: c2e0c6
+- name: documentation
+  description: Improvements or additions to documentation
+  color: 0075ca
+- name: duplicate
+  description: Already exists
+  color: cfd3d7
+- name: enhancement
+  description: New feature or request
+  color: a2eeef
+- name: good first issue
+  description: Good for newcomers
+  color: 7057ff
+- name: help wanted
+  description: Extra attention is needed
+  color: 008672
+- name: invalid
+  description: This doesn't seem right
+  color: e4e669
+- name: question
+  description: Further information is requested
+  color: d876e3
+- name: won't fix
+  description: This will not be worked on
+  color: ffffff
