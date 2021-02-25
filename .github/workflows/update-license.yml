@@ -1,4 +1,4 @@
-name: update-license
+name: Update License
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 1 1 *'
 jobs:
   update-license:
-    name: update-license
+    name: Update License
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
