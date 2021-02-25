@@ -20,52 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <genesis.h>
-
 #include "game.h"
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
+#include <genesis.h>
 
-  VDP_setScreenWidth320();
+GameState g_gameState;
 
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
-
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
-      setGameState(STATE_MENU);
-    }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
-  }
+GameState getGameState() {
+  return g_gameState;
 }
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void setGameState(GameState _gameState) {
+  g_gameState = _gameState;
+}
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-    }
-  }
-
-  return 0;
+bool isGameState(GameState _gameState) {
+  return g_gameState == _gameState;
 }

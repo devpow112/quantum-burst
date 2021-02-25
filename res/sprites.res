@@ -1,1 +1,1 @@
-SPRITE title_sprite "sprites/title.png" 25 6 FAST
+SPRITE titleSprite "sprites/title.png" 25 6 FAST

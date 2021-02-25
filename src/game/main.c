@@ -23,49 +23,43 @@
 #include <genesis.h>
 
 #include "game.h"
+#include "utilities.h"
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
+bool g_paused;
+
+void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
+  if (_state & _changed & BUTTON_START) {
+    g_paused = !g_paused;
   }
 
-  VDP_setScreenWidth320();
-
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
-
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
+  if (g_paused) {
+    if (_state & _changed & BUTTON_A) {
       setGameState(STATE_MENU);
     }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
+
+    return;  // don't process more input
+  }
+
+  if (_state & _changed & BUTTON_B) {
+    setGameState(STATE_CREDITS);
   }
 }
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void processGameMain() {
+  JOY_setEventHandler(&joyHandlerGameMain);
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
+  g_paused = FALSE;
+
+  while (isGameState(STATE_MAIN)) {
+    if (!g_paused) {
+      clearText(14);
+      showText("PLAY", 14);
+    } else {
+      showText("PAUSED", 14);
     }
+
+    SYS_doVBlankProcess();
   }
 
-  return 0;
+  clearText(14);
 }

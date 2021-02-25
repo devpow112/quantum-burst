@@ -22,50 +22,23 @@
 
 #include <genesis.h>
 
-#include "game.h"
+typedef enum {
+  STATE_LOGO,
+  STATE_MENU,
+  STATE_MAIN,
+  STATE_CREDITS
+} GameState;
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
+bool isGameState(GameState _gameState);
 
-  VDP_setScreenWidth320();
+void setGameState(GameState _gameState);
 
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
+GameState getGameState();
 
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
-      setGameState(STATE_MENU);
-    }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
-  }
-}
+void processGameLogo();
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void processGameMenu();
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-    }
-  }
+void processGameMain();
 
-  return 0;
-}
+void processGameCredits();

@@ -23,49 +23,24 @@
 #include <genesis.h>
 
 #include "game.h"
+#include "utilities.h"
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
+void processGameCredits() {
+  JOY_setEventHandler(NULL);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+  showText("CREDITS", 14);
 
-  VDP_setScreenWidth320();
+  u16 timer = 500;
 
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
+  while (isGameState(STATE_CREDITS)) {
+    timer--;
 
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
+    if (timer == 0) {
       setGameState(STATE_MENU);
     }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
-  }
-}
 
-int main(bool _hardReset) {
-  init(_hardReset);
-
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-    }
+    SYS_doVBlankProcess();
   }
 
-  return 0;
+  clearText(14);
 }
