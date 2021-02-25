@@ -22,50 +22,6 @@
 
 #include <genesis.h>
 
-#include "game.h"
+void showText(char _text[], u8 _column);
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
-
-  VDP_setScreenWidth320();
-
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
-
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
-      setGameState(STATE_MENU);
-    }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
-  }
-}
-
-int main(bool _hardReset) {
-  init(_hardReset);
-
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-    }
-  }
-
-  return 0;
-}
+void clearText(u8 _column);

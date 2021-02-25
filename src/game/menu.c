@@ -23,49 +23,49 @@
 #include <genesis.h>
 
 #include "game.h"
+#include "sprites.h"
+#include "utilities.h"
 
-void init(bool _hardReset) {
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
-
-  VDP_setScreenWidth320();
-
-  if (!_hardReset) {
-    JOY_reset();
-    SPR_reset();
-
-    if (!isGameState(STATE_LOGO) || !isGameState(STATE_MENU)) {
-      setGameState(STATE_MENU);
-    }
-  } else {
-    JOY_init();
-    SPR_init();
-    setGameState(STATE_LOGO);
+void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
+  if (_state & _changed & BUTTON_START) {
+    setGameState(STATE_MAIN);
   }
 }
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void processGameMenu() {
+  JOY_setEventHandler(NULL);
+  showText("MENU LEAD UP", 14);
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_MAIN:
-        processGameMain();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
+  u8 timer = 200;
+
+  while (isGameState(STATE_MENU)) {
+    timer--;
+
+    if (timer == 0) {
+      break;
     }
+
+    SYS_doVBlankProcess();
   }
 
-  return 0;
+  clearText(14);
+  JOY_setEventHandler(&joyHandlerMenu);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+  showText("PRESS START BUTTON", 16);
+
+  u16 width = VDP_getScreenWidth();
+  u16 x = (width - 200) / 2;
+  Sprite* title =
+      SPR_addSprite(&titleSprite, x, 64, TILE_ATTR(PAL1, 0, FALSE, FALSE));
+
+  VDP_setPalette(PAL1, titleSprite.palette->data);
+
+  while (isGameState(STATE_MENU)) {
+    SPR_update();
+    SYS_doVBlankProcess();
+  }
+
+  clearText(16);
+  SPR_releaseSprite(title);
+  SPR_update();
 }
