@@ -1,4 +1,4 @@
-name: sync-labels
+name: Sync Labels
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
       - .github/labels.yml
 jobs:
   sync-labels:
-    name: sync-labels
+    name: Sync Labels
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
