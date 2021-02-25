@@ -20,8 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QB_UTILITIES_H__
+#define __QB_UTILITIES_H__
+
 #include <genesis.h>
 
 void showText(char _text[], u8 _column);
 
 void clearText(u8 _column);
+
+#endif  // __QB_UTILITIES_H__
