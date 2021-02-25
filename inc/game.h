@@ -20,6 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QB_GAME_H__
+#define __QB_GAME_H__
+
 #include <genesis.h>
 
 typedef enum {
@@ -42,3 +45,5 @@ void processGameMenu();
 void processGameMain();
 
 void processGameCredits();
+
+#endif  // __QB_GAME_H__
