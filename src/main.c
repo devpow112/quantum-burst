@@ -46,6 +46,9 @@ int main(bool _hardReset) {
       case STATE_MENU:
         processGameMenu();
         break;
+      case STATE_LOAD:
+        processGameLoad();
+        break;
       case STATE_MAIN:
         processGameMain();
         break;

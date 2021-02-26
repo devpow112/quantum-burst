@@ -20,33 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_GAME_H__
-#define __QUANTUM_BURST_GAME_H__
-
 #include <genesis.h>
 
-typedef enum {
-  STATE_LOGO,
-  STATE_MENU,
-  STATE_LOAD,
-  STATE_MAIN,
-  STATE_CREDITS
-} GameState;
+#include "game.h"
 
-bool isGameState(GameState _gameState);
-
-void setGameState(GameState _gameState);
-
-GameState getGameState();
-
-void processGameLogo();
-
-void processGameMenu();
-
-void processGameLoad();
-
-void processGameMain();
-
-void processGameCredits();
-
-#endif  // __QUANTUM_BURST_GAME_H__
+void processGameLoad() {
+  setGameState(STATE_MAIN);
+}
