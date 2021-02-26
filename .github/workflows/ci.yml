@@ -9,19 +9,25 @@ jobs:
     name: Check formatting (C)
     runs-on: ubuntu-latest
     env:
-      CLANG_FORMAT_VERSION: 10
+      VERSION: 12
     steps:
       - name: Install packages
         run: |
+          URL='https://apt.llvm.org/'
+          TOOLCHAIN='llvm-toolchain-focal-12'
+          PACKAGE="clang-format-${VERSION}"
+          wget -O - ${URL}llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb ${URL}focal/ ${TOOLCHAIN} main"
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y \
-            clang-format-${CLANG_FORMAT_VERSION}
+          sudo apt-get install --no-install-recommends -y ${PACKAGE}
       - name: Checkout
         uses: actions/checkout@v2.3.4
+        with:
+          fetch-depth: 0
       - name: Check formatting
         run: >
-          find . -type f -iname *.c -print0 |
-          xargs -0 clang-format-${CLANG_FORMAT_VERSION} --dry-run --Werror
+          git diff --diff-filter=d --name-only -z origin/main HEAD '*.c' '*.h' |
+          xargs -0 clang-format-${VERSION} --dry-run --Werror
   build:
     name: Build
     runs-on: windows-latest
