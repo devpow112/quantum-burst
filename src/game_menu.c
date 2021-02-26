@@ -26,46 +26,48 @@
 #include "sprites.h"
 #include "utilities.h"
 
+bool g_run_menu_exit;
+
 void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
-    setGameState(STATE_MAIN);
+    g_run_menu_exit = TRUE;
   }
 }
 
 void processGameMenu() {
   JOY_setEventHandler(NULL);
-  showText("MENU LEAD UP", 14);
 
-  u8 timer = 200;
+  u16 width = VDP_getScreenWidth();
+  Sprite* title = SPR_addSprite(&titleSprite, (width - 200) / 2, 64,
+                                TILE_ATTR(PAL0, 0, FALSE, FALSE));
 
-  while (isGameState(STATE_MENU)) {
-    timer--;
+  PAL_fadeInPalette(PAL0, titleSprite.palette->data, 120, TRUE);
 
-    if (timer == 0) {
-      break;
-    }
-
+  while (PAL_isDoingFade()) {
+    SPR_update();
     SYS_doVBlankProcess();
   }
 
-  clearText(14);
-  JOY_setEventHandler(&joyHandlerMenu);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
   showText("PRESS START BUTTON", 16);
+  JOY_setEventHandler(&joyHandlerMenu);
 
-  u16 width = VDP_getScreenWidth();
-  u16 x = (width - 200) / 2;
-  Sprite* title =
-      SPR_addSprite(&titleSprite, x, 64, TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  g_run_menu_exit = FALSE;
 
-  VDP_setPalette(PAL1, titleSprite.palette->data);
-
-  while (isGameState(STATE_MENU)) {
+  while (!g_run_menu_exit) {
     SPR_update();
     SYS_doVBlankProcess();
   }
 
   clearText(16);
+  JOY_setEventHandler(NULL);
+  PAL_fadeOutPalette(PAL0, 30, TRUE);
+
+  while (PAL_isDoingFade()) {
+    SPR_update();
+    SYS_doVBlankProcess();
+  }
+
+  setGameState(STATE_MAIN);
   SPR_releaseSprite(title);
   SPR_update();
 }
