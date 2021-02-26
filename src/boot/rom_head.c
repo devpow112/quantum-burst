@@ -20,35 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// clang-format off
-
 #include <genesis.h>
 
+// This assumes that bank switching is disabled giving us a max of 2MB ROM
 __attribute__((externally_visible)) const ROMHeader rom_header = {
-#if (ENABLE_BANK_SWITCH != 0)
-    "SEGA SSF        ",
-#else
-    "SEGA MEGA DRIVE ",
-#endif
-    "(C)SGDK 2020    ",
-    "SAMPLE PROGRAM                                  ",
-    "SAMPLE PROGRAM                                  ",
-    "GM 00000000-00",
-    0x0000,
-    "JD              ",
-    0x00000000,
-#if (ENABLE_BANK_SWITCH != 0)
-    0x003FFFFF,
-#else
-    0x000FFFFF,
-#endif
-    0x00FF0000,
-    0x00FFFFFF,
-    "RA",
-    0xF820,
-    0x00200000,
-    0x002001FF,
-    "            ",
-    "DEMONSTRATION PROGRAM                   ",
-    "JUE             "
+    "SEGA MEGA DRIVE ",                                  // Console Name
+    "(C) DPowell 2021",                                  // Copyright
+    "Quantum Burst                                   ",  // Domestic Name
+    "Quantum Burst                                   ",  // Overseas Name
+    "GM 00000000-00",                                    // Serial Number
+    0x0000,                                              // Checksum
+    "JD              ",                                  // I/O Support
+    0x00000000,                                          // ROM Start Address
+    0x000FFFFF,                                          // ROM End Address
+    0x00FF0000,                                          // Start of Backup RAM
+    0x00FFFFFF,                                          // End of Backup RAM
+    "RA",                                                // "RA" for SRAM
+    0xF820,                                              // 0xF820 for SRAM
+    0x00200000,                                          // SRAM Start Address
+    0x002001FF,                                          // SRAM End Address
+    "            ",                                      // Modem Support
+    "Quantum Burst                           ",          // Memo
+    "JUE             "                                   // Country Support
 };
