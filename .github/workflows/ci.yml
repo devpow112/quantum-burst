@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
       - name: Check formatting
         run: >
-          git diff --diff-filter=d --name-only -z origin/main HEAD '*.c' '*.h' |
+          find . -type f -iregex '^.*\.\(c\|h\)$' -print0 |
           xargs -0 clang-format-${VERSION} --dry-run --Werror
   build:
     name: Build
