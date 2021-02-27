@@ -25,12 +25,12 @@
 // This assumes that bank switching is disabled giving us a max of 2MB ROM
 __attribute__((externally_visible)) const ROMHeader rom_header = {
     "SEGA MEGA DRIVE ",                                  // Console Name
-    "(C) DPowell 2021",                                  // Copyright
+    "(C)Devon2021.FEB",                                  // Copyright
     "Quantum Burst                                   ",  // Domestic Name
     "Quantum Burst                                   ",  // Overseas Name
-    "GM 00000000-00",                                    // Serial Number
+    "GM 17211142-00",                                    // Serial Number
     0x0000,                                              // Checksum
-    "JD              ",                                  // I/O Support
+    "J               ",                                  // I/O Support
     0x00000000,                                          // ROM Start Address
     0x000FFFFF,                                          // ROM End Address
     0x00FF0000,                                          // Start of Backup RAM
