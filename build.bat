@@ -20,8 +20,7 @@ if "%TYPE%" EQU "" (
   set "TYPE=asm"
 ) else (
   echo Incorrect build type. Must be debug, release, clean or asm
-  popd
-  exit /b 1
+  goto ERROR
 )
 
 copy /b "%CD%\src\boot\rom_head.c" +,,"%CD%\src\boot\rom_head.c" >NUL 2>&1
@@ -29,17 +28,33 @@ copy /b "%CD%\src\boot\rom_head.c" +,,"%CD%\src\boot\rom_head.c" >NUL 2>&1
 
 if %ERRORLEVEL% NEQ 0 (
   echo Build failed!
-  popd
-  exit /b 1
+  goto ERROR
 )
+
+if "%TYPE%" EQU "debug" (
+  goto CORRECT_CHECKSUM
+) else if "%TYPE%" EQU "release" (
+  goto CORRECT_CHECKSUM
+)
+
+goto END
+
+:CORRECT_CHECKSUM
 
 python "%SGCC%\sgcc.py" "out\rom.bin"
 
 if %ERRORLEVEL% NEQ 0 (
   echo Checksum correction failed!
-  popd
-  exit /b 1
+  goto ERROR
 )
+
+goto END
+
+:ERROR
+popd
+exit /b 1
+
+:END
 
 popd
 exit /b 0
