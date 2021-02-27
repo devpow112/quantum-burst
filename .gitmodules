@@ -4,3 +4,9 @@
 	branch = master
 	ignore = dirty
 	shallow = true
+[submodule "sgcc"]
+	path = ext/sgcc
+	url = https://github.com/devpow112/sgcc.git
+	branch = main
+	ignore = dirty
+	shallow = true
