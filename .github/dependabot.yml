@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: github-actions
+  - package-ecosystem: gitsubmodule
     directory: /
     schedule:
       interval: daily
@@ -10,7 +10,7 @@ updates:
       - dependencies
     reviewers:
       - devpow112
-  - package-ecosystem: gitsubmodule
+  - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: daily
