@@ -4,4 +4,4 @@ out/
 res/*
 !res/*.res
 src/boot/*
-!src/boot/rom_head.c
+!src/boot/rom_head.c.in
