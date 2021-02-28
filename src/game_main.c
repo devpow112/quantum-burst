@@ -51,8 +51,9 @@ void processGameMain() {
   g_paused = FALSE;
 
   while (isGameState(STATE_MAIN)) {
+    clearText(14);
+
     if (!g_paused) {
-      clearText(14);
       showText("PLAY", 14);
     } else {
       showText("PAUSED", 14);
