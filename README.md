@@ -19,7 +19,7 @@ Development can be done on **Windows** only, and has been tested only on
 Build scripts are provided for both `cmd` and `powershell`. They will process
 all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 `out` directory. After this is done the checksum will be calculated and
-`rom_cc.bin` generated with the correct chechsum.
+`rom_cc.bin` generated with the correct checksum.
 
 #### cmd
 
@@ -27,8 +27,8 @@ all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 build.bat [build type] [version]
 ```
 
-- `[build type]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. Case does
-not matter. If omitted will default to `Release`
+- `[build type]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If
+omitted will default to `Release`
 - `[version]` - Can be any integer value of 100 or less. If omitted will default
 to `100`
 
@@ -38,8 +38,8 @@ to `100`
 .\build.ps1 [-BuildType] [-Version]
 ```
 
-- `[-BuildType]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. Case does
-not matter. If omitted will default to `Release`
+- `[-BuildType]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If
+omitted will default to `Release`
 - `[-Version]` - Can be any integer value of 100 or less. If omitted will
 default to `100`
 
