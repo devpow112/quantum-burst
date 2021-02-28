@@ -20,40 +20,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QUANTUM_BURST_PLAYER_H__
+#define __QUANTUM_BURST_PLAYER_H__
+
 #include <genesis.h>
 
-#include "game.h"
-#include "player.h"
-#include "utilities.h"
+typedef struct {
+  Sprite* sprite;
+  V2s16 position;
+} Player;
 
-Player g_player;
-bool g_paused;
+void setUpPlayer(Player* _player, s16 _x, s16 _y);
 
-void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
-  if (_state & _changed & BUTTON_START) {
-    g_paused = !g_paused;
-  }
-}
+void updatePlayer(Player* _player);
 
-void initializeGameMain() {
-  JOY_setEventHandler(&joyHandlerGameMain);
-  setUpPlayer(&g_player, 0, 0);
+void tearDownPlayer(Player* _player);
 
-  g_paused = FALSE;
-}
-
-void processGameMain() {
-  initializeGameMain();
-
-  while (isGameState(STATE_MAIN)) {
-    clearText(14);
-
-    if (!g_paused) {
-      updatePlayer(&g_player);
-    } else {
-      showText("PAUSED", 14);
-    }
-
-    SYS_doVBlankProcess();
-  }
-}
+#endif  // __QUANTUM_BURST_GAME_H__
