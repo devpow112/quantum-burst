@@ -39,9 +39,9 @@ void processGameMenu() {
 
   u16 width = VDP_getScreenWidth();
   Sprite* title = SPR_addSpriteSafe(&titleSprite, (width - 200) / 2, 64,
-                                    TILE_ATTR(PAL0, 0, FALSE, FALSE));
+                                    TILE_ATTR(PAL1, 0, FALSE, FALSE));
 
-  PAL_fadeInPalette(PAL0, titleSprite.palette->data, 120, TRUE);
+  PAL_fadeInPalette(PAL1, titleSprite.palette->data, 120, TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();
@@ -60,7 +60,7 @@ void processGameMenu() {
 
   clearText(16);
   JOY_setEventHandler(NULL);
-  PAL_fadeOutPalette(PAL0, 30, TRUE);
+  PAL_fadeOutPalette(PAL1, 30, TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();
