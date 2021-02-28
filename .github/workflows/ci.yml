@@ -14,10 +14,11 @@ jobs:
       - name: Install packages
         run: |
           URL='https://apt.llvm.org/'
-          TOOLCHAIN="llvm-toolchain-focal-${VERSION}"
+          CODENAME=$(lsb_release -cs)
           PACKAGE="clang-format-${VERSION}"
+          TOOLCHAIN="llvm-toolchain-${CODENAME}-${VERSION}"
           wget -O - "${URL}llvm-snapshot.gpg.key" | sudo apt-key add -
-          sudo add-apt-repository "deb ${URL}focal/ ${TOOLCHAIN} main"
+          sudo add-apt-repository "deb ${URL}${CODENAME}/ ${TOOLCHAIN} main"
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y ${PACKAGE}
       - name: Checkout
