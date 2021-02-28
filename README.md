@@ -2,7 +2,7 @@
 
 [![CI][CI Badge]][CI Workflows]
 
-A "bullet hell" style space shooter written for the [Sega Genesis].
+A [bullet hell] style space shooter written for the [Sega Genesis].
 
 ## Development
 
@@ -24,12 +24,12 @@ all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 #### cmd
 
 ```cmd
-build.bat [build type] [version]
+build.bat [build-type] [version]
 ```
 
-- `[build type]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If
-omitted will default to `Release`
-- `[version]` - Can be any integer value of 100 or less. If omitted will default
+- `build-type` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
+will default to `Release`
+- `version` - Can be any integer value of `100` or less. If omitted will default
 to `100`
 
 #### powershell
@@ -38,12 +38,13 @@ to `100`
 .\build.ps1 [-BuildType] [-Version]
 ```
 
-- `[-BuildType]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If
-omitted will default to `Release`
-- `[-Version]` - Can be any integer value of 100 or less. If omitted will
+- `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
+will default to `Release`
+- `-Version` - Can be any integer value of `100` or less. If omitted will
 default to `100`
 
 <!-- links -->
 [CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main
 [CI Workflows]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml
+[Bullet Hell]: https://en.wikipedia.org/wiki/Shoot_%27em_up#Bullet_hell
 [Sega Genesis]: https://en.wikipedia.org/wiki/Sega_Genesis
