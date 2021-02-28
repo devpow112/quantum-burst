@@ -24,7 +24,7 @@
 
 #include "game.h"
 
-GameState g_gameState;
+static GameState g_gameState;
 
 GameState getGameState() {
   return g_gameState;

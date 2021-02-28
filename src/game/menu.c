@@ -26,16 +26,20 @@
 #include "sprites.h"
 #include "utilities.h"
 
-bool g_run_menu_exit;
+static bool g_run_menu_exit;
 
-void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
+static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
     g_run_menu_exit = TRUE;
   }
 }
 
-void processGameMenu() {
+static void initializeGameMenu() {
   JOY_setEventHandler(NULL);
+}
+
+void processGameMenu() {
+  initializeGameMenu();
 
   u16 width = VDP_getScreenWidth();
   Sprite* title = SPR_addSpriteSafe(&titleSprite, (width - 200) / 2, 64,

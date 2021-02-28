@@ -27,20 +27,22 @@
 #include "utilities.h"
 
 #define PLAYER_VELOCITY 2
-#define PLAYER_FIRE_DELAY 2
+#define PLAYER_FIRE_DELAY 3
+#define PLAYER_WIDTH 200
+#define PLAYER_HEIGHT 48
 
 void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
+  PAL_setPalette(_palette, titleSprite.palette->data);
+
   _player->position.x = _x;
   _player->position.y = _y;
   _player->fireDelay = 0;
   _player->sprite = SPR_addSpriteSafe(&titleSprite, _x, _y,
                                       TILE_ATTR(_palette, 0, FALSE, FALSE));
-
-  PAL_setPalette(_palette, _player->sprite->definition->palette->data);
 }
 
 void updatePlayer(Player* _player) {
-  u16 inputState = JOY_readJoypad(JOY_1);
+  const u16 inputState = JOY_readJoypad(JOY_1);
 
   if (inputState & BUTTON_LEFT) {
     _player->position.x -= PLAYER_VELOCITY;
@@ -58,32 +60,30 @@ void updatePlayer(Player* _player) {
     _player->position.y += PLAYER_VELOCITY;
   }
 
+  const s16 width = VDP_getScreenWidth();
+
   if (_player->position.x <= 0) {
     _player->position.x = 2;
+  } else if (_player->position.x >= (width - PLAYER_WIDTH)) {
+    _player->position.x = width - PLAYER_WIDTH - 2;
   }
 
-  if (_player->position.x >= 320 - 32) {
-    _player->position.x = 320 - 32 - 2;
-  }
+  const s16 height = VDP_getScreenHeight();
 
   if (_player->position.y <= 0) {
     _player->position.y = 2;
-  }
-
-  if (_player->position.y >= 224 - 24) {
-    _player->position.y = 224 - 24 - 2;
-  }
-
-  if (_player->fireDelay != 0) {
-    clearText(0);
-
-    _player->fireDelay--;
+  } else if (_player->position.y >= (height - PLAYER_HEIGHT)) {
+    _player->position.y = height - PLAYER_HEIGHT - 2;
   }
 
   if ((inputState & BUTTON_A) && _player->fireDelay == 0) {
     showText("FIRE", 0);
 
     _player->fireDelay = PLAYER_FIRE_DELAY;
+  } else if (_player->fireDelay != 0) {
+    clearText(0);
+
+    _player->fireDelay--;
   }
 
   SPR_setPosition(_player->sprite, _player->position.x, _player->position.y);
