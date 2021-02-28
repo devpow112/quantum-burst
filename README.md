@@ -27,10 +27,10 @@ all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 build.bat [build type] [version]
 ```
 
-- `[build type]`: Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-it will default to `Release`. Case does not matter
-- `[version]`: Can be any 2 digit integer value. If ommited it will default to
-`99`
+- `[build type]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. Case does
+not matter. If omitted will default to `Release`
+- `[version]` - Can be any integer value of 100 or less. If omitted will default
+to `100`
 
 #### powershell
 
@@ -38,10 +38,10 @@ it will default to `Release`. Case does not matter
 .\build.ps1 [-BuildType] [-Version]
 ```
 
-- `[-BuildType]`: Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-it will default to `release`. Case does not matter
-- `[-Version]`: Can be any 2 digit integer value. If ommited it will default to
-`99`
+- `[-BuildType]` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. Case does
+not matter. If omitted will default to `Release`
+- `[-Version]` - Can be any integer value of 100 or less. If omitted will
+default to `100`
 
 <!-- links -->
 [CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main

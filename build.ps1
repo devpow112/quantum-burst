@@ -1,5 +1,5 @@
 param(
-  [Parameter(Mandatory=$false)][Int] $version = 99,
+  [Parameter(Mandatory=$false)][Int] $version = 100,
   [Parameter(Mandatory=$false)][String] $buildType = 'Release'
 )
 
@@ -10,6 +10,10 @@ try {
 
   if (@('debug', 'release', 'clean', 'asm') -NotContains $buildType) {
     throw "Invalid 'BuildType', allowed values are: debug, release, clean, asm"
+  }
+  
+  if ($version -Gt 100) {
+    throw "Invalid 'Version', must be a value of 100 or less"    
   }
   
   Set-Location $PSScriptRoot
