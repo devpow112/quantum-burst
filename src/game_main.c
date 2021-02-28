@@ -32,18 +32,25 @@ bool g_paused;
 void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
     g_paused = !g_paused;
+
+    if (g_paused) {
+      PAL_fadeOutPalette(PAL1, 3, TRUE);
+    } else {
+      PAL_fadeInPalette(PAL1, g_player.sprite->definition->palette->data, 3,
+                        TRUE);
+    }
   }
 }
 
 void initializeGameMain() {
   JOY_setEventHandler(&joyHandlerGameMain);
-  setUpPlayer(&g_player, 0, 0);
 
   g_paused = FALSE;
 }
 
 void processGameMain() {
   initializeGameMain();
+  setUpPlayer(&g_player, 0, 0, PAL1);
 
   while (isGameState(STATE_MAIN)) {
     clearText(14);
@@ -54,6 +61,7 @@ void processGameMain() {
       showText("PAUSED", 14);
     }
 
+    SPR_update();
     SYS_doVBlankProcess();
   }
 }
