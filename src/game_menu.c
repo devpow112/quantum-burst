@@ -38,8 +38,8 @@ void processGameMenu() {
   JOY_setEventHandler(NULL);
 
   u16 width = VDP_getScreenWidth();
-  Sprite* title = SPR_addSprite(&titleSprite, (width - 200) / 2, 64,
-                                TILE_ATTR(PAL0, 0, FALSE, FALSE));
+  Sprite* title = SPR_addSpriteSafe(&titleSprite, (width - 200) / 2, 64,
+                                    TILE_ATTR(PAL0, 0, FALSE, FALSE));
 
   PAL_fadeInPalette(PAL0, titleSprite.palette->data, 120, TRUE);
 
