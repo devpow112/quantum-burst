@@ -8,7 +8,7 @@ if "%TYPE%" EQU "" (
 )
 
 if "%VERSION%" EQU "" (
-  set "VERSION=99"
+  set "VERSION=100"
 )
 
 pushd "%~dp0"
