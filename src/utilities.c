@@ -20,10 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "utilities.h"
-
 #include <genesis.h>
 #include <string.h>
+
+#include "utilities.h"
 
 void showText(char _text[], u8 _column) {
   VDP_drawText(_text, 20 - strlen(_text) / 2, _column);

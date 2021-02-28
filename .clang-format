@@ -9,3 +9,4 @@ AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
 BreakBeforeBraces: Attach
 IndentCaseLabels: true
+IncludeBlocks: Preserve
