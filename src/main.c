@@ -29,9 +29,7 @@ void initialize(bool _hardReset) {
   VDP_init();
   VDP_setScreenWidth320();
   VDP_setScreenHeight240();
-  VDP_setEnable(FALSE);
   setGameState(_hardReset ? STATE_LOGO : STATE_MENU);
-  VDP_setEnable(TRUE);
   SPR_init();
 }
 

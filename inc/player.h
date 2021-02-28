@@ -28,9 +28,10 @@
 typedef struct {
   Sprite* sprite;
   V2s16 position;
+  u8 fireDelay;
 } Player;
 
-void setUpPlayer(Player* _player, s16 _x, s16 _y);
+void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette);
 
 void updatePlayer(Player* _player);
 

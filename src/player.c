@@ -24,16 +24,19 @@
 
 #include "player.h"
 #include "sprites.h"
+#include "utilities.h"
 
 #define PLAYER_VELOCITY 2
+#define PLAYER_FIRE_DELAY 2
 
-void setUpPlayer(Player* _player, s16 _x, s16 _y) {
+void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
   _player->position.x = _x;
   _player->position.y = _y;
-  _player->sprite =
-      SPR_addSpriteSafe(&titleSprite, _x, _y, TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  _player->fireDelay = 0;
+  _player->sprite = SPR_addSpriteSafe(&titleSprite, _x, _y,
+                                      TILE_ATTR(_palette, 0, FALSE, FALSE));
 
-  PAL_setPalette(PAL1, titleSprite.palette->data);
+  PAL_setPalette(_palette, _player->sprite->definition->palette->data);
 }
 
 void updatePlayer(Player* _player) {
@@ -71,8 +74,19 @@ void updatePlayer(Player* _player) {
     _player->position.y = 224 - 24 - 2;
   }
 
+  if (_player->fireDelay != 0) {
+    clearText(0);
+
+    _player->fireDelay--;
+  }
+
+  if ((inputState & BUTTON_A) && _player->fireDelay == 0) {
+    showText("FIRE", 0);
+
+    _player->fireDelay = PLAYER_FIRE_DELAY;
+  }
+
   SPR_setPosition(_player->sprite, _player->position.x, _player->position.y);
-  SPR_update();
 }
 
 void tearDownPlayer(Player* _player) {
