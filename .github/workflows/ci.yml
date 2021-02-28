@@ -26,14 +26,11 @@ jobs:
           fetch-depth: 0
       - name: Check formatting
         run: >
-          find . -type f -iregex '^.*\.\(c\|h\)$' -print0 |
+          find . -type f -iregex '^.*\.\(c\|c.in\|h\)$' -print0 |
           xargs -0 clang-format-${CLANG_FORMAT_VERSION} --dry-run --Werror
   build:
     name: Build
     runs-on: windows-latest
-    defaults:
-      run:
-        shell: cmd
     strategy:
       fail-fast: false
       matrix:
@@ -44,4 +41,4 @@ jobs:
         with:
           submodules: true
       - name: Build
-        run: build.bat ${{matrix.build-type}}
+        run: ./build.ps1 -BuildType ${{matrix.build-type}}
