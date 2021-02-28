@@ -24,17 +24,23 @@
 
 #include "game.h"
 
-void initialize(bool _hardReset) {
+static void initialize() {
   JOY_init();
   VDP_init();
   VDP_setScreenWidth320();
-  VDP_setScreenHeight240();
-  setGameState(_hardReset ? STATE_LOGO : STATE_MENU);
+
+  if (IS_PALSYSTEM) {
+    VDP_setScreenHeight240();
+  } else {
+    VDP_setScreenHeight224();
+  }
+
   SPR_init();
 }
 
 int main(bool _hardReset) {
-  initialize(_hardReset);
+  initialize();
+  setGameState(_hardReset ? STATE_LOGO : STATE_MENU);
 
   while (TRUE) {
     switch (getGameState()) {
@@ -53,6 +59,8 @@ int main(bool _hardReset) {
       case STATE_CREDITS:
         processGameCredits();
         break;
+      default:
+        return 1;
     }
   }
 

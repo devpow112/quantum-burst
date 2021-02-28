@@ -26,10 +26,10 @@
 #include "player.h"
 #include "utilities.h"
 
-Player g_player;
-bool g_paused;
+static Player g_player;
+static bool g_paused;
 
-void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
+static void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
     g_paused = !g_paused;
 
@@ -42,7 +42,7 @@ void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-void initializeGameMain() {
+static void initializeGameMain() {
   JOY_setEventHandler(&joyHandlerGameMain);
 
   g_paused = FALSE;
