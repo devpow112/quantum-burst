@@ -6,7 +6,7 @@ on:
       - main
 jobs:
   check-formatting-c:
-    name: Check formatting (C)
+    name: Check Formatting (C)
     runs-on: ubuntu-latest
     env:
       VERSION: 12
@@ -23,12 +23,20 @@ jobs:
           sudo apt-get install --no-install-recommends -y ${PACKAGE}
       - name: Checkout
         uses: actions/checkout@v2.3.4
-        with:
-          fetch-depth: 0
       - name: Check formatting
         run: >
           find . -type f -iregex '^.*\.\(c\|c.in\|h\)$' -print0 |
           xargs -0 clang-format-${VERSION} --dry-run --Werror
+  check-formatting-markdown:
+    name: Check Formatting (Markdown)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install packages
+        run: sudo npm i -g markdownlint-cli
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Check formatting
+        run: find . -type f -iname '*.md' -print0 | xargs -0 markdownlint
   build:
     name: Build
     runs-on: windows-latest
