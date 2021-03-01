@@ -64,4 +64,8 @@ void processGameMain() {
     SPR_update();
     SYS_doVBlankProcess();
   }
+
+  tearDownPlayer(&g_player);
+  SPR_update();
+  SYS_doVBlankProcess();
 }
