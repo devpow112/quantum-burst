@@ -24,7 +24,7 @@
 
 #include "game.h"
 
-static void initialize() {
+static void initialize(bool _hardReset) {
   JOY_init();
   VDP_init();
   VDP_setScreenWidth320();
@@ -36,11 +36,16 @@ static void initialize() {
   }
 
   SPR_init();
+
+  if (_hardReset) {
+    setGameState(STATE_LOGO);
+  } else if (!isGameState(STATE_LOGO)) {
+    setGameState(STATE_MENU);
+  }
 }
 
 int main(bool _hardReset) {
-  initialize();
-  setGameState(_hardReset ? STATE_LOGO : STATE_MENU);
+  initialize(_hardReset);
 
   while (TRUE) {
     switch (getGameState()) {
