@@ -29,7 +29,7 @@
 static Player g_player;
 static bool g_paused;
 
-static void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
+static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
     g_paused = !g_paused;
 
@@ -42,17 +42,17 @@ static void joyHandlerGameMain(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-static void initializeGameMain() {
-  JOY_setEventHandler(&joyHandlerGameMain);
+static void initializeGameStage() {
+  JOY_setEventHandler(&joyHandlerGameStage);
 
   g_paused = FALSE;
 }
 
-void processGameMain() {
-  initializeGameMain();
+void processGameStage() {
+  initializeGameStage();
   setUpPlayer(&g_player, 0, 0, PAL1);
 
-  while (isGameState(STATE_MAIN)) {
+  while (isGameState(STATE_STAGE)) {
     clearText(14);
 
     if (!g_paused) {

@@ -29,7 +29,7 @@ typedef enum {
   STATE_LOGO,
   STATE_MENU,
   STATE_LOAD,
-  STATE_MAIN,
+  STATE_STAGE,
   STATE_CREDITS
 } GameState;
 
@@ -45,7 +45,7 @@ void processGameMenu();
 
 void processGameLoad();
 
-void processGameMain();
+void processGameStage();
 
 void processGameCredits();
 
