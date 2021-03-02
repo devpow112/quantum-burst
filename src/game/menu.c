@@ -26,6 +26,12 @@
 #include "sprites.h"
 #include "utilities.h"
 
+#define LOGO_WIDTH 200
+#define LOGO_HEIGHT 48
+#define LOGO_FADE_TIME 300  // milliseconds
+#define LOGO_START_POSITION_Y (-LOGO_HEIGHT)
+#define LOGO_END_POSITION_Y 64
+
 static bool g_run_menu_exit;
 
 static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
@@ -34,24 +40,31 @@ static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-static void initializeGameMenu() {
-  JOY_setEventHandler(NULL);
-}
-
 void processGameMenu() {
-  initializeGameMenu();
+  JOY_setEventHandler(NULL);
 
-  u16 width = VDP_getScreenWidth();
-  Sprite* title = SPR_addSpriteSafe(&titleSprite, (width - 200) / 2, 64,
-                                    TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  const u16 screenWidth = VDP_getScreenWidth();
+  const s16 titlePositionX = (screenWidth - LOGO_WIDTH) / 2;
+  Sprite* title =
+      SPR_addSpriteSafe(&titleSprite, titlePositionX, LOGO_START_POSITION_Y,
+                        TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  const u16 numFrames = timeToFrames(LOGO_FADE_TIME);
 
-  PAL_fadeInPalette(PAL1, titleSprite.palette->data, 120, TRUE);
+  PAL_fadeInPalette(PAL1, titleSprite.palette->data, numFrames, TRUE);
+
+  const f16 distance = intToFix16(LOGO_END_POSITION_Y - LOGO_START_POSITION_Y);
+  const f16 increment = fix16Div(distance, intToFix16(numFrames));
+  f16 titlePositionY = intToFix16(LOGO_START_POSITION_Y);
 
   while (PAL_isDoingFade()) {
+    titlePositionY = fix16Add(titlePositionY, increment);
+
+    SPR_setPosition(title, titlePositionX, fix16ToInt(titlePositionY));
     SPR_update();
     SYS_doVBlankProcess();
   }
 
+  SPR_setPosition(title, titlePositionX, LOGO_END_POSITION_Y);
   showText("PRESS START BUTTON", 16);
   JOY_setEventHandler(&joyHandlerMenu);
 
