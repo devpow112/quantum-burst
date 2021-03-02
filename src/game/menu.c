@@ -71,7 +71,7 @@ void processGameMenu() {
     SYS_doVBlankProcess();
   }
 
-  setGameState(STATE_MAIN);
+  setGameState(STATE_STAGE);
   SPR_releaseSprite(title);
   SPR_update();
   SYS_doVBlankProcess();

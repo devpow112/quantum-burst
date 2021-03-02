@@ -53,8 +53,8 @@ int main(bool _hardReset) {
       case STATE_LOAD:
         processGameLoad();
         break;
-      case STATE_MAIN:
-        processGameMain();
+      case STATE_STAGE:
+        processGameStage();
         break;
       case STATE_CREDITS:
         processGameCredits();

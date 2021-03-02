@@ -62,18 +62,18 @@ void updatePlayer(Player* _player) {
 
   const s16 width = VDP_getScreenWidth();
 
-  if (_player->position.x <= 0) {
-    _player->position.x = 2;
-  } else if (_player->position.x >= (width - PLAYER_WIDTH)) {
-    _player->position.x = width - PLAYER_WIDTH - 2;
+  if (_player->position.x < 0) {
+    _player->position.x = 0;
+  } else if (_player->position.x > (width - PLAYER_WIDTH)) {
+    _player->position.x = width - PLAYER_WIDTH;
   }
 
   const s16 height = VDP_getScreenHeight();
 
-  if (_player->position.y <= 0) {
-    _player->position.y = 2;
-  } else if (_player->position.y >= (height - PLAYER_HEIGHT)) {
-    _player->position.y = height - PLAYER_HEIGHT - 2;
+  if (_player->position.y < 0) {
+    _player->position.y = 0;
+  } else if (_player->position.y > (height - PLAYER_HEIGHT)) {
+    _player->position.y = height - PLAYER_HEIGHT;
   }
 
   if ((inputState & BUTTON_A) && _player->fireDelay == 0) {
