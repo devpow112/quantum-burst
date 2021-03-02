@@ -25,10 +25,18 @@
 
 #include "utilities.h"
 
+#define PAL_FRAME_RATE 50
+#define NTSC_FRAME_RATE 60
+
 void showText(char _text[], u8 _column) {
   VDP_drawText(_text, 20 - strlen(_text) / 2, _column);
 }
 
 void clearText(u8 _column) {
   VDP_clearText(0, _column, 32);
+}
+
+u16 timeToFrames(u16 _ms) {
+  return IS_PALSYSTEM ? _ms * PAL_FRAME_RATE / 1000
+                      : _ms * NTSC_FRAME_RATE / 1000;
 }

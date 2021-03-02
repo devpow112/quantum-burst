@@ -29,4 +29,6 @@ void showText(char _text[], u8 _column);
 
 void clearText(u8 _column);
 
+u16 timeToFrames(u16 _ms);
+
 #endif  // __QUANTUM_BURST_UTILITIES_H__
