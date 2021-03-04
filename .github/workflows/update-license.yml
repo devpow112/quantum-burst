@@ -7,6 +7,8 @@ on:
       - .github/workflows/update-license.yml
   schedule:
     - cron: '0 0 1 1 *'
+env:
+  REGEX: '^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$'
 jobs:
   update-license:
     name: Update License
@@ -16,20 +18,24 @@ jobs:
         uses: actions/checkout@v2.3.4
         with:
           persist-credentials: false
+      - name: Determine year
+        id: year
+        run: echo "::set-output name=value::$(date +%Y)"
       - name: Update license
-        run: |
-          sed -i -E "s/^(Copyright.*)[0-9]{4}(.*)$/\1$(date +%Y)\2/" LICENSE
+        run: >
+          find . -type f -not -path './.git/*' -and \( -iname '*.h' -or -iname
+          '*.c' -or -iname '*.h.in' -or -iname '*.s' -or -iname 'LICENSE' \)
+          -exec sed -i -E "s/$REGEX/\1${{steps.year.outputs.value}}\4/" {} \;
       - name: Check for changes
         id: changes
-        run: |
-          git diff --exit-code LICENSE || echo "::set-output name=exist::true"
+        run: git diff --exit-code || echo "::set-output name=exist::true"
       - name: Push commit
         if: steps.changes.outputs.exist
         run: |
           git config user.name $COMMIT_USERNAME
           git config user.email $COMMIT_EMAIL
-          git add LICENSE
-          git commit -m "Update license year to $(date +%Y)"
+          git add -u
+          git commit -m "Update license year to ${{steps.year.outputs.value}}"
           CREDENTIALS="x-access-token:$GITHUB_TOKEN"
           URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
           git remote set-url origin $URL
