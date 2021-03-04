@@ -26,11 +26,9 @@
 #include "sprites.h"
 #include "utilities.h"
 
-#define LOGO_WIDTH 200
-#define LOGO_HEIGHT 48
-#define LOGO_FADE_TIME 300  // milliseconds
-#define LOGO_START_POSITION_Y (-LOGO_HEIGHT)
-#define LOGO_END_POSITION_Y 64
+#define LOGO_FADE_IN_TIME 300   // milliseconds
+#define LOGO_FADE_OUT_TIME 500  // milliseconds
+#define LOGO_END_POSITION_Y 64  // screen coordinate
 
 static bool g_run_menu_exit;
 
@@ -44,17 +42,18 @@ void processGameMenu() {
   JOY_setEventHandler(NULL);
 
   const u16 screenWidth = VDP_getScreenWidth();
-  const s16 titlePositionX = (screenWidth - LOGO_WIDTH) / 2;
-  Sprite* title =
-      SPR_addSpriteSafe(&titleSprite, titlePositionX, LOGO_START_POSITION_Y,
-                        TILE_ATTR(PAL1, 0, FALSE, FALSE));
-  const u16 numFrames = timeToFrames(LOGO_FADE_TIME);
+  const s16 titlePositionX = (screenWidth - titleSprite.w) / 2;
+  f16 titlePositionY = intToFix16(-titleSprite.h);
+  Sprite* title = SPR_addSpriteSafe(&titleSprite, titlePositionX,
+                                    fix16ToInt(titlePositionY),
+                                    TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  const u16 fadeInTime = timeToFrames(LOGO_FADE_IN_TIME);
 
-  PAL_fadeInPalette(PAL1, titleSprite.palette->data, numFrames, TRUE);
+  PAL_fadeInPalette(PAL1, titleSprite.palette->data, fadeInTime, TRUE);
 
-  const f16 distance = intToFix16(LOGO_END_POSITION_Y - LOGO_START_POSITION_Y);
-  const f16 increment = fix16Div(distance, intToFix16(numFrames));
-  f16 titlePositionY = intToFix16(LOGO_START_POSITION_Y);
+  const f16 distance =
+      fix16Sub(intToFix16(LOGO_END_POSITION_Y), titlePositionY);
+  const f16 increment = fix16Div(distance, intToFix16(fadeInTime));
 
   while (PAL_isDoingFade()) {
     titlePositionY = fix16Add(titlePositionY, increment);
@@ -77,7 +76,7 @@ void processGameMenu() {
 
   clearText(16);
   JOY_setEventHandler(NULL);
-  PAL_fadeOutPalette(PAL1, 30, TRUE);
+  PAL_fadeOutPalette(PAL1, timeToFrames(LOGO_FADE_OUT_TIME), TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();
