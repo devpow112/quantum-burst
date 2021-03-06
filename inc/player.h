@@ -26,14 +26,16 @@
 #include <genesis.h>
 
 typedef struct {
+  V2f16 position;
   Sprite* sprite;
-  V2s16 position;
-  u8 attackCooldown;
   f16 bankDirection;
+  u8 attackCooldown;
   bool isInvulnerable;
 } Player;
 
 void initPlayer();
+
+Player* createPlayer(s16 _x, s16 _y, u16 _palette);
 
 void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette);
 
@@ -41,4 +43,6 @@ void updatePlayer(Player* _player);
 
 void tearDownPlayer(Player* _player);
 
-#endif  // __QUANTUM_BURST_GAME_H__
+void destroyPlayer(Player* _player);
+
+#endif  // __QUANTUM_BURST_PLAYER_H__

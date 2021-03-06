@@ -21,12 +21,8 @@
 // SOFTWARE.
 
 #include <genesis.h>
-#include <string.h>
 
 #include "utilities.h"
-
-#define PAL_FRAME_RATE 50
-#define NTSC_FRAME_RATE 60
 
 void showText(char _text[], u8 _column) {
   VDP_drawText(_text, 20 - strlen(_text) / 2, _column);
