@@ -28,12 +28,6 @@
 - name: invalid
   description: This doesn't seem right
   color: e4e669
-- name: language/github-actions
-  description: Changes are in GitHub Actions files
-  color: e3e9f1
-- name: language/c
-  description: Changes are in C files
-  color: e3e9f1
 - name: question
   description: Further information is requested
   color: d876e3
