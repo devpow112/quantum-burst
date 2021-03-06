@@ -30,6 +30,7 @@ typedef struct {
   V2s16 position;
   u8 attackCooldown;
   f16 bankDirection;
+  bool isInvulnerable;
 } Player;
 
 void initPlayer();
