@@ -48,6 +48,7 @@ typedef struct {
 static PlayerDimensions g_playerBounds;
 static V2u16 g_playerMinPosition;
 static V2u16 g_playerMaxPosition;
+static bool g_playerVisibilityPulse;
 
 static void processPlayerMovement(Player* _player, u16 _inputState) {
   V2s16 position = _player->position;
@@ -117,6 +118,14 @@ static void processPlayerAttack(Player* _player, u16 _inputState) {
   }
 }
 
+static void processPlayerDamage(Player* _player) {
+  if (_player->isInvulnerable) {
+    g_playerVisibilityPulse = !g_playerVisibilityPulse;
+
+    SPR_setVisibility(_player->sprite, g_playerVisibilityPulse);
+  }
+}
+
 static void updatePlayerPositionAndAnimation(Player* _player) {
   const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
@@ -139,6 +148,7 @@ void initPlayer() {
   g_playerMinPosition.y = PLAYER_VERTICAL_BUFFER;
   g_playerMaxPosition.x = VDP_getScreenWidth() - g_playerBounds.w;
   g_playerMaxPosition.y = VDP_getScreenHeight() - g_playerBounds.h;
+  g_playerVisibilityPulse = FALSE;
 }
 
 void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
@@ -148,6 +158,7 @@ void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
   _player->position.y = VDP_getScreenHeight() - g_playerBounds.h;
   _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT;
   _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
+  _player->isInvulnerable = TRUE;
   _player->sprite = SPR_addSpriteSafe(&k_shipSprite, _x, _y,
                                       TILE_ATTR(_palette, 0, FALSE, FALSE));
 }
@@ -156,6 +167,7 @@ void updatePlayer(Player* _player) {
   const u16 inputState = JOY_readJoypad(JOY_1);
 
   processPlayerMovement(_player, inputState);
+  processPlayerDamage(_player);
   processPlayerAttack(_player, inputState);
   updatePlayerPositionAndAnimation(_player);
 }
