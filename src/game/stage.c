@@ -42,14 +42,15 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-static void initializeGameStage() {
+static void initGameStage() {
   JOY_setEventHandler(&joyHandlerGameStage);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x888888));
 
   g_paused = FALSE;
 }
 
 void processGameStage() {
-  initializeGameStage();
+  initGameStage();
   setUpPlayer(&g_player, 0, 0, PAL1);
 
   while (isGameState(STATE_STAGE)) {

@@ -23,8 +23,9 @@
 #include <genesis.h>
 
 #include "game.h"
+#include "player.h"
 
-static void initialize(bool _hardReset) {
+static void init(bool _hardReset) {
   JOY_init();
   VDP_init();
   VDP_setScreenWidth320();
@@ -42,10 +43,12 @@ static void initialize(bool _hardReset) {
   } else if (!isGameState(STATE_LOGO)) {
     setGameState(STATE_MENU);
   }
+
+  initPlayer();
 }
 
 int main(bool _hardReset) {
-  initialize(_hardReset);
+  init(_hardReset);
 
   while (TRUE) {
     switch (getGameState()) {

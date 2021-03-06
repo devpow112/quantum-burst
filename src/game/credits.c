@@ -25,13 +25,13 @@
 #include "game.h"
 #include "utilities.h"
 
-static void initializeGameCredits() {
+static void initGameCredits() {
   JOY_setEventHandler(NULL);
   PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
 }
 
 void processGameCredits() {
-  initializeGameCredits();
+  initGameCredits();
   showText("CREDITS", 14);
 
   u16 timer = 500;

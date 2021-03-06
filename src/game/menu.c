@@ -39,24 +39,24 @@ static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-static void flash() {
+static void doFlash() {
   const u8 flashFrameCount = timeToFrames(FLASH_TIME);
-  u16 flash_pallet[32] = {
-      0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
-      0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
-      0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
-      0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF};
+  u16 flashPallet[32] = {0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
+                         0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
+                         0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
+                         0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
+                         0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF};
 
-  PAL_fadeTo(0, 31, flash_pallet, flashFrameCount, TRUE);
+  PAL_fadeTo(0, 31, flashPallet, flashFrameCount, TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();
     SYS_doVBlankProcess();
   }
 
-  memset(flash_pallet, palette_black[0], sizeof(u16) * 15);
-  memcpy(&flash_pallet[16], titleSprite.palette->data, sizeof(u16) * 16);
-  PAL_fadeTo(0, 31, flash_pallet, flashFrameCount, TRUE);
+  memset(flashPallet, palette_black[0], sizeof(u16) * 15);
+  memcpy(&flashPallet[16], k_titleSprite.palette->data, sizeof(u16) * 16);
+  PAL_fadeTo(0, 31, flashPallet, flashFrameCount, TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();
@@ -68,14 +68,14 @@ void processGameMenu() {
   JOY_setEventHandler(NULL);
 
   const u16 screenWidth = VDP_getScreenWidth();
-  const s16 titlePositionX = (screenWidth - titleSprite.w) / 2;
-  f16 titlePositionY = intToFix16(-titleSprite.h);
-  Sprite* title = SPR_addSpriteSafe(&titleSprite, titlePositionX,
+  const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
+  f16 titlePositionY = intToFix16(-k_titleSprite.h);
+  Sprite* title = SPR_addSpriteSafe(&k_titleSprite, titlePositionX,
                                     fix16ToInt(titlePositionY),
                                     TILE_ATTR(PAL1, 0, FALSE, FALSE));
   const u16 fadeInFrameCount = timeToFrames(LOGO_FADE_IN_TIME);
 
-  PAL_fadeInPalette(PAL1, titleSprite.palette->data, fadeInFrameCount, TRUE);
+  PAL_fadeInPalette(PAL1, k_titleSprite.palette->data, fadeInFrameCount, TRUE);
 
   const f16 distance =
       fix16Sub(intToFix16(LOGO_END_POSITION_Y), titlePositionY);
@@ -90,7 +90,7 @@ void processGameMenu() {
   }
 
   SPR_setPosition(title, titlePositionX, LOGO_END_POSITION_Y);
-  flash();
+  doFlash();
   showText("PRESS START BUTTON", 16);
   JOY_setEventHandler(&joyHandlerMenu);
 
@@ -103,7 +103,7 @@ void processGameMenu() {
 
   clearText(16);
   JOY_setEventHandler(NULL);
-  flash();
+  doFlash();
   PAL_fadeOutPalette(PAL1, timeToFrames(LOGO_FADE_OUT_TIME), TRUE);
 
   while (PAL_isDoingFade()) {
