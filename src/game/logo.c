@@ -25,12 +25,12 @@
 #include "game.h"
 #include "utilities.h"
 
-static void initializeGameLogo() {
+static void initGameLogo() {
   JOY_setEventHandler(NULL);
 }
 
 void processGameLogo() {
-  initializeGameLogo();
+  initGameLogo();
   showText("LOGO", 14);
 
   u8 timer = 200;

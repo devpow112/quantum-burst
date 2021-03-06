@@ -28,8 +28,11 @@
 typedef struct {
   Sprite* sprite;
   V2s16 position;
-  u8 fireDelay;
+  u8 attackCooldown;
+  f16 bankDirection;
 } Player;
+
+void initPlayer();
 
 void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette);
 

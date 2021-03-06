@@ -2,6 +2,9 @@
 ext/*/*
 out/
 res/*
+!res/*/
 !res/*.res
+res/*/*
+!res/*/*.png
 src/boot/*
 !src/boot/rom_head.c.in
