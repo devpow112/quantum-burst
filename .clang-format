@@ -1,10 +1,11 @@
 BasedOnStyle: Google
 Language: Cpp
 AllowShortBlocksOnASingleLine: Never
-AllowShortFunctionsOnASingleLine: None
 AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
+BreakBeforeBraces: Attach
 IndentCaseLabels: true
-ColumnLimit: 0
