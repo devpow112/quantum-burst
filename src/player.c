@@ -22,82 +22,69 @@
 
 #include <genesis.h>
 
-#include "maths.h"
 #include "player.h"
 #include "sprites.h"
 #include "utilities.h"
 
-// constants
-#define PLAYER_VELOCITY 2
+// player constants
+#define PLAYER_SCREEN_BUFFER 2
 #define PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT 0
 #define PLAYER_FIRE_DELAY_COOLDOWN_DURATION 3
-#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
-#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
+#define PLAYER_BANKING_DIRECTION_DEFAULT (intToFix16(0))
+#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (intToFix16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
-#define PLAYER_HORIZONTAL_BUFFER 2
-#define PLAYER_VERTICAL_BUFFER PLAYER_HORIZONTAL_BUFFER
 
-// animation frame rates
-#define PLAYER_BANKING_FRAME_RATE (fix16Div(FIX16(20), FIX16(60)))
+// player global properties
+static V2f16 g_playerMinPosition;
+static V2f16 g_playerMaxPosition;
+static V2f16 g_playerStartPosition;
+static f16 g_playerVelocity;
 
-typedef struct {
-  u8 w;  // width
-  u8 h;  // height
-} PlayerDimensions;
-
-static PlayerDimensions g_playerBounds;
-static V2u16 g_playerMinPosition;
-static V2u16 g_playerMaxPosition;
+// player global flags
 static bool g_playerVisibilityPulse;
 
+// player animation frame rates
+static f16 g_playerBankingFrameRate;
+
 static void processPlayerMovement(Player* _player, u16 _inputState) {
-  V2s16 position = _player->position;
+  V2f16 position = _player->position;
   f16 bankDirection = _player->bankDirection;
   s8 movementDirection = 0;
 
   if (_inputState & BUTTON_LEFT) {
-    position.x -= PLAYER_VELOCITY;
+    position.x = fix16Sub(position.x, g_playerVelocity);
     movementDirection--;
 
     if (bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
-      bankDirection = fix16Sub(bankDirection, PLAYER_BANKING_FRAME_RATE);
+      bankDirection = fix16Sub(bankDirection, g_playerBankingFrameRate);
     }
   }
 
   if (_inputState & BUTTON_RIGHT) {
-    position.x += PLAYER_VELOCITY;
+    position.x = fix16Add(position.x, g_playerVelocity);
     movementDirection++;
 
     if (bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
-      bankDirection = fix16Add(bankDirection, PLAYER_BANKING_FRAME_RATE);
+      bankDirection = fix16Add(bankDirection, g_playerBankingFrameRate);
     }
   }
 
   if (_inputState & BUTTON_UP) {
-    position.y -= PLAYER_VELOCITY;
+    position.y = fix16Sub(position.y, g_playerVelocity);
   }
 
   if (_inputState & BUTTON_DOWN) {
-    position.y += PLAYER_VELOCITY;
+    position.y = fix16Add(position.y, g_playerVelocity);
   }
 
-  if (position.x < g_playerMinPosition.x) {
-    position.x = g_playerMinPosition.x;
-  } else if (position.x > g_playerMaxPosition.x) {
-    position.x = g_playerMaxPosition.x;
-  }
-
-  if (position.y < g_playerMinPosition.y) {
-    position.y = g_playerMinPosition.y;
-  } else if (position.y > g_playerMaxPosition.y) {
-    position.y = g_playerMaxPosition.y;
-  }
+  position.x = clamp(position.x, g_playerMinPosition.x, g_playerMaxPosition.x);
+  position.y = clamp(position.y, g_playerMinPosition.y, g_playerMaxPosition.y);
 
   if (movementDirection == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Add(bankDirection, PLAYER_BANKING_FRAME_RATE);
+      bankDirection = fix16Add(bankDirection, g_playerBankingFrameRate);
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Sub(bankDirection, PLAYER_BANKING_FRAME_RATE);
+      bankDirection = fix16Sub(bankDirection, g_playerBankingFrameRate);
     }
   }
 
@@ -138,27 +125,45 @@ static void updatePlayerPositionAndAnimation(Player* _player) {
     SPR_setAnim(_player->sprite, 0);
   }
 
-  SPR_setPosition(_player->sprite, _player->position.x, _player->position.y);
+  const u16 positionXRounded = fix16ToRoundedInt(_player->position.x);
+  const u16 positionYRounded = fix16ToRoundedInt(_player->position.y);
+
+  SPR_setPosition(_player->sprite, positionXRounded, positionYRounded);
 }
 
 void initPlayer() {
-  g_playerBounds.w = k_shipSprite.w + (PLAYER_HORIZONTAL_BUFFER * 2);
-  g_playerBounds.h = k_shipSprite.h + (PLAYER_VERTICAL_BUFFER * 2);
-  g_playerMinPosition.x = PLAYER_HORIZONTAL_BUFFER;
-  g_playerMinPosition.y = PLAYER_VERTICAL_BUFFER;
-  g_playerMaxPosition.x = VDP_getScreenWidth() - g_playerBounds.w;
-  g_playerMaxPosition.y = VDP_getScreenHeight() - g_playerBounds.h;
+  const u16 width = VDP_getScreenWidth();
+  const u16 height = VDP_getScreenHeight();
+  const f16 frameRate =
+      intToFix16(IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE);
+  const f16 buffer = intToFix16(PLAYER_SCREEN_BUFFER);
+
+  g_playerMinPosition.x = buffer;
+  g_playerMinPosition.y = buffer;
+  g_playerMaxPosition.x = fix16Sub(intToFix16(width - k_shipSprite.w), buffer);
+  g_playerMaxPosition.y = fix16Sub(intToFix16(height - k_shipSprite.h), buffer);
+  g_playerStartPosition.x = intToFix16((width - k_shipSprite.w) / 2);
+  g_playerStartPosition.y = intToFix16(height - k_shipSprite.h);
+  g_playerVelocity = fix16Div(intToFix16(120), frameRate);
   g_playerVisibilityPulse = FALSE;
+  g_playerBankingFrameRate = fix16Div(intToFix16(20), frameRate);
+}
+
+Player* createPlayer(s16 _x, s16 _y, u16 _palette) {
+  Player* player = malloc(sizeof(Player));
+
+  setUpPlayer(player, _x, _y, _palette);
+
+  return player;
 }
 
 void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
   PAL_setPalette(_palette, k_shipSprite.palette->data);
 
-  _player->position.x = (VDP_getScreenWidth() - g_playerBounds.w) / 2;
-  _player->position.y = VDP_getScreenHeight() - g_playerBounds.h;
+  _player->position = g_playerStartPosition;
   _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT;
   _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
-  _player->isInvulnerable = TRUE;
+  _player->isInvulnerable = FALSE;
   _player->sprite = SPR_addSpriteSafe(&k_shipSprite, _x, _y,
                                       TILE_ATTR(_palette, 0, FALSE, FALSE));
 }
@@ -174,4 +179,9 @@ void updatePlayer(Player* _player) {
 
 void tearDownPlayer(Player* _player) {
   SPR_releaseSprite(_player->sprite);
+}
+
+void destroyPlayer(Player* _player) {
+  tearDownPlayer(_player);
+  free(_player);
 }

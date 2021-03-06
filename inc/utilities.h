@@ -25,6 +25,11 @@
 
 #include <genesis.h>
 
+#define PAL_FRAME_RATE 50
+#define NTSC_FRAME_RATE 60
+
+#define clamp(X, L, H) (min(max((X), (L)), (H)))
+
 void showText(char _text[], u8 _column);
 
 void clearText(u8 _column);
