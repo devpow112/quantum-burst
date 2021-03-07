@@ -35,9 +35,9 @@ typedef struct {
 
 void initPlayer();
 
-Player* createPlayer(s16 _x, s16 _y, u16 _palette);
+Player* createPlayer(u16 _palette);
 
-void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette);
+void setUpPlayer(Player* _player, u16 _palette);
 
 void updatePlayer(Player* _player);
 

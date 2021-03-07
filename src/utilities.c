@@ -33,6 +33,5 @@ void clearText(u8 _column) {
 }
 
 u16 timeToFrames(u16 _ms) {
-  return IS_PALSYSTEM ? _ms * PAL_FRAME_RATE / 1000
-                      : _ms * NTSC_FRAME_RATE / 1000;
+  return IS_PALSYSTEM ? _ms * PAL_FPS / 1000 : _ms * NTSC_FPS / 1000;
 }
