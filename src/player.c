@@ -27,7 +27,7 @@
 #include "utilities.h"
 
 // player constants
-#define PLAYER_SCREEN_BUFFER 2
+#define PLAYER_SCREEN_BUFFER 2  // in pixels
 #define PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT 0
 #define PLAYER_FIRE_DELAY_COOLDOWN_DURATION 3
 #define PLAYER_BANKING_DIRECTION_DEFAULT (intToFix16(0))
@@ -37,35 +37,36 @@
 // player global properties
 static V2f16 g_playerMinPosition;
 static V2f16 g_playerMaxPosition;
-static V2f16 g_playerStartPosition;
+static V2u16 g_playerStartPosition;
+static V2u16 g_playerSpriteOffset;
 static f16 g_playerVelocity;
 
-// player global flags
-static bool g_playerVisibilityPulse;
+// player global counters
+static bool g_playerFramePulse;
 
 // player animation frame rates
-static f16 g_playerBankingFrameRate;
+static f16 g_playerBankingRate;
 
 static void processPlayerMovement(Player* _player, u16 _inputState) {
   V2f16 position = _player->position;
   f16 bankDirection = _player->bankDirection;
-  s8 movementDirection = 0;
+  s8 overallHorizontalMovement = 0;
 
   if (_inputState & BUTTON_LEFT) {
     position.x = fix16Sub(position.x, g_playerVelocity);
-    movementDirection--;
+    overallHorizontalMovement--;
 
     if (bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingFrameRate);
+      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
   }
 
   if (_inputState & BUTTON_RIGHT) {
     position.x = fix16Add(position.x, g_playerVelocity);
-    movementDirection++;
+    overallHorizontalMovement++;
 
     if (bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingFrameRate);
+      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
     }
   }
 
@@ -80,11 +81,11 @@ static void processPlayerMovement(Player* _player, u16 _inputState) {
   position.x = clamp(position.x, g_playerMinPosition.x, g_playerMaxPosition.x);
   position.y = clamp(position.y, g_playerMinPosition.y, g_playerMaxPosition.y);
 
-  if (movementDirection == 0) {
+  if (overallHorizontalMovement == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingFrameRate);
+      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingFrameRate);
+      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
   }
 
@@ -107,9 +108,9 @@ static void processPlayerAttack(Player* _player, u16 _inputState) {
 
 static void processPlayerDamage(Player* _player) {
   if (_player->isInvulnerable) {
-    g_playerVisibilityPulse = !g_playerVisibilityPulse;
+    g_playerFramePulse = !g_playerFramePulse;
 
-    SPR_setVisibility(_player->sprite, g_playerVisibilityPulse);
+    SPR_setVisibility(_player->sprite, g_playerFramePulse);
   }
 }
 
@@ -125,46 +126,55 @@ static void updatePlayerPositionAndAnimation(Player* _player) {
     SPR_setAnim(_player->sprite, 0);
   }
 
-  const u16 positionXRounded = fix16ToRoundedInt(_player->position.x);
-  const u16 positionYRounded = fix16ToRoundedInt(_player->position.y);
+  const V2f16 position = _player->position;
+  const u16 positionX = fix16ToRoundedInt(position.x) - g_playerSpriteOffset.x;
+  const u16 positionY = fix16ToRoundedInt(position.y) - g_playerSpriteOffset.y;
 
-  SPR_setPosition(_player->sprite, positionXRounded, positionYRounded);
+  SPR_setPosition(_player->sprite, positionX, positionY);
 }
 
 void initPlayer() {
+  g_playerSpriteOffset.x = k_shipSprite.w / 2;
+  g_playerSpriteOffset.y = k_shipSprite.h / 2;
+
+  const u16 bufferXInt = PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.x;
+  const f16 bufferX = intToFix16(bufferXInt);
+  const f16 bufferY = intToFix16(PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.y);
   const u16 width = VDP_getScreenWidth();
   const u16 height = VDP_getScreenHeight();
-  const f16 frameRate =
-      intToFix16(IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE);
-  const f16 buffer = intToFix16(PLAYER_SCREEN_BUFFER);
 
-  g_playerMinPosition.x = buffer;
-  g_playerMinPosition.y = buffer;
-  g_playerMaxPosition.x = fix16Sub(intToFix16(width - k_shipSprite.w), buffer);
-  g_playerMaxPosition.y = fix16Sub(intToFix16(height - k_shipSprite.h), buffer);
-  g_playerStartPosition.x = intToFix16((width - k_shipSprite.w) / 2);
-  g_playerStartPosition.y = intToFix16(height - k_shipSprite.h);
-  g_playerVelocity = fix16Div(intToFix16(120), frameRate);
-  g_playerVisibilityPulse = FALSE;
-  g_playerBankingFrameRate = fix16Div(intToFix16(20), frameRate);
+  g_playerMinPosition.x = bufferX;
+  g_playerMinPosition.y = bufferY;
+  g_playerMaxPosition.x = fix16Sub(intToFix16(width), bufferX);
+  g_playerMaxPosition.y = fix16Sub(intToFix16(height), bufferY);
+  g_playerStartPosition.x = width / 2;
+  g_playerStartPosition.y = height - bufferXInt;
+
+  const f16 fps = intToFix16(IS_PALSYSTEM ? PAL_FPS : NTSC_FPS);
+
+  g_playerVelocity = fix16Div(intToFix16(120), fps);
+  g_playerBankingRate = fix16Div(intToFix16(20), fps);
+  g_playerFramePulse = FALSE;
 }
 
-Player* createPlayer(s16 _x, s16 _y, u16 _palette) {
+Player* createPlayer(u16 _palette) {
   Player* player = malloc(sizeof(Player));
 
-  setUpPlayer(player, _x, _y, _palette);
+  setUpPlayer(player, _palette);
 
   return player;
 }
 
-void setUpPlayer(Player* _player, s16 _x, s16 _y, u16 _palette) {
+void setUpPlayer(Player* _player, u16 _palette) {
   PAL_setPalette(_palette, k_shipSprite.palette->data);
 
-  _player->position = g_playerStartPosition;
+  _player->position.x = intToFix16(g_playerStartPosition.x);
+  _player->position.y = intToFix16(g_playerStartPosition.y);
   _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT;
   _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
   _player->isInvulnerable = FALSE;
-  _player->sprite = SPR_addSpriteSafe(&k_shipSprite, _x, _y,
+  _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
+                                      g_playerStartPosition.y,
                                       TILE_ATTR(_palette, 0, FALSE, FALSE));
 }
 

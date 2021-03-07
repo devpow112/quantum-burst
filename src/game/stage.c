@@ -51,7 +51,7 @@ static void initGameStage() {
 
 void processGameStage() {
   initGameStage();
-  setUpPlayer(&g_player, 0, 0, PAL1);
+  setUpPlayer(&g_player, PAL1);
 
   while (isGameState(STATE_STAGE)) {
     clearText(14);
