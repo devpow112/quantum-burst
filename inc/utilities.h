@@ -28,8 +28,6 @@
 #define PAL_FPS 50
 #define NTSC_FPS 60
 
-#define clamp(X, L, H) (min(max((X), (L)), (H)))
-
 void showText(char _text[], u8 _column);
 
 void clearText(u8 _column);
