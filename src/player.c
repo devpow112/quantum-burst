@@ -50,24 +50,14 @@ static f16 g_playerBankingRate;
 static void processPlayerMovement(Player* _player, u16 _inputState) {
   V2f16 position = _player->position;
   f16 bankDirection = _player->bankDirection;
-  s8 overallHorizontalMovement = 0;
+  const f16 previousPositionX = position.x;
 
   if (_inputState & BUTTON_LEFT) {
     position.x = fix16Sub(position.x, g_playerVelocity);
-    overallHorizontalMovement--;
-
-    if (bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
-    }
   }
 
   if (_inputState & BUTTON_RIGHT) {
     position.x = fix16Add(position.x, g_playerVelocity);
-    overallHorizontalMovement++;
-
-    if (bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
-    }
   }
 
   if (_inputState & BUTTON_UP) {
@@ -81,12 +71,18 @@ static void processPlayerMovement(Player* _player, u16 _inputState) {
   position.x = clamp(position.x, g_playerMinPosition.x, g_playerMaxPosition.x);
   position.y = clamp(position.y, g_playerMinPosition.y, g_playerMaxPosition.y);
 
-  if (overallHorizontalMovement == 0) {
+  const s8 deltaX = fix16ToRoundedInt(fix16Sub(previousPositionX, position.x));
+
+  if (deltaX == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
       bankDirection = fix16Add(bankDirection, g_playerBankingRate);
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
       bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
+  } else if (deltaX > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
+    bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+  } else if (deltaX < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
+    bankDirection = fix16Add(bankDirection, g_playerBankingRate);
   }
 
   _player->bankDirection = bankDirection;
