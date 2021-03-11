@@ -111,9 +111,13 @@ static void processPlayerDamage(Player* _player) {
 }
 
 static void updatePlayerPositionAndAnimation(Player* _player) {
+  const V2f16 position = _player->position;
+  const u16 positionX = fix16ToRoundedInt(position.x) - g_playerSpriteOffset.x;
+  const u16 positionY = fix16ToRoundedInt(position.y) - g_playerSpriteOffset.y;
   const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
 
+  SPR_setPosition(_player->sprite, positionX, positionY);
   SPR_setHFlip(_player->sprite, bankDirectionRounded > 0);
 
   if (bankDirectionIndex > 0) {
@@ -121,33 +125,24 @@ static void updatePlayerPositionAndAnimation(Player* _player) {
   } else {
     SPR_setAnim(_player->sprite, 0);
   }
-
-  const V2f16 position = _player->position;
-  const u16 positionX = fix16ToRoundedInt(position.x) - g_playerSpriteOffset.x;
-  const u16 positionY = fix16ToRoundedInt(position.y) - g_playerSpriteOffset.y;
-
-  SPR_setPosition(_player->sprite, positionX, positionY);
 }
 
 void initPlayer() {
-  g_playerSpriteOffset.x = k_shipSprite.w / 2;
-  g_playerSpriteOffset.y = k_shipSprite.h / 2;
-
   const u16 bufferXInt = PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.x;
   const f16 bufferX = intToFix16(bufferXInt);
   const f16 bufferY = intToFix16(PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.y);
   const u16 width = VDP_getScreenWidth();
   const u16 height = VDP_getScreenHeight();
+  const f16 fps = intToFix16(IS_PALSYSTEM ? PAL_FPS : NTSC_FPS);
 
+  g_playerSpriteOffset.x = k_shipSprite.w / 2;
+  g_playerSpriteOffset.y = k_shipSprite.h / 2;
   g_playerMinPosition.x = bufferX;
   g_playerMinPosition.y = bufferY;
   g_playerMaxPosition.x = fix16Sub(intToFix16(width), bufferX);
   g_playerMaxPosition.y = fix16Sub(intToFix16(height), bufferY);
   g_playerStartPosition.x = width / 2;
   g_playerStartPosition.y = height - bufferXInt;
-
-  const f16 fps = intToFix16(IS_PALSYSTEM ? PAL_FPS : NTSC_FPS);
-
   g_playerVelocity = fix16Div(intToFix16(120), fps);
   g_playerBankingRate = fix16Div(intToFix16(20), fps);
   g_playerFramePulse = FALSE;

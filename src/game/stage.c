@@ -62,6 +62,10 @@ void processGameStage() {
       showText("PAUSED", 14);
     }
 
+#ifdef DEBUG
+    VDP_showFPS(TRUE);
+#endif
+
     SPR_update();
     SYS_doVBlankProcess();
   }
