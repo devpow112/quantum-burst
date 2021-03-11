@@ -29,9 +29,12 @@ typedef struct {
   V2f16 position;
   Sprite* sprite;
   f16 bankDirection;
-  u8 attackCooldown;
-  bool isInvulnerable;
+  f16 attackCooldown;
+  f16 damageCooldown;
+  u8 health;
 } Player;
+
+// life-cycle
 
 void initPlayer();
 
@@ -44,5 +47,13 @@ void updatePlayer(Player* _player);
 void tearDownPlayer(Player* _player);
 
 void destroyPlayer(Player* _player);
+
+// actions
+
+void doPlayerHit(Player* _player, u8 _damageAmount);
+
+// properties
+
+bool isPlayerDead(Player* _player);
 
 #endif  // __QUANTUM_BURST_PLAYER_H__

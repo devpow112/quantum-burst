@@ -26,21 +26,23 @@
 #include "sprites.h"
 #include "utilities.h"
 
-#define LOGO_FADE_IN_TIME 300   // milliseconds
-#define LOGO_FADE_OUT_TIME 500  // milliseconds
-#define LOGO_END_POSITION_Y 64  // screen coordinate
-#define FLASH_TIME 100          // milliseconds
+// menu constants
+#define LOGO_FADE_IN_TIME (FIX16(0.3))   // seconds
+#define LOGO_FADE_OUT_TIME (FIX16(0.5))  // seconds
+#define FLASH_TIME (FIX16(0.1))          // seconds
+#define LOGO_END_POSITION_Y 64           // pixels
 
-static bool g_run_menu_exit;
+// menu global properties
+static bool g_runMenuExit;
 
 static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
-    g_run_menu_exit = TRUE;
+    g_runMenuExit = TRUE;
   }
 }
 
 static void doFlash() {
-  const u8 flashFrameCount = timeToFrames(FLASH_TIME);
+  const u8 flashFrameCount = secondsToFrames(FLASH_TIME);
   u16 flashPallet[32] = {0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
                          0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
                          0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
@@ -66,6 +68,7 @@ static void doFlash() {
 
 void processGameMenu() {
   JOY_setEventHandler(NULL);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
 
   const u16 screenWidth = VDP_getScreenWidth();
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
@@ -73,7 +76,7 @@ void processGameMenu() {
   Sprite* title = SPR_addSpriteSafe(&k_titleSprite, titlePositionX,
                                     fix16ToInt(titlePositionY),
                                     TILE_ATTR(PAL1, 0, FALSE, FALSE));
-  const u16 fadeInFrameCount = timeToFrames(LOGO_FADE_IN_TIME);
+  const u16 fadeInFrameCount = secondsToFrames(LOGO_FADE_IN_TIME);
 
   PAL_fadeInPalette(PAL1, k_titleSprite.palette->data, fadeInFrameCount, TRUE);
 
@@ -94,9 +97,9 @@ void processGameMenu() {
   showText("PRESS START BUTTON", 16);
   JOY_setEventHandler(&joyHandlerMenu);
 
-  g_run_menu_exit = FALSE;
+  g_runMenuExit = FALSE;
 
-  while (!g_run_menu_exit) {
+  while (!g_runMenuExit) {
     SPR_update();
     SYS_doVBlankProcess();
   }
@@ -104,7 +107,7 @@ void processGameMenu() {
   clearText(16);
   JOY_setEventHandler(NULL);
   doFlash();
-  PAL_fadeOutPalette(PAL1, timeToFrames(LOGO_FADE_OUT_TIME), TRUE);
+  PAL_fadeOutPalette(PAL1, secondsToFrames(LOGO_FADE_OUT_TIME), TRUE);
 
   while (PAL_isDoingFade()) {
     SPR_update();

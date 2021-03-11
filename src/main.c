@@ -24,6 +24,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "utilities.h"
 
 static void init(bool _hardReset) {
   JOY_init();
@@ -44,6 +45,7 @@ static void init(bool _hardReset) {
     setGameState(STATE_MENU);
   }
 
+  initUtilities();
   initPlayer();
 }
 

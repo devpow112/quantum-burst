@@ -27,12 +27,13 @@
 #include "utilities.h"
 
 // player constants
-#define PLAYER_SCREEN_BUFFER 2  // in pixels
-#define PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT 0
-#define PLAYER_FIRE_DELAY_COOLDOWN_DURATION 3
-#define PLAYER_BANKING_DIRECTION_DEFAULT (intToFix16(0))
-#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (intToFix16(2))
+#define PLAYER_SCREEN_BUFFER 2                               // pixels
+#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
+#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX16(1))  // seconds
+#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
+#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
+#define PLAYER_HEALTH_DEFAULT 100
 
 // player global properties
 static V2f16 g_playerMinPosition;
@@ -41,10 +42,7 @@ static V2u16 g_playerStartPosition;
 static V2u16 g_playerSpriteOffset;
 static f16 g_playerVelocity;
 
-// player global counters
-static bool g_playerFramePulse;
-
-// player animation frame rates
+// player animation constants
 static f16 g_playerBankingRate;
 
 static void processPlayerMovement(Player* _player, u16 _inputState) {
@@ -90,47 +88,66 @@ static void processPlayerMovement(Player* _player, u16 _inputState) {
 }
 
 static void processPlayerAttack(Player* _player, u16 _inputState) {
-  if ((_inputState & BUTTON_A) &&
-      _player->attackCooldown == PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT) {
-    showText("FIRE", 0);
+  f16 attackCooldown = _player->attackCooldown;
 
-    _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DURATION;
-  } else if (_player->attackCooldown != 0) {
+  if (attackCooldown > FIX16(0)) {
     clearText(0);
 
-    _player->attackCooldown--;
+    attackCooldown = fix16Sub(attackCooldown, getFrameDeltaTime());
+  } else if ((_inputState & BUTTON_A)) {
+    showText("FIRE", 0);
+
+    attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
+
+  _player->attackCooldown = attackCooldown;
 }
 
 static void processPlayerDamage(Player* _player) {
-  if (_player->isInvulnerable) {
-    g_playerFramePulse = !g_playerFramePulse;
+  f16 damageCooldown = _player->damageCooldown;
 
-    SPR_setVisibility(_player->sprite, g_playerFramePulse);
+  if (damageCooldown > FIX16(0)) {
+    damageCooldown = fix16Sub(damageCooldown, getFrameDeltaTime());
   }
+
+  _player->damageCooldown = damageCooldown;
 }
 
-static void updatePlayerPositionAndAnimation(Player* _player) {
+static void updatePlayerSprite(const Player* _player) {
   const V2f16 position = _player->position;
   const u16 positionX = fix16ToRoundedInt(position.x) - g_playerSpriteOffset.x;
   const u16 positionY = fix16ToRoundedInt(position.y) - g_playerSpriteOffset.y;
   const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
+  Sprite* sprite = _player->sprite;
+  SpriteVisibility visibility;
 
-  SPR_setPosition(_player->sprite, positionX, positionY);
-  SPR_setHFlip(_player->sprite, bankDirectionRounded > 0);
+  if (_player->damageCooldown > FIX16(0)) {
+    visibility = SPR_isVisible(sprite, FALSE) ? HIDDEN : VISIBLE;
+  } else {
+    visibility = VISIBLE;
+  }
+
+  SPR_setVisibility(sprite, visibility);
+
+  if (visibility != VISIBLE) {
+    return;
+  }
+
+  SPR_setPosition(sprite, positionX, positionY);
 
   if (bankDirectionIndex > 0) {
-    SPR_setAnimAndFrame(_player->sprite, 1, bankDirectionIndex - 1);
+    SPR_setHFlip(sprite, bankDirectionRounded > 0);
+    SPR_setAnimAndFrame(sprite, 1, bankDirectionIndex - 1);
   } else {
-    SPR_setAnim(_player->sprite, 0);
+    SPR_setAnim(sprite, 0);
   }
 }
 
 void initPlayer() {
   const u16 width = VDP_getScreenWidth();
   const u16 height = VDP_getScreenHeight();
-  const f16 fps = intToFix16(IS_PALSYSTEM ? PAL_FPS : NTSC_FPS);
+  const f16 fps = intToFix16(getFrameRate());
 
   g_playerSpriteOffset.x = k_shipSprite.w / 2;
   g_playerSpriteOffset.y = k_shipSprite.h / 2;
@@ -145,9 +162,8 @@ void initPlayer() {
   g_playerMaxPosition.y = fix16Sub(intToFix16(height), bufferY);
   g_playerStartPosition.x = width / 2;
   g_playerStartPosition.y = height - bufferXInt;
-  g_playerVelocity = fix16Div(intToFix16(120), fps);
-  g_playerBankingRate = fix16Div(intToFix16(20), fps);
-  g_playerFramePulse = FALSE;
+  g_playerVelocity = fix16Div(FIX16(120), fps);
+  g_playerBankingRate = fix16Div(FIX16(20), fps);
 }
 
 Player* createPlayer(u16 _palette) {
@@ -161,21 +177,25 @@ Player* createPlayer(u16 _palette) {
 void setUpPlayer(Player* _player, u16 _palette) {
   _player->position.x = intToFix16(g_playerStartPosition.x);
   _player->position.y = intToFix16(g_playerStartPosition.y);
-  _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT;
+  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
-  _player->isInvulnerable = FALSE;
+  _player->damageCooldown = FIX16(0);
+  _player->health = PLAYER_HEALTH_DEFAULT;
   _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
                                       g_playerStartPosition.y,
                                       TILE_ATTR(_palette, 0, FALSE, FALSE));
 }
 
 void updatePlayer(Player* _player) {
-  const u16 inputState = JOY_readJoypad(JOY_1);
+  if (!isPlayerDead(_player)) {
+    const u16 inputState = JOY_readJoypad(JOY_1);
 
-  processPlayerMovement(_player, inputState);
-  processPlayerDamage(_player);
-  processPlayerAttack(_player, inputState);
-  updatePlayerPositionAndAnimation(_player);
+    processPlayerMovement(_player, inputState);
+    processPlayerAttack(_player, inputState);
+    processPlayerDamage(_player);
+  }
+
+  updatePlayerSprite(_player);
 }
 
 void tearDownPlayer(Player* _player) {
@@ -185,4 +205,28 @@ void tearDownPlayer(Player* _player) {
 void destroyPlayer(Player* _player) {
   tearDownPlayer(_player);
   free(_player);
+}
+
+void doPlayerHit(Player* _player, u8 _damageAmount) {
+  f16 damageCooldown = _player->damageCooldown;
+  u8 health = _player->health;
+
+  if (health == 0 || damageCooldown > 0) {
+    return;
+  }
+
+  damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
+
+  if (health < _damageAmount) {
+    health = 0;
+  } else {
+    health -= _damageAmount;
+  }
+
+  _player->health = health;
+  _player->damageCooldown = damageCooldown;
+}
+
+bool isPlayerDead(Player* _player) {
+  return _player->health == 0;
 }
