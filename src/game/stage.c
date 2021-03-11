@@ -35,14 +35,16 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
     g_paused = !g_paused;
 
     if (g_paused) {
+      showText("PAUSED", 14);
       PAL_fadeOutPalette(PAL1, 3, TRUE);
     } else {
+      clearText(14);
       PAL_fadeInPalette(PAL1, k_primarySpritePalette.data, 3, TRUE);
     }
   }
 }
 
-static void initGameStage() {
+static void setUpGameStage() {
   JOY_setEventHandler(&joyHandlerGameStage);
   PAL_setColor(0, RGB24_TO_VDPCOLOR(0x888888));
   PAL_setPalette(PAL1, k_primarySpritePalette.data);
@@ -51,27 +53,31 @@ static void initGameStage() {
   g_paused = FALSE;
 }
 
-void processGameStage() {
-  initGameStage();
-
-  while (isGameState(STATE_STAGE)) {
-    clearText(14);
-
-    if (!g_paused) {
-      updatePlayer(&g_player);
-    } else {
-      showText("PAUSED", 14);
-    }
-
+static void updateGameStage() {
 #ifdef DEBUG
-    VDP_showFPS(TRUE);
+  VDP_showFPS(TRUE);
 #endif
 
-    SPR_update();
-    SYS_doVBlankProcess();
-  }
+  SPR_update();
+  SYS_doVBlankProcess();
+}
 
+static void tearDownGameStage() {
   tearDownPlayer(&g_player);
   SPR_update();
   SYS_doVBlankProcess();
+}
+
+void processGameStage() {
+  setUpGameStage();
+
+  while (isGameState(STATE_STAGE)) {
+    if (!g_paused) {
+      updatePlayer(&g_player);
+    }
+
+    updateGameStage();
+  }
+
+  tearDownGameStage();
 }
