@@ -128,15 +128,17 @@ static void updatePlayerPositionAndAnimation(Player* _player) {
 }
 
 void initPlayer() {
-  const u16 bufferXInt = PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.x;
-  const f16 bufferX = intToFix16(bufferXInt);
-  const f16 bufferY = intToFix16(PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.y);
   const u16 width = VDP_getScreenWidth();
   const u16 height = VDP_getScreenHeight();
   const f16 fps = intToFix16(IS_PALSYSTEM ? PAL_FPS : NTSC_FPS);
 
   g_playerSpriteOffset.x = k_shipSprite.w / 2;
   g_playerSpriteOffset.y = k_shipSprite.h / 2;
+
+  const u16 bufferXInt = PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.x;
+  const f16 bufferX = intToFix16(bufferXInt);
+  const f16 bufferY = intToFix16(PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.y);
+
   g_playerMinPosition.x = bufferX;
   g_playerMinPosition.y = bufferY;
   g_playerMaxPosition.x = fix16Sub(intToFix16(width), bufferX);
@@ -157,8 +159,6 @@ Player* createPlayer(u16 _palette) {
 }
 
 void setUpPlayer(Player* _player, u16 _palette) {
-  PAL_setPalette(_palette, k_shipSprite.palette->data);
-
   _player->position.x = intToFix16(g_playerStartPosition.x);
   _player->position.y = intToFix16(g_playerStartPosition.y);
   _player->attackCooldown = PLAYER_FIRE_DELAY_COOLDOWN_DEFAULT;
