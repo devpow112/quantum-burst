@@ -24,6 +24,7 @@
 
 #include "game.h"
 #include "player.h"
+#include "sprites.h"
 #include "utilities.h"
 
 static Player g_player;
@@ -36,8 +37,7 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
     if (g_paused) {
       PAL_fadeOutPalette(PAL1, 3, TRUE);
     } else {
-      PAL_fadeInPalette(PAL1, g_player.sprite->definition->palette->data, 3,
-                        TRUE);
+      PAL_fadeInPalette(PAL1, k_primarySpritePalette.data, 3, TRUE);
     }
   }
 }
@@ -45,13 +45,14 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
 static void initGameStage() {
   JOY_setEventHandler(&joyHandlerGameStage);
   PAL_setColor(0, RGB24_TO_VDPCOLOR(0x888888));
+  PAL_setPalette(PAL1, k_primarySpritePalette.data);
+  setUpPlayer(&g_player, PAL1);
 
   g_paused = FALSE;
 }
 
 void processGameStage() {
   initGameStage();
-  setUpPlayer(&g_player, PAL1);
 
   while (isGameState(STATE_STAGE)) {
     clearText(14);
