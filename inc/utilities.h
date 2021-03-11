@@ -25,13 +25,16 @@
 
 #include <genesis.h>
 
-#define PAL_FPS 50
-#define NTSC_FPS 60
+void initUtilities();
 
 void showText(char _text[], u8 _column);
 
 void clearText(u8 _column);
 
-u16 timeToFrames(u16 _ms);
+u8 getFrameRate();
+
+f16 getFrameDeltaTime();
+
+u16 secondsToFrames(f16 _seconds);
 
 #endif  // __QUANTUM_BURST_UTILITIES_H__

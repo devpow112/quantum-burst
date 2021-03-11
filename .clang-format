@@ -8,5 +8,6 @@ AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
 BreakBeforeBraces: Attach
-IndentCaseLabels: true
+BreakBeforeTernaryOperators: false
 IncludeBlocks: Preserve
+IndentCaseLabels: true

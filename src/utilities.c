@@ -24,6 +24,19 @@
 
 #include "utilities.h"
 
+#define PAL_FRAME_RATE 50
+#define NTSC_FRAME_RATE 60
+
+static u8 g_utiltiesFrameRate;
+static f16 g_utiltiesFrameDeltaTime;
+
+void initUtilities() {
+  const u8 fps = IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;
+
+  g_utiltiesFrameRate = fps;
+  g_utiltiesFrameDeltaTime = fix16Div(FIX16(1), intToFix16(fps));
+}
+
 void showText(char _text[], u8 _column) {
   VDP_drawText(_text, 20 - strlen(_text) / 2, _column);
 }
@@ -32,6 +45,14 @@ void clearText(u8 _column) {
   VDP_clearText(0, _column, 32);
 }
 
-u16 timeToFrames(u16 _ms) {
-  return IS_PALSYSTEM ? _ms * PAL_FPS / 1000 : _ms * NTSC_FPS / 1000;
+u8 getFrameRate() {
+  return g_utiltiesFrameRate;
+}
+
+f16 getFrameDeltaTime() {
+  return g_utiltiesFrameDeltaTime;
+}
+
+u16 secondsToFrames(f16 _seconds) {
+  return fix16ToRoundedInt(fix16Mul(_seconds, intToFix16(getFrameRate())));
 }

@@ -41,6 +41,12 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
       clearText(14);
       PAL_fadeInPalette(PAL1, k_primarySpritePalette.data, 3, TRUE);
     }
+
+    return;
+  }
+
+  if (_state & _changed & BUTTON_A) {
+    doPlayerHit(&g_player, 10);
   }
 }
 
@@ -63,7 +69,10 @@ static void updateGameStage() {
 }
 
 static void tearDownGameStage() {
+  JOY_setEventHandler(NULL);
   tearDownPlayer(&g_player);
+  clearText(14);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
   SPR_update();
   SYS_doVBlankProcess();
 }
@@ -74,6 +83,10 @@ void processGameStage() {
   while (isGameState(STATE_STAGE)) {
     if (!g_paused) {
       updatePlayer(&g_player);
+
+      if (isPlayerDead(&g_player)) {
+        setGameState(STATE_MENU);
+      }
     }
 
     updateGameStage();
