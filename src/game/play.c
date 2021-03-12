@@ -22,27 +22,26 @@
 
 #include <genesis.h>
 
+#include "camera.h"
 #include "game.h"
+#include "maps.h"
 #include "player.h"
 #include "sprites.h"
+#include "stage.h"
 #include "utilities.h"
 
+static Camera g_camera;
 static Player g_player;
+static Stage g_stage;
 static bool g_paused;
 
-static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
+static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
     g_paused = !g_paused;
 
     if (g_paused) {
-      showText("PAUSED", 14);
-      PAL_fadeOutPalette(PAL1, 3, TRUE);
-    } else {
-      clearText(14);
-      PAL_fadeInPalette(PAL1, k_primarySpritePalette.data, 3, TRUE);
+      return;  // don't process any more input events
     }
-
-    return;
   }
 
   if (_state & _changed & BUTTON_A) {
@@ -50,16 +49,20 @@ static void joyHandlerGameStage(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
-static void setUpGameStage() {
-  JOY_setEventHandler(&joyHandlerGameStage);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x888888));
-  PAL_setPalette(PAL1, k_primarySpritePalette.data);
-  setUpPlayer(&g_player, PAL1);
+static void setUpGamePlay() {
+  JOY_setEventHandler(&joyHandlerGamePlay);
+  PAL_setPalette(PAL0, k_stage1Palette.data);
+  PAL_setPalette(PAL2, k_primarySpritePalette.data);
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x666666));
 
   g_paused = FALSE;
+
+  setUpStage(&g_stage, PAL0);
+  setUpPlayer(&g_player, PAL1, &g_stage);
+  setUpCamera(&g_camera, &g_player, &g_stage);
 }
 
-static void updateGameStage() {
+static void updateGamePlay() {
 #ifdef DEBUG
   VDP_showFPS(TRUE);
 #endif
@@ -68,29 +71,33 @@ static void updateGameStage() {
   SYS_doVBlankProcess();
 }
 
-static void tearDownGameStage() {
-  JOY_setEventHandler(NULL);
+static void tearDownGamePlay() {
   tearDownPlayer(&g_player);
-  clearText(14);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+  tearDownCamera(&g_camera);
+  tearDownStage(&g_stage);
+  JOY_setEventHandler(NULL);
   SPR_update();
   SYS_doVBlankProcess();
 }
 
-void processGameStage() {
-  setUpGameStage();
+void processGamePlay() {
+  setUpGamePlay();
 
-  while (isGameState(STATE_STAGE)) {
+  while (isGameState(STATE_PLAY)) {
     if (!g_paused) {
-      updatePlayer(&g_player);
+      updateStage(&g_stage);
+      updatePlayer(&g_player, &g_stage);
+      updateCamera(&g_camera, &g_player, &g_stage);
 
       if (isPlayerDead(&g_player)) {
         setGameState(STATE_MENU);
       }
     }
 
-    updateGameStage();
+    drawPlayer(&g_player, &g_camera);
+    drawStage(&g_stage, &g_camera);
+    updateGamePlay();
   }
 
-  tearDownGameStage();
+  tearDownGamePlay();
 }

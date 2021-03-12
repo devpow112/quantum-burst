@@ -27,9 +27,9 @@
 #include "utilities.h"
 
 // menu constants
-#define LOGO_FADE_IN_TIME (FIX16(0.3))   // seconds
-#define LOGO_FADE_OUT_TIME (FIX16(0.5))  // seconds
-#define FLASH_TIME (FIX16(0.1))          // seconds
+#define LOGO_FADE_IN_TIME (FIX32(0.3))   // seconds
+#define LOGO_FADE_OUT_TIME (FIX32(0.5))  // seconds
+#define FLASH_TIME (FIX32(0.1))          // seconds
 #define LOGO_END_POSITION_Y 64           // pixels
 
 // menu global properties
@@ -72,22 +72,22 @@ void processGameMenu() {
 
   const u16 screenWidth = VDP_getScreenWidth();
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
-  f16 titlePositionY = intToFix16(-k_titleSprite.h);
+  f32 titlePositionY = intToFix32(-k_titleSprite.h);
   Sprite* title = SPR_addSpriteSafe(&k_titleSprite, titlePositionX,
-                                    fix16ToInt(titlePositionY),
+                                    fix32ToInt(titlePositionY),
                                     TILE_ATTR(PAL1, 0, FALSE, FALSE));
   const u16 fadeInFrameCount = secondsToFrames(LOGO_FADE_IN_TIME);
 
   PAL_fadeInPalette(PAL1, k_titleSprite.palette->data, fadeInFrameCount, TRUE);
 
-  const f16 distance =
-      fix16Sub(intToFix16(LOGO_END_POSITION_Y), titlePositionY);
-  const f16 increment = fix16Div(distance, intToFix16(fadeInFrameCount));
+  const f32 logoEndPositionY = intToFix32(LOGO_END_POSITION_Y);
+  const f32 distance = fix32Sub(logoEndPositionY, titlePositionY);
+  const f32 increment = fix32Div(distance, intToFix32(fadeInFrameCount));
 
   while (PAL_isDoingFade()) {
-    titlePositionY = fix16Add(titlePositionY, increment);
+    titlePositionY = fix32Add(titlePositionY, increment);
 
-    SPR_setPosition(title, titlePositionX, fix16ToInt(titlePositionY));
+    SPR_setPosition(title, titlePositionX, fix32ToInt(titlePositionY));
     SPR_update();
     SYS_doVBlankProcess();
   }
@@ -114,7 +114,7 @@ void processGameMenu() {
     SYS_doVBlankProcess();
   }
 
-  setGameState(STATE_STAGE);
+  setGameState(STATE_PLAY);
   SPR_releaseSprite(title);
   SPR_update();
   SYS_doVBlankProcess();

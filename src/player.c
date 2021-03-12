@@ -22,81 +22,87 @@
 
 #include <genesis.h>
 
+#include "camera.h"
 #include "player.h"
 #include "sprites.h"
+#include "stage.h"
 #include "utilities.h"
 
 // player constants
 #define PLAYER_SCREEN_BUFFER 2                               // pixels
-#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
-#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX16(1))  // seconds
-#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
-#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
+#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX32(0.05))        // seconds
+#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX32(1))  // seconds
+#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX32(0))
+#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX32(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
 #define PLAYER_HEALTH_DEFAULT 100
 
 // player global properties
-static V2f16 g_playerMinPosition;
-static V2f16 g_playerMaxPosition;
-static V2u16 g_playerStartPosition;
-static V2u16 g_playerSpriteOffset;
-static f16 g_playerVelocity;
+static V2u16 g_playerStartPosition;  // pixels
+static V2u16 g_playerSpriteOffset;   // pixels
+static V2f32 g_playerBuffer;         // pixels
+static f32 g_playerVelocity;         // pixels/second
 
 // player animation constants
-static f16 g_playerBankingRate;
+static f32 g_playerBankingRate;  // fps
 
-static void processPlayerMovement(Player* _player, u16 _inputState) {
-  V2f16 position = _player->position;
-  f16 bankDirection = _player->bankDirection;
-  const f16 previousPositionY = position.y;
+static void processPlayerMovement(Player* _player, const Stage* _stage) {
+  V2f32 position = _player->position;
+  const f32 previousPositionY = position.y;
+  const u16 inputState = JOY_readJoypad(JOY_1);
+  f32 bankDirection = _player->bankDirection;
 
-  if (_inputState & BUTTON_LEFT) {
-    position.x = fix16Sub(position.x, g_playerVelocity);
+  position.x = fix32Add(position.x, _stage->speed);
+
+  if (inputState & BUTTON_LEFT) {
+    position.x = fix32Sub(position.x, g_playerVelocity);
   }
 
-  if (_inputState & BUTTON_RIGHT) {
-    position.x = fix16Add(position.x, g_playerVelocity);
+  if (inputState & BUTTON_RIGHT) {
+    position.x = fix32Add(position.x, g_playerVelocity);
   }
 
-  if (_inputState & BUTTON_UP) {
-    position.y = fix16Sub(position.y, g_playerVelocity);
+  if (inputState & BUTTON_UP) {
+    position.y = fix32Sub(position.y, g_playerVelocity);
   }
 
-  if (_inputState & BUTTON_DOWN) {
-    position.y = fix16Add(position.y, g_playerVelocity);
+  if (inputState & BUTTON_DOWN) {
+    position.y = fix32Add(position.y, g_playerVelocity);
   }
 
-  position.x = clamp(position.x, g_playerMinPosition.x, g_playerMaxPosition.x);
-  position.y = clamp(position.y, g_playerMinPosition.y, g_playerMaxPosition.y);
+  const f32 minimumX = fix32Add(_stage->minimumX, g_playerBuffer.x);
+  const f32 maximumX = fix32Sub(_stage->maximumX, g_playerBuffer.x);
+  const f32 minimumY = g_playerBuffer.y;
+  const f32 maximumY = fix32Sub(intToFix32(_stage->height), g_playerBuffer.y);
 
-  const s8 deltaY = fix16ToRoundedInt(fix16Sub(previousPositionY, position.y));
+  position.x = clamp(position.x, minimumX, maximumX);
+  position.y = clamp(position.y, minimumY, maximumY);
+
+  const s8 deltaY = fix32ToRoundedInt(fix32Sub(previousPositionY, position.y));
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+      bankDirection = fix32Add(bankDirection, g_playerBankingRate);
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+      bankDirection = fix32Sub(bankDirection, g_playerBankingRate);
     }
   } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
-    bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+    bankDirection = fix32Sub(bankDirection, g_playerBankingRate);
   } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
-    bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+    bankDirection = fix32Add(bankDirection, g_playerBankingRate);
   }
 
-  _player->bankDirection = bankDirection;
   _player->position = position;
+  _player->bankDirection = bankDirection;
 }
 
-static void processPlayerAttack(Player* _player, u16 _inputState) {
-  f16 attackCooldown = _player->attackCooldown;
+static void processPlayerAttack(Player* _player) {
+  const u16 inputState = JOY_readJoypad(JOY_1);
+  f32 attackCooldown = _player->attackCooldown;
 
-  if (attackCooldown > FIX16(0)) {
-    clearText(0);
-
-    attackCooldown = fix16Sub(attackCooldown, getFrameDeltaTime());
-  } else if ((_inputState & BUTTON_A)) {
-    showText("FIRE", 0);
-
+  if (attackCooldown > intToFix32(0)) {
+    attackCooldown = fix32Sub(attackCooldown, getFrameDeltaTime());
+  } else if ((inputState & BUTTON_A)) {
     attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
 
@@ -104,25 +110,64 @@ static void processPlayerAttack(Player* _player, u16 _inputState) {
 }
 
 static void processPlayerDamage(Player* _player) {
-  f16 damageCooldown = _player->damageCooldown;
+  f32 damageCooldown = _player->damageCooldown;
 
-  if (damageCooldown > FIX16(0)) {
-    damageCooldown = fix16Sub(damageCooldown, getFrameDeltaTime());
+  if (damageCooldown > intToFix32(0)) {
+    damageCooldown = fix32Sub(damageCooldown, getFrameDeltaTime());
   }
 
   _player->damageCooldown = damageCooldown;
 }
 
-static void updatePlayerSprite(const Player* _player) {
-  const V2f16 position = _player->position;
-  const u16 positionX = fix16ToRoundedInt(position.x) - g_playerSpriteOffset.x;
-  const u16 positionY = fix16ToRoundedInt(position.y) - g_playerSpriteOffset.y;
-  const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
+void initPlayer() {
+  const f32 fps = intToFix32(getFrameRate());
+  const V2u16 spriteOffset = {k_shipSprite.w / 2, k_shipSprite.h / 2};
+  const V2f32 buffer = {
+    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
+    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
+  };
+
+  g_playerSpriteOffset = spriteOffset;
+  g_playerBuffer = buffer;
+  g_playerVelocity = fix32Div(intToFix32(120), fps);
+  g_playerBankingRate = fix32Div(intToFix32(20), fps);
+}
+
+void setUpPlayer(Player* _player, u16 _palette, const Stage* _stage) {
+  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
+  _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
+  _player->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
+  _player->health = PLAYER_HEALTH_DEFAULT;
+  _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
+                                      g_playerStartPosition.y,
+                                      TILE_ATTR(_palette, TRUE, FALSE, FALSE));
+  _player->position.x = g_playerBuffer.x;
+  _player->position.y = intToFix32(_stage->height / 2);
+}
+
+void updatePlayer(Player* _player, const Stage* _stage) {
+  if (isPlayerDead(_player)) {
+    return;
+  }
+
+  processPlayerMovement(_player, _stage);
+  processPlayerAttack(_player);
+  processPlayerDamage(_player);
+}
+
+void drawPlayer(const Player* _player, const Camera* _camera) {
+  const V2f32 position = _player->position;
+  const V2s32 cameraPosition = getCameraPositionRounded(_camera);
+  const u32 offsetX = g_playerSpriteOffset.x + cameraPosition.x;
+  const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
+  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
+  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const s8 bankDirectionRounded = fix32ToRoundedInt(_player->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
   Sprite* sprite = _player->sprite;
   SpriteVisibility visibility;
 
-  if (_player->damageCooldown > FIX16(0)) {
+  if (_player->damageCooldown > intToFix32(0)) {
     visibility = SPR_isVisible(sprite, FALSE) ? HIDDEN : VISIBLE;
   } else {
     visibility = VISIBLE;
@@ -144,61 +189,15 @@ static void updatePlayerSprite(const Player* _player) {
   }
 }
 
-void initPlayer() {
-  const u16 width = VDP_getScreenWidth();
-  const u16 height = VDP_getScreenHeight();
-  const f16 fps = intToFix16(getFrameRate());
-
-  g_playerSpriteOffset.x = k_shipSprite.w / 2;
-  g_playerSpriteOffset.y = k_shipSprite.h / 2;
-
-  const u16 bufferXInt = PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.x;
-  const f16 bufferX = intToFix16(bufferXInt);
-  const f16 bufferY = intToFix16(PLAYER_SCREEN_BUFFER + g_playerSpriteOffset.y);
-
-  g_playerMinPosition.x = bufferX;
-  g_playerMinPosition.y = bufferY;
-  g_playerMaxPosition.x = fix16Sub(intToFix16(width), bufferX);
-  g_playerMaxPosition.y = fix16Sub(intToFix16(height), bufferY);
-  g_playerStartPosition.x = bufferXInt;
-  g_playerStartPosition.y = height / 2;
-  g_playerVelocity = fix16Div(FIX16(120), fps);
-  g_playerBankingRate = fix16Div(FIX16(20), fps);
-}
-
-void setUpPlayer(Player* _player, u16 _palette) {
-  _player->position.x = intToFix16(g_playerStartPosition.x);
-  _player->position.y = intToFix16(g_playerStartPosition.y);
-  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
-  _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
-  _player->damageCooldown = FIX16(0);
-  _player->health = PLAYER_HEALTH_DEFAULT;
-  _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
-                                      g_playerStartPosition.y,
-                                      TILE_ATTR(_palette, 0, FALSE, FALSE));
-}
-
-void updatePlayer(Player* _player) {
-  if (!isPlayerDead(_player)) {
-    const u16 inputState = JOY_readJoypad(JOY_1);
-
-    processPlayerMovement(_player, inputState);
-    processPlayerAttack(_player, inputState);
-    processPlayerDamage(_player);
-  }
-
-  updatePlayerSprite(_player);
-}
-
 void tearDownPlayer(Player* _player) {
   SPR_releaseSprite(_player->sprite);
 }
 
 void doPlayerHit(Player* _player, u8 _damageAmount) {
-  f16 damageCooldown = _player->damageCooldown;
+  f32 damageCooldown = _player->damageCooldown;
   u8 health = _player->health;
 
-  if (health == 0 || damageCooldown > 0) {
+  if (health == 0 || damageCooldown > intToFix32(0)) {
     return;
   }
 

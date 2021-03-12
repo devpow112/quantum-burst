@@ -9,5 +9,7 @@ AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
 BreakBeforeBraces: Attach
 BreakBeforeTernaryOperators: false
+ContinuationIndentWidth: 2
 IncludeBlocks: Preserve
 IndentCaseLabels: true
+PointerAlignment: Left

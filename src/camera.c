@@ -23,60 +23,44 @@
 #include <genesis.h>
 
 #include "camera.h"
-#include "game.h"
 #include "player.h"
 #include "stage.h"
 #include "utilities.h"
 
-static void init(bool _hardReset) {
-  JOY_init();
-  VDP_init();
-  VDP_setScreenWidth320();
+static V2f32 g_cameraOffset;
 
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
-
-  SPR_init();
-
-  if (_hardReset) {
-    setGameState(STATE_LOGO);
-  } else if (!isGameState(STATE_LOGO)) {
-    setGameState(STATE_MENU);
-  }
-
-  initUtilities();
-  initStage();
-  initCamera();
-  initPlayer();
+void initCamera() {
+  g_cameraOffset.x = intToFix32(0);
+  g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
 }
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void setUpCamera(Camera* _camera, const Player* _player, const Stage* _stage) {
+  _camera->position.x = fix32Sub(_stage->minimumX, g_cameraOffset.x);
+  _camera->position.y = fix32Sub(_player->position.y, g_cameraOffset.y);
+  _camera->minimumY = intToFix32(0);
+  _camera->maximumY = intToFix32(_stage->height - VDP_getScreenHeight());
+}
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_LOAD:
-        processGameLoad();
-        break;
-      case STATE_PLAY:
-        processGamePlay();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-      default:
-        return 1;
-    }
-  }
+void updateCamera(Camera* _camera, const Player* _player, const Stage* _stage) {
+  const f32 positionX = fix32Sub(_stage->minimumX, g_cameraOffset.x);
+  const f32 positionY = fix32Sub(_player->position.y, g_cameraOffset.y);
+  const V2f32 position = {
+    clamp(positionX, _stage->minimumX, _stage->maximumX),   // x
+    clamp(positionY, _camera->minimumY, _camera->maximumY)  // y
+  };
 
-  return 0;
+  _camera->position = position;
+}
+
+void tearDownCamera(Camera* _camera) {
+  // nothing so far
+}
+
+V2s32 getCameraPositionRounded(const Camera* _camera) {
+  const V2s32 positionRounded = {
+    fix32ToRoundedInt(_camera->position.x),  // x
+    fix32ToRoundedInt(_camera->position.y)   // y
+  };
+
+  return positionRounded;
 }
