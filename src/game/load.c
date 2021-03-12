@@ -25,5 +25,5 @@
 #include "game.h"
 
 void processGameLoad() {
-  setGameState(STATE_STAGE);
+  setGameState(STATE_PLAY);
 }

@@ -24,22 +24,22 @@
 
 // Assumes that bank switching is disabled giving us a max ROM size of 2MB
 __attribute__((externally_visible)) const ROMHeader rom_header = {
-    "SEGA MEGA DRIVE ",                                  // Console Name
-    "(C)Devon{Year4Digits}.{Month3Letters}",             // Copyright
-    "Quantum Burst                                   ",  // Domestic Name
-    "Quantum Burst                                   ",  // Overseas Name
-    "GM 17211142-{Version2Digits}",                      // Serial Number
-    0x0000,                                              // Checksum
-    "J6              ",                                  // I/O Support
-    0x00000000,                                          // ROM Start Address
-    0x0001FFFF,                                          // ROM End Address
-    0x00FF0000,                                          // Start of Backup RAM
-    0x00FFFFFF,                                          // End of Backup RAM
-    "RA",                                                // "RA" for SRAM
-    0xF820,                                              // 0xF820 for SRAM
-    0x00200000,                                          // SRAM Start Address
-    0x002001FF,                                          // SRAM End Address
-    "            ",                                      // Modem Support
-    "Quantum Burst                           ",          // Memo
-    "JUE             "                                   // Country Support
+  "SEGA MEGA DRIVE ",                                  // Console Name
+  "(C)Devon{Year4Digits}.{Month3Letters}",             // Copyright
+  "Quantum Burst                                   ",  // Domestic Name
+  "Quantum Burst                                   ",  // Overseas Name
+  "GM 17211142-{Version2Digits}",                      // Serial Number
+  0x0000,                                              // Checksum
+  "J6              ",                                  // I/O Support
+  0x00000000,                                          // ROM Start Address
+  0x0001FFFF,                                          // ROM End Address
+  0x00FF0000,                                          // Start of Backup RAM
+  0x00FFFFFF,                                          // End of Backup RAM
+  "RA",                                                // "RA" for SRAM
+  0xF820,                                              // 0xF820 for SRAM
+  0x00200000,                                          // SRAM Start Address
+  0x002001FF,                                          // SRAM End Address
+  "            ",                                      // Modem Support
+  "Quantum Burst                           ",          // Memo
+  "JUE             "                                   // Country Support
 };

@@ -20,21 +20,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_UTILITIES_H__
-#define __QUANTUM_BURST_UTILITIES_H__
+#ifndef __QUANTUM_BURST_STAGE_H__
+#define __QUANTUM_BURST_STAGE_H__
 
 #include <genesis.h>
 
-void initUtilities();
+// forward declarations
 
-void showText(char _text[], u8 _column);
+struct _Camera;
+typedef struct _Camera Camera;
 
-void clearText(u8 _column);
+// entity
 
-u8 getFrameRate();
+struct _Stage {
+  Map* map;
+  u32 width;
+  u32 height;
+  f32 minimumX;
+  f32 maximumX;
+  f32 speed;
+};
 
-f32 getFrameDeltaTime();
+typedef struct _Stage Stage;
 
-u16 secondsToFrames(f32 _seconds);
+// life-cycle
 
-#endif  // __QUANTUM_BURST_UTILITIES_H__
+void initStage();
+
+void setUpStage(Stage* _stage, u16 _palette);
+
+void updateStage(Stage* _stage);
+
+void drawStage(const Stage* _stage, const Camera* _camera);
+
+void tearDownStage(Stage* _stage);
+
+#endif  // __QUANTUM_BURST_STAGE_H__

@@ -25,22 +25,36 @@
 
 #include <genesis.h>
 
-typedef struct {
-  V2f16 position;
+// forward declarations
+
+struct _Camera;
+typedef struct _Camera Camera;
+
+struct _Stage;
+typedef struct _Stage Stage;
+
+// entity
+
+struct _Player {
+  V2f32 position;
   Sprite* sprite;
-  f16 bankDirection;
-  f16 attackCooldown;
-  f16 damageCooldown;
+  f32 bankDirection;
+  f32 attackCooldown;
+  f32 damageCooldown;
   u8 health;
-} Player;
+};
+
+typedef struct _Player Player;
 
 // life-cycle
 
 void initPlayer();
 
-void setUpPlayer(Player* _player, u16 _palette);
+void setUpPlayer(Player* _player, u16 _palette, const Stage* _stage);
 
-void updatePlayer(Player* _player);
+void updatePlayer(Player* _player, const Stage* _stage);
+
+void drawPlayer(const Player* _player, const Camera* _camera);
 
 void tearDownPlayer(Player* _player);
 

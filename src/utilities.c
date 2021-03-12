@@ -28,13 +28,13 @@
 #define NTSC_FRAME_RATE 60
 
 static u8 g_utiltiesFrameRate;
-static f16 g_utiltiesFrameDeltaTime;
+static f32 g_utiltiesFrameDeltaTime;
 
 void initUtilities() {
   const u8 fps = IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;
 
   g_utiltiesFrameRate = fps;
-  g_utiltiesFrameDeltaTime = fix16Div(FIX16(1), intToFix16(fps));
+  g_utiltiesFrameDeltaTime = fix32Div(intToFix32(1), intToFix32(fps));
 }
 
 void showText(char _text[], u8 _column) {
@@ -49,10 +49,10 @@ u8 getFrameRate() {
   return g_utiltiesFrameRate;
 }
 
-f16 getFrameDeltaTime() {
+f32 getFrameDeltaTime() {
   return g_utiltiesFrameDeltaTime;
 }
 
-u16 secondsToFrames(f16 _seconds) {
-  return fix16ToRoundedInt(fix16Mul(_seconds, intToFix16(getFrameRate())));
+u16 secondsToFrames(f32 _seconds) {
+  return fix32ToRoundedInt(fix32Mul(_seconds, intToFix32(getFrameRate())));
 }
