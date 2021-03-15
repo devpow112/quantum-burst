@@ -38,7 +38,7 @@ typedef struct _Stage Stage;
 struct _Player {
   V2f32 position;
   Sprite* sprite;
-  f32 bankDirection;
+  f16 bankDirection;
   f32 attackCooldown;
   f32 damageCooldown;
   u8 health;
