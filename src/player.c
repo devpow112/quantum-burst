@@ -32,8 +32,8 @@
 #define PLAYER_SCREEN_BUFFER 2                               // pixels
 #define PLAYER_ATTACK_COOLDOWN_DURATION (FIX32(0.05))        // seconds
 #define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX32(1))  // seconds
-#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX32(0))
-#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX32(2))
+#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
+#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
 #define PLAYER_HEALTH_DEFAULT 100
 
@@ -44,13 +44,13 @@ static V2f32 g_playerBuffer;         // pixels
 static f32 g_playerVelocity;         // pixels/second
 
 // player animation constants
-static f32 g_playerBankingRate;  // fps
+static f16 g_playerBankingRate;  // fps
 
 static void processPlayerMovement(Player* _player, const Stage* _stage) {
   V2f32 position = _player->position;
   const f32 previousPositionY = position.y;
   const u16 inputState = JOY_readJoypad(JOY_1);
-  f32 bankDirection = _player->bankDirection;
+  f16 bankDirection = _player->bankDirection;
 
   position.x = fix32Add(position.x, _stage->speed);
 
@@ -82,14 +82,14 @@ static void processPlayerMovement(Player* _player, const Stage* _stage) {
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix32Add(bankDirection, g_playerBankingRate);
+      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix32Sub(bankDirection, g_playerBankingRate);
+      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
   } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
-    bankDirection = fix32Sub(bankDirection, g_playerBankingRate);
+    bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
   } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
-    bankDirection = fix32Add(bankDirection, g_playerBankingRate);
+    bankDirection = fix16Add(bankDirection, g_playerBankingRate);
   }
 
   _player->position = position;
@@ -162,8 +162,8 @@ void drawPlayer(const Player* _player, const Camera* _camera) {
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
   const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
   const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
-  const s8 bankDirectionRounded = fix32ToRoundedInt(_player->bankDirection);
-  const u8 bankDirectionIndex = abs(bankDirectionRounded);
+  const s16 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
+  const u16 bankDirectionIndex = abs(bankDirectionRounded);
   Sprite* sprite = _player->sprite;
   SpriteVisibility visibility;
 
