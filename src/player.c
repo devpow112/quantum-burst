@@ -30,7 +30,7 @@
 
 // player constants
 #define PLAYER_SCREEN_BUFFER 2                               // pixels
-#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX32(0.05))        // seconds
+#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
 #define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX32(1))  // seconds
 #define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
 #define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
@@ -98,10 +98,12 @@ static void processPlayerMovement(Player* _player, const Stage* _stage) {
 
 static void processPlayerAttack(Player* _player) {
   const u16 inputState = JOY_readJoypad(JOY_1);
-  f32 attackCooldown = _player->attackCooldown;
+  f16 attackCooldown = _player->attackCooldown;
 
-  if (attackCooldown > intToFix32(0)) {
-    attackCooldown = fix32Sub(attackCooldown, getFrameDeltaTime());
+  if (attackCooldown > intToFix16(0)) {
+    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+
+    attackCooldown = fix16Sub(attackCooldown, deltaTime);
   } else if ((inputState & BUTTON_A)) {
     attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
