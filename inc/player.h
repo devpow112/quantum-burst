@@ -38,15 +38,11 @@ typedef struct {
 
 void initPlayer();
 
-Player* createPlayer(u16 _palette);
-
 void setUpPlayer(Player* _player, u16 _palette);
 
 void updatePlayer(Player* _player);
 
 void tearDownPlayer(Player* _player);
-
-void destroyPlayer(Player* _player);
 
 // actions
 
