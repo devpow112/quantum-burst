@@ -124,7 +124,6 @@ static void processPlayerDamage(Player* _player) {
 }
 
 void initPlayer() {
-  const f32 fps = intToFix32(getFrameRate());
   const V2u16 spriteOffset = {k_shipSprite.w / 2, k_shipSprite.h / 2};
   const V2f32 buffer = {
     intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
@@ -133,13 +132,13 @@ void initPlayer() {
 
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
-  g_playerVelocity = fix32Div(intToFix32(120), fps);
-  g_playerBankingRate = fix32Div(intToFix32(20), fps);
+  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(getFrameRate()));
+  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(getFrameRate()));
 }
 
 void setUpPlayer(Player* _player, u16 _palette, const Stage* _stage) {
-  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
+  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   _player->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
   _player->health = PLAYER_HEALTH_DEFAULT;
   _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
@@ -166,8 +165,8 @@ void drawPlayer(const Player* _player, const Camera* _camera) {
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
   const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
   const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
-  const s16 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
-  const u16 bankDirectionIndex = abs(bankDirectionRounded);
+  const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
+  const u8 bankDirectionIndex = abs(bankDirectionRounded);
   Sprite* sprite = _player->sprite;
   SpriteVisibility visibility;
 
