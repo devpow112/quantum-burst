@@ -39,7 +39,7 @@ struct _Player {
   V2f32 position;
   Sprite* sprite;
   f16 bankDirection;
-  f32 attackCooldown;
+  f16 attackCooldown;
   f32 damageCooldown;
   u8 health;
 };
