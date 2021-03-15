@@ -166,14 +166,6 @@ void initPlayer() {
   g_playerBankingRate = fix16Div(FIX16(20), fps);
 }
 
-Player* createPlayer(u16 _palette) {
-  Player* player = malloc(sizeof(Player));
-
-  setUpPlayer(player, _palette);
-
-  return player;
-}
-
 void setUpPlayer(Player* _player, u16 _palette) {
   _player->position.x = intToFix16(g_playerStartPosition.x);
   _player->position.y = intToFix16(g_playerStartPosition.y);
@@ -200,11 +192,6 @@ void updatePlayer(Player* _player) {
 
 void tearDownPlayer(Player* _player) {
   SPR_releaseSprite(_player->sprite);
-}
-
-void destroyPlayer(Player* _player) {
-  tearDownPlayer(_player);
-  free(_player);
 }
 
 void doPlayerHit(Player* _player, u8 _damageAmount) {
