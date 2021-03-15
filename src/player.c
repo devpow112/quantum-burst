@@ -31,7 +31,7 @@
 // player constants
 #define PLAYER_SCREEN_BUFFER 2                               // pixels
 #define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
-#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX32(1))  // seconds
+#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX16(1))  // seconds
 #define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
 #define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
@@ -112,10 +112,12 @@ static void processPlayerAttack(Player* _player) {
 }
 
 static void processPlayerDamage(Player* _player) {
-  f32 damageCooldown = _player->damageCooldown;
+  f16 damageCooldown = _player->damageCooldown;
 
-  if (damageCooldown > intToFix32(0)) {
-    damageCooldown = fix32Sub(damageCooldown, getFrameDeltaTime());
+  if (damageCooldown > intToFix16(0)) {
+    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+
+    damageCooldown = fix16Sub(damageCooldown, deltaTime);
   }
 
   _player->damageCooldown = damageCooldown;
@@ -169,7 +171,7 @@ void drawPlayer(const Player* _player, const Camera* _camera) {
   Sprite* sprite = _player->sprite;
   SpriteVisibility visibility;
 
-  if (_player->damageCooldown > intToFix32(0)) {
+  if (_player->damageCooldown > intToFix16(0)) {
     visibility = SPR_isVisible(sprite, FALSE) ? HIDDEN : VISIBLE;
   } else {
     visibility = VISIBLE;
@@ -196,10 +198,10 @@ void tearDownPlayer(Player* _player) {
 }
 
 void doPlayerHit(Player* _player, u8 _damageAmount) {
-  f32 damageCooldown = _player->damageCooldown;
+  f16 damageCooldown = _player->damageCooldown;
   u8 health = _player->health;
 
-  if (health == 0 || damageCooldown > intToFix32(0)) {
+  if (health == 0 || damageCooldown > intToFix16(0)) {
     return;
   }
 
