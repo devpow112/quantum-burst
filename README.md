@@ -29,8 +29,8 @@ build.bat [build-type] [version]
 
 - `build-type` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
 will default to `Release`
-- `version` - Can be any integer value of `100` or less. If omitted will default
-to `100`
+- `revision` - Can be any integer value of `99` or less. If omitted will default
+to `99`
 
 #### powershell
 
@@ -40,8 +40,8 @@ to `100`
 
 - `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
 will default to `Release`
-- `-Version` - Can be any integer value of `100` or less. If omitted will
-default to `100`
+- `-Revision` - Can be any integer value of `99` or less. If omitted will
+default to `99`
 
 <!-- links -->
 [CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main

@@ -28,7 +28,7 @@ __attribute__((externally_visible)) const ROMHeader rom_header = {
   "(C)Devon{Year4Digits}.{Month3Letters}",             // Copyright
   "Quantum Burst                                   ",  // Domestic Name
   "Quantum Burst                                   ",  // Overseas Name
-  "GM 17211142-{Version2Digits}",                      // Serial Number
+  "GM 17211142-{Revision2Digits}",                     // Serial Number/Revision
   0x0000,                                              // Checksum
   "J6              ",                                  // I/O Support
   0x00000000,                                          // ROM Start Address
