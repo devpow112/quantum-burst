@@ -24,7 +24,7 @@ all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 #### cmd
 
 ```cmd
-build.bat [build-type] [version]
+build.bat [build-type] [revision]
 ```
 
 - `build-type` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
@@ -35,7 +35,7 @@ to `99`
 #### powershell
 
 ```pwsh
-.\build.ps1 [-BuildType] [-Version]
+.\build.ps1 [-BuildType] [-Revision]
 ```
 
 - `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
