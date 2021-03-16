@@ -76,8 +76,6 @@ static void tearDownGamePlay() {
   tearDownCamera(&g_camera);
   tearDownStage(&g_stage);
   JOY_setEventHandler(NULL);
-  SPR_update();
-  SYS_doVBlankProcess();
 }
 
 void processGamePlay() {

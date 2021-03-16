@@ -116,6 +116,4 @@ void processGameMenu() {
 
   setGameState(STATE_PLAY);
   SPR_releaseSprite(title);
-  SPR_update();
-  SYS_doVBlankProcess();
 }
