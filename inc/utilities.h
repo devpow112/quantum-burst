@@ -35,6 +35,6 @@ u8 getFrameRate();
 
 f32 getFrameDeltaTime();
 
-u16 secondsToFrames(f32 _seconds);
+u16 secondsToFrames(f16 _seconds);
 
 #endif  // __QUANTUM_BURST_UTILITIES_H__

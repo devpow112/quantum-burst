@@ -27,9 +27,9 @@
 #include "utilities.h"
 
 // menu constants
-#define LOGO_FADE_IN_TIME (FIX32(0.3))   // seconds
-#define LOGO_FADE_OUT_TIME (FIX32(0.5))  // seconds
-#define FLASH_TIME (FIX32(0.1))          // seconds
+#define LOGO_FADE_IN_TIME (FIX16(0.3))   // seconds
+#define LOGO_FADE_OUT_TIME (FIX16(0.5))  // seconds
+#define FLASH_TIME (FIX16(0.1))          // seconds
 #define LOGO_END_POSITION_Y 64           // pixels
 
 // menu global properties
@@ -42,7 +42,7 @@ static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
 }
 
 static void doFlash() {
-  const u8 flashFrameCount = secondsToFrames(FLASH_TIME);
+  const u16 flashFrameCount = secondsToFrames(FLASH_TIME);
   u16 flashPallet[32] = {0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
                          0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
                          0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF, 0x0FFF,
