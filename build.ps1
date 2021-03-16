@@ -1,21 +1,15 @@
 param(
-  [Parameter(Mandatory=$false)][Int] $revision = 99,
-  [Parameter(Mandatory=$false)][String] $buildType = 'Release'
+  [ValidateRange(0, 99)]
+  [Parameter(Mandatory = $false)]
+  [Int] $revision = 99,
+  [ValidateSet('Debug', 'Release', 'Clean', 'ASM')]
+  [Parameter(Mandatory = $false)]
+  [String] $buildType = 'Release'
 )
 
 $callingLocation = Get-Location
 
 try {
-  $buildType = $buildType.ToLower()
-
-  if (@('debug', 'release', 'clean', 'asm') -NotContains $buildType) {
-    throw "Invalid 'BuildType', allowed values are: Debug, Release, Clean, ASM"
-  }
-
-  if ($revision -Gt 99) {
-    throw "Invalid 'Revision', must be a value of 99 or less"
-  }
-
   Set-Location $PSScriptRoot
 
   $year4Digits = (Get-Date -Format 'yyyy')
@@ -34,6 +28,8 @@ try {
   if (Test-Path -Path 'out\rom_cc.bin') {
     Remove-Item 'out\rom_cc.bin'
   }
+
+  $buildType = $buildType.ToLower()
 
   Invoke-Expression "ext\sgdk\bin\make -f ext\sgdk\makefile.gen $buildType"
 
