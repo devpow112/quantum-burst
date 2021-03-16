@@ -12,23 +12,23 @@ $callingLocation = Get-Location
 try {
   Set-Location $PSScriptRoot
 
+  # generate ROM header
   $year4Digits = (Get-Date -Format 'yyyy')
   $month3Letters = (Get-Date -Format 'MMM').ToUpper()
   $revision2Digits = $revision.ToString().PadLeft(2, '0')
-  $headerContents = Get-Content -Path src\boot\rom_head.c.in
-  $headerContents = $headerContents.Replace('{Year4Digits}', $year4Digits)
-  $headerContents = $headerContents.Replace('{Month3Letters}', $month3Letters)
-  $headerContents = $headerContents.Replace(
-    '{Revision2Digits}',
-    $revision2Digits
-  )
+  $contents = Get-Content -Path src\boot\rom_head.c.in
+  $contents = $contents.Replace('{Year4Digits}', $year4Digits)
+  $contents = $contents.Replace('{Month3Letters}', $month3Letters)
+  $contents = $contents.Replace('{Revision2Digits}', $revision2Digits)
 
-  Set-Content -Path src\boot\rom_head.c -Value $headerContents
+  Set-Content -Path src\boot\rom_head.c -Value $contents
 
-  if (Test-Path -Path 'out\rom_cc.bin') {
-    Remove-Item 'out\rom_cc.bin'
+  # remove checksum corrected ROM
+  if (Test-Path -Path 'out\rom_final.bin') {
+    Remove-Item 'out\rom_final.bin'
   }
 
+  # run build
   $buildType = $buildType.ToLower()
 
   Invoke-Expression "ext\sgdk\bin\make -f ext\sgdk\makefile.gen $buildType"
@@ -37,9 +37,10 @@ try {
     throw "Build failed!"
   }
 
+  # correct ROM checksum
   if (@('debug', 'release') -Contains $buildType) {
     Write-Host 'Correcting checksum'
-    Invoke-Expression 'python ext\sgcc\sgcc.py out\rom.bin'
+    Invoke-Expression 'python ext\sgcc\sgcc.py -s final out\rom.bin'
   }
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
