@@ -33,6 +33,7 @@ typedef struct _Camera Camera;
 // entity
 
 struct _Stage {
+  V2f32 startPosition;
   Map* map;
   u32 width;
   u32 height;

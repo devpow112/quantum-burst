@@ -30,14 +30,11 @@
 struct _Actor;
 typedef struct _Actor Actor;
 
-struct _Stage;
-typedef struct _Stage Stage;
-
 // life-cycle
 
 void initPlayer();
 
-Actor* createPlayer(u16 _palette, const Stage* _stage);
+Actor* createPlayer(u16 _palette, V2f32 _position);
 
 // actions
 

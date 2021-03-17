@@ -24,6 +24,8 @@
 
 #include "actor.h"
 
+// global properties
+
 static Actor* g_firstActor = NULL;
 static Actor* g_lastActor = NULL;
 
@@ -55,10 +57,18 @@ Actor* createActor(V2f32 _position, void* _data,
 }
 
 void updateActor(Actor* _actor, const Stage* _stage) {
+  if (_actor == NULL || _actor->updateCallback == NULL || _stage == NULL) {
+    return;
+  }
+
   _actor->updateCallback(_actor, _stage);
 }
 
 void updateActors(const Stage* _stage) {
+  if (_stage == NULL) {
+    return;
+  }
+
   Actor* actor = g_firstActor;
 
   while (actor != NULL) {
@@ -69,10 +79,18 @@ void updateActors(const Stage* _stage) {
 }
 
 void drawActor(const Actor* _actor, const Camera* _camera) {
+  if (_actor == NULL || _actor->drawCallback == NULL || _camera == NULL) {
+    return;
+  }
+
   _actor->drawCallback(_actor, _camera);
 }
 
 void drawActors(const Camera* _camera) {
+  if (_camera == NULL) {
+    return;
+  }
+
   Actor* actor = g_firstActor;
 
   while (actor != NULL) {
@@ -83,9 +101,11 @@ void drawActors(const Camera* _camera) {
 }
 
 void destroyActor(Actor* _actor) {
-  if (_actor->destroyCallback != NULL) {
-    _actor->destroyCallback(_actor);
+  if (_actor == NULL || _actor->destroyCallback == NULL) {
+    return;
   }
+
+  _actor->destroyCallback(_actor);
 
   if (_actor->previous != NULL) {
     _actor->previous->next = _actor->next;

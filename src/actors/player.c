@@ -29,7 +29,8 @@
 #include "stage.h"
 #include "utilities.h"
 
-// player constants
+// constants
+
 #define PLAYER_SCREEN_BUFFER 2                               // pixels
 #define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
 #define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX16(1))  // seconds
@@ -37,18 +38,16 @@
 #define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
 #define PLAYER_HEALTH_DEFAULT 100
+#define PLAYER_SPRITE_FLAGS                                \
+  (SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | \
+   SPR_FLAG_AUTO_TILE_UPLOAD)
 
-// player global properties
+// global properties
 
-static V2s16 g_playerSpriteOffset;  // pixels
 static V2f32 g_playerBuffer;        // pixels
+static V2s16 g_playerSpriteOffset;  // pixels
 static f32 g_playerVelocity;        // pixels/second
-
-// player animation constants
-
-static f16 g_playerBankingRate;  // fps
-
-// player data
+static f16 g_playerBankingRate;     // fps
 
 typedef struct {
   Sprite* sprite;
@@ -150,13 +149,13 @@ static void update(Actor* _actor, const Stage* _stage) {
 }
 
 static void draw(const Actor* _actor, const Camera* _camera) {
-  const PlayerData* data = (const PlayerData*)getActorData(_actor);
   const V2f32 position = getActorPosition(_actor);
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_playerSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
   const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
   const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const PlayerData* data = (const PlayerData*)getActorData(_actor);
   const s8 bankDirectionRounded = fix16ToRoundedInt(data->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
   Sprite* sprite = data->sprite;
@@ -207,26 +206,23 @@ void initPlayer() {
   g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(getFrameRate()));
 }
 
-Actor* createPlayer(u16 _palette, const Stage* _stage) {
-  const V2f32 position = {
-    g_playerBuffer.x,               // x
-    intToFix32(_stage->height / 2)  // y
-  };
+Actor* createPlayer(u16 _palette, const V2f32 _position) {
   const V2u16 spritePosition = {
-    fix32ToRoundedInt(position.x) + g_playerSpriteOffset.x,  // x
-    fix32ToRoundedInt(position.y) + g_playerSpriteOffset.y   // y
+    fix32ToRoundedInt(_position.x) + g_playerSpriteOffset.x,  // x
+    fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y   // y
   };
   const u16 spriteAttributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
   PlayerData* data = malloc(sizeof(PlayerData));
 
-  data->sprite = SPR_addSpriteSafe(&k_shipSprite, spritePosition.x,
-                                   spritePosition.y, spriteAttributes);
+  data->sprite =
+    SPR_addSpriteExSafe(&k_shipSprite, spritePosition.x, spritePosition.y,
+                        spriteAttributes, 0, PLAYER_SPRITE_FLAGS);
   data->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
   data->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   data->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
   data->health = PLAYER_HEALTH_DEFAULT;
 
-  return createActor(position, data, &update, &draw, &destroy);
+  return createActor(_position, data, &update, &draw, &destroy);
 }
 
 void doPlayerHit(Actor* _actor, u8 _damageAmount) {

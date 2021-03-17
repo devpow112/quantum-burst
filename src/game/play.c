@@ -54,13 +54,12 @@ static void setUpGamePlay() {
   JOY_setEventHandler(&joyHandlerGamePlay);
   PAL_setPalette(PAL0, k_stage1Palette.data);
   PAL_setPalette(PAL2, k_primarySpritePalette.data);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x666666));
 
   g_paused = FALSE;
 
   setUpStage(&g_stage, PAL0);
 
-  g_player = createPlayer(PAL1, &g_stage);
+  g_player = createPlayer(PAL1, g_stage.startPosition);
 
   setUpCamera(&g_camera, g_player, &g_stage);
 }

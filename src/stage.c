@@ -44,6 +44,13 @@ void setUpStage(Stage* _stage, u16 _palette) {
   _stage->minimumX = intToFix32(0);
   _stage->maximumX = fix32Add(_stage->minimumX, screenWidth);
   _stage->speed = fix32Div(intToFix32(120), fps);
+
+  const V2f32 position = {
+    0,                              // x
+    intToFix32(_stage->height / 2)  // y
+  };
+
+  _stage->startPosition = position;
 }
 
 void updateStage(Stage* _stage) {
