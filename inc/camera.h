@@ -27,8 +27,8 @@
 
 // forward declarations
 
-struct _Player;
-typedef struct _Player Player;
+struct _Actor;
+typedef struct _Actor Actor;
 
 struct _Stage;
 typedef struct _Stage Stage;
@@ -47,9 +47,9 @@ typedef struct _Camera Camera;
 
 void initCamera();
 
-void setUpCamera(Camera* _camera, const Player* _player, const Stage* _stage);
+void setUpCamera(Camera* _camera, const Actor* _actor, const Stage* _stage);
 
-void updateCamera(Camera* _camera, const Player* _player, const Stage* _stage);
+void updateCamera(Camera* _camera, const Actor* _actor, const Stage* _stage);
 
 void tearDownCamera(Camera* _camera);
 

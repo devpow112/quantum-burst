@@ -22,17 +22,18 @@
 
 #include <genesis.h>
 
+#include "actor.h"
+#include "actors/player.h"
 #include "camera.h"
 #include "game.h"
 #include "maps.h"
-#include "player.h"
 #include "sprites.h"
 #include "stage.h"
 #include "utilities.h"
 
-static Camera g_camera;
-static Player g_player;
 static Stage g_stage;
+static Camera g_camera;
+static Actor* g_player;
 static bool g_paused;
 
 static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
@@ -45,7 +46,7 @@ static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
   }
 
   if (_state & _changed & BUTTON_A) {
-    doPlayerHit(&g_player, 10);
+    doPlayerHit(g_player, 10);
   }
 }
 
@@ -58,8 +59,10 @@ static void setUpGamePlay() {
   g_paused = FALSE;
 
   setUpStage(&g_stage, PAL0);
-  setUpPlayer(&g_player, PAL1, &g_stage);
-  setUpCamera(&g_camera, &g_player, &g_stage);
+
+  g_player = createPlayer(PAL1, &g_stage);
+
+  setUpCamera(&g_camera, g_player, &g_stage);
 }
 
 static void updateGamePlay() {
@@ -72,7 +75,7 @@ static void updateGamePlay() {
 }
 
 static void tearDownGamePlay() {
-  tearDownPlayer(&g_player);
+  destroyActors();
   tearDownCamera(&g_camera);
   tearDownStage(&g_stage);
   JOY_setEventHandler(NULL);
@@ -84,16 +87,16 @@ void processGamePlay() {
   while (isGameState(STATE_PLAY)) {
     if (!g_paused) {
       updateStage(&g_stage);
-      updatePlayer(&g_player, &g_stage);
-      updateCamera(&g_camera, &g_player, &g_stage);
+      updateActors(&g_stage);
+      updateCamera(&g_camera, g_player, &g_stage);
 
-      if (isPlayerDead(&g_player)) {
+      if (isPlayerDead(g_player)) {
         setGameState(STATE_MENU);
       }
     }
 
-    drawPlayer(&g_player, &g_camera);
     drawStage(&g_stage, &g_camera);
+    drawActors(&g_camera);
     updateGamePlay();
   }
 

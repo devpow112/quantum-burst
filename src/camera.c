@@ -22,8 +22,8 @@
 
 #include <genesis.h>
 
+#include "actor.h"
 #include "camera.h"
-#include "player.h"
 #include "stage.h"
 #include "utilities.h"
 
@@ -34,16 +34,16 @@ void initCamera() {
   g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
 }
 
-void setUpCamera(Camera* _camera, const Player* _player, const Stage* _stage) {
+void setUpCamera(Camera* _camera, const Actor* _actor, const Stage* _stage) {
   _camera->position.x = fix32Sub(_stage->minimumX, g_cameraOffset.x);
-  _camera->position.y = fix32Sub(_player->position.y, g_cameraOffset.y);
+  _camera->position.y = fix32Sub(getActorPositionY(_actor), g_cameraOffset.y);
   _camera->minimumY = intToFix32(0);
   _camera->maximumY = intToFix32(_stage->height - VDP_getScreenHeight());
 }
 
-void updateCamera(Camera* _camera, const Player* _player, const Stage* _stage) {
+void updateCamera(Camera* _camera, const Actor* _actor, const Stage* _stage) {
   const f32 positionX = fix32Sub(_stage->minimumX, g_cameraOffset.x);
-  const f32 positionY = fix32Sub(_player->position.y, g_cameraOffset.y);
+  const f32 positionY = fix32Sub(getActorPositionY(_actor), g_cameraOffset.y);
   const V2f32 position = {
     clamp(positionX, _stage->minimumX, _stage->maximumX),   // x
     clamp(positionY, _camera->minimumY, _camera->maximumY)  // y

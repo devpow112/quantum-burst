@@ -22,8 +22,9 @@
 
 #include <genesis.h>
 
+#include "actor.h"
+#include "actors/player.h"
 #include "camera.h"
-#include "player.h"
 #include "sprites.h"
 #include "stage.h"
 #include "utilities.h"
@@ -38,19 +39,31 @@
 #define PLAYER_HEALTH_DEFAULT 100
 
 // player global properties
-static V2u16 g_playerStartPosition;  // pixels
-static V2u16 g_playerSpriteOffset;   // pixels
-static V2f32 g_playerBuffer;         // pixels
-static f32 g_playerVelocity;         // pixels/second
+
+static V2s16 g_playerSpriteOffset;  // pixels
+static V2f32 g_playerBuffer;        // pixels
+static f32 g_playerVelocity;        // pixels/second
 
 // player animation constants
+
 static f16 g_playerBankingRate;  // fps
 
-static void processPlayerMovement(Player* _player, const Stage* _stage) {
-  V2f32 position = _player->position;
+// player data
+
+typedef struct {
+  Sprite* sprite;
+  f16 bankDirection;
+  f16 attackCooldown;
+  f16 damageCooldown;
+  u8 health;
+} PlayerData;
+
+static void processMovement(Actor* _actor, PlayerData* _data,
+                            const Stage* _stage) {
+  V2f32 position = getActorPosition(_actor);
   const f32 previousPositionY = position.y;
   const u16 inputState = JOY_readJoypad(JOY_1);
-  f16 bankDirection = _player->bankDirection;
+  f16 bankDirection = _data->bankDirection;
 
   position.x = fix32Add(position.x, _stage->speed);
 
@@ -92,13 +105,14 @@ static void processPlayerMovement(Player* _player, const Stage* _stage) {
     bankDirection = fix16Add(bankDirection, g_playerBankingRate);
   }
 
-  _player->position = position;
-  _player->bankDirection = bankDirection;
+  _data->bankDirection = bankDirection;
+
+  setActorPosition(_actor, position);
 }
 
-static void processPlayerAttack(Player* _player) {
+static void processAttack(PlayerData* _data) {
   const u16 inputState = JOY_readJoypad(JOY_1);
-  f16 attackCooldown = _player->attackCooldown;
+  f16 attackCooldown = _data->attackCooldown;
 
   if (attackCooldown > intToFix16(0)) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
@@ -108,11 +122,11 @@ static void processPlayerAttack(Player* _player) {
     attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
 
-  _player->attackCooldown = attackCooldown;
+  _data->attackCooldown = attackCooldown;
 }
 
-static void processPlayerDamage(Player* _player) {
-  f16 damageCooldown = _player->damageCooldown;
+static void processDamage(PlayerData* _data) {
+  f16 damageCooldown = _data->damageCooldown;
 
   if (damageCooldown > intToFix16(0)) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
@@ -120,57 +134,35 @@ static void processPlayerDamage(Player* _player) {
     damageCooldown = fix16Sub(damageCooldown, deltaTime);
   }
 
-  _player->damageCooldown = damageCooldown;
+  _data->damageCooldown = damageCooldown;
 }
 
-void initPlayer() {
-  const V2u16 spriteOffset = {k_shipSprite.w / 2, k_shipSprite.h / 2};
-  const V2f32 buffer = {
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
-  };
+static void update(Actor* _actor, const Stage* _stage) {
+  PlayerData* data = (PlayerData*)getActorData(_actor);
 
-  g_playerSpriteOffset = spriteOffset;
-  g_playerBuffer = buffer;
-  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(getFrameRate()));
-  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(getFrameRate()));
-}
-
-void setUpPlayer(Player* _player, u16 _palette, const Stage* _stage) {
-  _player->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
-  _player->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
-  _player->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
-  _player->health = PLAYER_HEALTH_DEFAULT;
-  _player->sprite = SPR_addSpriteSafe(&k_shipSprite, g_playerStartPosition.x,
-                                      g_playerStartPosition.y,
-                                      TILE_ATTR(_palette, TRUE, FALSE, FALSE));
-  _player->position.x = g_playerBuffer.x;
-  _player->position.y = intToFix32(_stage->height / 2);
-}
-
-void updatePlayer(Player* _player, const Stage* _stage) {
-  if (isPlayerDead(_player)) {
+  if (isPlayerDead(_actor)) {
     return;
   }
 
-  processPlayerMovement(_player, _stage);
-  processPlayerAttack(_player);
-  processPlayerDamage(_player);
+  processMovement(_actor, data, _stage);
+  processAttack(data);
+  processDamage(data);
 }
 
-void drawPlayer(const Player* _player, const Camera* _camera) {
-  const V2f32 position = _player->position;
+static void draw(const Actor* _actor, const Camera* _camera) {
+  const PlayerData* data = (const PlayerData*)getActorData(_actor);
+  const V2f32 position = getActorPosition(_actor);
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_playerSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
   const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
   const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
-  const s8 bankDirectionRounded = fix16ToRoundedInt(_player->bankDirection);
+  const s8 bankDirectionRounded = fix16ToRoundedInt(data->bankDirection);
   const u8 bankDirectionIndex = abs(bankDirectionRounded);
-  Sprite* sprite = _player->sprite;
+  Sprite* sprite = data->sprite;
   SpriteVisibility visibility;
 
-  if (_player->damageCooldown > intToFix16(0)) {
+  if (data->damageCooldown > intToFix16(0)) {
     visibility = SPR_isVisible(sprite, FALSE) ? HIDDEN : VISIBLE;
   } else {
     visibility = VISIBLE;
@@ -192,13 +184,55 @@ void drawPlayer(const Player* _player, const Camera* _camera) {
   }
 }
 
-void tearDownPlayer(Player* _player) {
-  SPR_releaseSprite(_player->sprite);
+static void destroy(Actor* _actor) {
+  PlayerData* data = (PlayerData*)getActorData(_actor);
+
+  SPR_releaseSprite(data->sprite);
+  free(data);
 }
 
-void doPlayerHit(Player* _player, u8 _damageAmount) {
-  f16 damageCooldown = _player->damageCooldown;
-  u8 health = _player->health;
+void initPlayer() {
+  const V2s16 spriteOffset = {
+    k_shipSprite.w / 2,  // x
+    k_shipSprite.h / 2   // y
+  };
+  const V2f32 buffer = {
+    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
+    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
+  };
+
+  g_playerSpriteOffset = spriteOffset;
+  g_playerBuffer = buffer;
+  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(getFrameRate()));
+  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(getFrameRate()));
+}
+
+Actor* createPlayer(u16 _palette, const Stage* _stage) {
+  const V2f32 position = {
+    g_playerBuffer.x,               // x
+    intToFix32(_stage->height / 2)  // y
+  };
+  const V2u16 spritePosition = {
+    fix32ToRoundedInt(position.x) + g_playerSpriteOffset.x,  // x
+    fix32ToRoundedInt(position.y) + g_playerSpriteOffset.y   // y
+  };
+  const u16 spriteAttributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
+  PlayerData* data = malloc(sizeof(PlayerData));
+
+  data->sprite = SPR_addSpriteSafe(&k_shipSprite, spritePosition.x,
+                                   spritePosition.y, spriteAttributes);
+  data->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
+  data->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
+  data->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
+  data->health = PLAYER_HEALTH_DEFAULT;
+
+  return createActor(position, data, &update, &draw, &destroy);
+}
+
+void doPlayerHit(Actor* _actor, u8 _damageAmount) {
+  PlayerData* data = (PlayerData*)getActorData(_actor);
+  f16 damageCooldown = data->damageCooldown;
+  u8 health = data->health;
 
   if (health == 0 || damageCooldown > intToFix16(0)) {
     return;
@@ -212,10 +246,12 @@ void doPlayerHit(Player* _player, u8 _damageAmount) {
     health -= _damageAmount;
   }
 
-  _player->health = health;
-  _player->damageCooldown = damageCooldown;
+  data->health = health;
+  data->damageCooldown = damageCooldown;
 }
 
-bool isPlayerDead(Player* _player) {
-  return _player->health == 0;
+bool isPlayerDead(const Actor* _actor) {
+  const PlayerData* data = (const PlayerData*)getActorData(_actor);
+
+  return data->health == 0;
 }

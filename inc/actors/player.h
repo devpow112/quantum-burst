@@ -20,50 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_PLAYER_H__
-#define __QUANTUM_BURST_PLAYER_H__
+#ifndef __QUANTUM_BURST_ACTORS_PLAYER_H__
+#define __QUANTUM_BURST_ACTORS_PLAYER_H__
 
 #include <genesis.h>
 
 // forward declarations
 
-struct _Camera;
-typedef struct _Camera Camera;
+struct _Actor;
+typedef struct _Actor Actor;
 
 struct _Stage;
 typedef struct _Stage Stage;
-
-// entity
-
-struct _Player {
-  V2f32 position;
-  Sprite* sprite;
-  f16 bankDirection;
-  f16 attackCooldown;
-  f16 damageCooldown;
-  u8 health;
-};
-
-typedef struct _Player Player;
 
 // life-cycle
 
 void initPlayer();
 
-void setUpPlayer(Player* _player, u16 _palette, const Stage* _stage);
-
-void updatePlayer(Player* _player, const Stage* _stage);
-
-void drawPlayer(const Player* _player, const Camera* _camera);
-
-void tearDownPlayer(Player* _player);
+Actor* createPlayer(u16 _palette, const Stage* _stage);
 
 // actions
 
-void doPlayerHit(Player* _player, u8 _damageAmount);
+void doPlayerHit(Actor* _actor, u8 _damageAmount);
 
 // properties
 
-bool isPlayerDead(Player* _player);
+bool isPlayerDead(const Actor* _actor);
 
-#endif  // __QUANTUM_BURST_PLAYER_H__
+#endif  // __QUANTUM_BURST_ACTORS_PLAYER_H__
