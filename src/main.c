@@ -22,9 +22,9 @@
 
 #include <genesis.h>
 
+#include "actors/player.h"
 #include "camera.h"
 #include "game.h"
-#include "player.h"
 #include "stage.h"
 #include "utilities.h"
 
