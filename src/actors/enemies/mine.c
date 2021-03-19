@@ -38,11 +38,11 @@
 // global properties
 
 static V2s16 g_mineSpriteOffset;  // pixels
+static u8 g_mineExplosionRadius;  // pixels
 
 typedef struct {
   Sprite* sprite;
   Actor* player;
-  u8 explosionRadius;
   bool exploded;
 } MineData;
 
@@ -57,12 +57,11 @@ static void update(Actor* _actor, const Stage* _stage) {
   }
 
   Actor* player = data->player;
-  const f32 distanceToPlayer = getDistanceBetweenActors(_actor, player);
-  const u8 mineExplosionRadius = data->explosionRadius;
-  const u8 playerRadius = getPlayerRadius(player);
-  const f32 explodeRadius = intToFix32(mineExplosionRadius + playerRadius);
+  const u8 radius = getPlayerRadius(player);
+  const f32 explodeRadius = intToFix32(g_mineExplosionRadius + radius);
+  const f32 magnitude = getDistanceBetweenActors(_actor, player);
 
-  if (distanceToPlayer <= explodeRadius) {
+  if (magnitude <= explodeRadius) {
     exploded = TRUE;
 
     doPlayerHit(player);
@@ -78,6 +77,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
 
   if (exploded) {
     SPR_setVisibility(sprite, HIDDEN);
+
+    return;
   }
 
   const V2f32 position = getActorPosition(_actor);
@@ -100,30 +101,27 @@ static void destroy(Actor* _actor) {
 // public functions
 
 void initMine() {
-  const V2s16 spriteOffset = {
-    k_mineSprite.w / 2,  // x
-    k_mineSprite.h / 2   // y
-  };
+  const u8 spriteHalfWidth = k_mineSprite.w / 2;
 
-  g_mineSpriteOffset = spriteOffset;
+  g_mineSpriteOffset.x = spriteHalfWidth;
+  g_mineSpriteOffset.y = k_mineSprite.h / 2;
+  g_mineExplosionRadius = spriteHalfWidth;
 }
 
 void createMine(u16 _palette, V2f32 _position, Actor* _player) {
-  const V2u16 spritePosition = {
-    fix32ToRoundedInt(_position.x) + g_mineSpriteOffset.x,  // x
-    fix32ToRoundedInt(_position.y) + g_mineSpriteOffset.y   // y
-  };
-  const u16 spriteAttributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
   MineData* data = malloc(sizeof(MineData));
 
   assert(data != NULL, "Failed to allocate mine data");
 
-  data->sprite =
-    SPR_addSpriteExSafe(&k_mineSprite, spritePosition.x, spritePosition.y,
-                        spriteAttributes, 0, MINE_SPRITE_FLAGS);
   data->player = _player;
-  data->explosionRadius = k_mineSprite.w / 2;
   data->exploded = FALSE;
 
-  return createManagedActor(_position, data, &update, &draw, &destroy);
+  const f32 x = fix32ToRoundedInt(_position.x) + g_mineSpriteOffset.x;
+  const f32 y = fix32ToRoundedInt(_position.y) + g_mineSpriteOffset.y;
+  const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
+
+  data->sprite =
+    SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, 0, MINE_SPRITE_FLAGS);
+
+  createManagedActor(_position, data, &update, &draw, &destroy);
 }

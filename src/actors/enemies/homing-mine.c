@@ -40,13 +40,13 @@
 // global properties
 
 static V2s16 g_homingMineSpriteOffset;  // pixels
+static u8 g_homingMineExplosionRadius;  // pixels
+static u8 g_homingMineHomingRadius;     // pixels
 static f32 g_homingMineSpeed;           // pixels/frame
 
 typedef struct {
   Sprite* sprite;
   Actor* player;
-  u8 homingRadius;
-  u8 explosionRadius;
   bool exploded;
 } HomingMineData;
 
@@ -61,22 +61,22 @@ static void update(Actor* _actor, const Stage* _stage) {
   }
 
   Actor* player = data->player;
-  const u8 homingMineRadius = data->homingRadius;
-  const u8 mineExplosionRadius = data->explosionRadius;
-  const u8 playerRadius = getPlayerRadius(player);
-  const f32 homingRadius = intToFix32(homingMineRadius + playerRadius);
-  const f32 explodeRadius = intToFix32(mineExplosionRadius + playerRadius);
-  const f32 distanceToPlayer = getDistanceBetweenActors(_actor, player);
+  V2f32 position = getActorPosition(_actor);
+  const V2f32 playerPosition = getActorPosition(player);
+  const f32 deltaX = fix32Sub(position.x, playerPosition.x);
+  const f32 deltaY = fix32Sub(position.y, playerPosition.y);
+  const u8 radius = getPlayerRadius(player);
+  const f32 homingRadius = intToFix32(g_homingMineHomingRadius + radius);
+  const f32 explodeRadius = intToFix32(g_homingMineExplosionRadius + radius);
+  const f32 magnitude = (f32)getApproximatedDistance((s32)deltaX, (s32)deltaY);
 
-  if (distanceToPlayer <= explodeRadius) {
+  if (magnitude <= explodeRadius) {
     exploded = TRUE;
 
     doPlayerHit(player);
-  } else if (distanceToPlayer <= homingRadius) {
-    V2f32 position = getActorPosition(_actor);
-    const V2f32 directionToPlayer = getDirectionTowardsActor(_actor, player);
-    const f32 speedX = fix32Mul(directionToPlayer.x, g_homingMineSpeed);
-    const f32 speedY = fix32Mul(directionToPlayer.y, g_homingMineSpeed);
+  } else if (magnitude <= homingRadius) {
+    const f32 speedX = fix32Mul(fix32Div(deltaX, magnitude), g_homingMineSpeed);
+    const f32 speedY = fix32Mul(fix32Div(deltaY, magnitude), g_homingMineSpeed);
 
     position.x = fix32Sub(position.x, speedX);
     position.y = fix32Sub(position.y, speedY);
@@ -94,6 +94,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
 
   if (exploded) {
     SPR_setVisibility(sprite, HIDDEN);
+
+    return;
   }
 
   const V2f32 position = getActorPosition(_actor);
@@ -116,36 +118,29 @@ static void destroy(Actor* _actor) {
 // public functions
 
 void initHomingMine() {
-  const V2s16 spriteOffset = {
-    k_mineSprite.w / 2,  // x
-    k_mineSprite.h / 2   // y
-  };
-  const u8 fps = getFrameRate();
+  const u8 spriteHalfWidth = k_mineSprite.w / 2;
 
-  g_homingMineSpriteOffset = spriteOffset;
-  g_homingMineSpeed = fix32Div(intToFix32(75), intToFix32(fps));
+  g_homingMineSpriteOffset.x = spriteHalfWidth;
+  g_homingMineSpriteOffset.x = k_mineSprite.h / 2;
+  g_homingMineExplosionRadius = spriteHalfWidth;
+  g_homingMineHomingRadius = spriteHalfWidth * 10;
+  g_homingMineSpeed = fix32Div(intToFix32(75), intToFix32(getFrameRate()));
 }
 
 void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
-  const V2u16 spritePosition = {
-    fix32ToRoundedInt(_position.x) + g_homingMineSpriteOffset.x,  // x
-    fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y   // y
-  };
-  const u16 spriteAttributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
   HomingMineData* data = malloc(sizeof(HomingMineData));
 
   assert(data != NULL, "Failed to allocate mine homing data");
 
-  data->sprite =
-    SPR_addSpriteExSafe(&k_mineSprite, spritePosition.x, spritePosition.y,
-                        spriteAttributes, 0, HOMING_MINE_SPRITE_FLAGS);
   data->player = _player;
   data->exploded = FALSE;
 
-  const u8 explosionRadius = k_mineSprite.w / 2;
+  const f32 x = fix32ToRoundedInt(_position.x) + g_homingMineSpriteOffset.x;
+  const f32 y = fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
+  const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
-  data->explosionRadius = explosionRadius;
-  data->homingRadius = explosionRadius * 10;
+  data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, 0,
+                                     HOMING_MINE_SPRITE_FLAGS);
 
   createManagedActor(_position, data, &update, &draw, &destroy);
 }
