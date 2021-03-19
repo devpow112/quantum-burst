@@ -26,6 +26,7 @@
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "assert.h"
+#include "managed-actor.h"
 #include "sprites.h"
 
 // constants
@@ -107,7 +108,7 @@ void initMine() {
   g_mineSpriteOffset = spriteOffset;
 }
 
-Actor* createMine(u16 _palette, V2f32 _position, Actor* _player) {
+void createMine(u16 _palette, V2f32 _position, Actor* _player) {
   const V2u16 spritePosition = {
     fix32ToRoundedInt(_position.x) + g_mineSpriteOffset.x,  // x
     fix32ToRoundedInt(_position.y) + g_mineSpriteOffset.y   // y
@@ -124,5 +125,5 @@ Actor* createMine(u16 _palette, V2f32 _position, Actor* _player) {
   data->explosionRadius = k_mineSprite.w / 2;
   data->exploded = FALSE;
 
-  return createActor(_position, data, &update, &draw, &destroy);
+  return createManagedActor(_position, data, &update, &draw, &destroy);
 }

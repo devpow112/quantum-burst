@@ -31,6 +31,6 @@
 
 void initMine();
 
-Actor* createMine(u16 _palette, V2f32 _position, Actor* _player);
+void createMine(u16 _palette, V2f32 _position, Actor* _player);
 
 #endif  // __QUANTUM_BURST_ACTORS_MINE_H__

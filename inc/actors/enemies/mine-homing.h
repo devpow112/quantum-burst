@@ -31,6 +31,6 @@
 
 void initMineHoming();
 
-Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player);
+void createMineHoming(u16 _palette, V2f32 _position, Actor* _player);
 
 #endif  // __QUANTUM_BURST_ACTORS_MINE_HOMING_H__

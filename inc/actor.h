@@ -43,11 +43,9 @@ struct _Actor {
   ActorUpdateCallback updateCallback;
   ActorDrawCallback drawCallback;
   ActorDestroyCallback destroyCallback;
-  Actor* previous;
-  Actor* next;
 };
 
-// life-cycle (individual)
+// life-cycle
 
 Actor* createActor(V2f32 _position, void* _data,
                    ActorUpdateCallback _updateCallback,
@@ -60,15 +58,7 @@ void drawActor(const Actor* _actor, const Camera* _camera);
 
 void destroyActor(Actor* _actor);
 
-// life-cycle (all)
-
-void updateActors(const Stage* _stage);
-
-void drawActors(const Camera* _camera);
-
-void destroyActors();
-
-// properties (individual)
+// properties
 
 V2f32 getActorPosition(const Actor* _actor);
 
