@@ -76,7 +76,7 @@ static V2f32 cameraPositionCallback() {
 static void setUpGamePlay() {
   JOY_setEventHandler(&joyHandlerGamePlay);
   PAL_setPalette(PAL0, k_stage1Palette.data);
-  PAL_setPalette(PAL2, k_primarySpritePalette.data);
+  PAL_setPalette(PAL1, k_primarySpritePalette.data);
   setUpStage(&g_stage, PAL0);
   setUpCamera(&g_camera, &cameraPositionCallback);
 

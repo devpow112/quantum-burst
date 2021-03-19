@@ -24,6 +24,7 @@
 
 #include "actor.h"
 #include "actors/player.h"
+#include "assert.h"
 #include "camera.h"
 #include "sprites.h"
 #include "stage.h"
@@ -217,6 +218,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   };
   const u16 spriteAttributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
   PlayerData* data = malloc(sizeof(PlayerData));
+
+  ASSERT(data != NULL, "Failed to allocate player data");
 
   data->sprite =
     SPR_addSpriteExSafe(&k_shipSprite, spritePosition.x, spritePosition.y,

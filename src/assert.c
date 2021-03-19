@@ -22,64 +22,39 @@
 
 #include <genesis.h>
 
-#include "actors/player.h"
-#include "camera.h"
-#include "game.h"
-#include "stage.h"
-#include "utilities.h"
+#include "assert.h"
 
-// private functions
+void _assert(bool _exp, const char* _file, u16 _line, const char* _msg) {
+  if (!_exp) {
+    SYS_setInterruptMaskLevel(7);
 
-static void init(bool _hardReset) {
-  VDP_init();
-  VDP_setScreenWidth320();
+    if (SPR_isInitialized()) {
+      SPR_end();
+    }
 
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
+    VDP_init();
 
-  SPR_init();
+    char messageFull[720] = {0};
 
-  if (_hardReset) {
-    setGameState(STATE_LOGO);
-  } else if (!isGameState(STATE_LOGO)) {
-    setGameState(STATE_MENU);
-  }
+    sprintf(messageFull, "[%s:%d] %s", _file, _line, _msg);
 
-  initUtilities();
-  initStage();
-  initCamera();
-  initPlayer();
-}
+    char* messageFullCurrent = messageFull;
+    u8 column = 0;
 
-// program entry
+    VDP_drawText("Assert!", 0, column++);
 
-int main(bool _hardReset) {
-  init(_hardReset);
+    do {
+      VDP_drawText(messageFullCurrent, 0, column++);
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_LOAD:
-        processGameLoad();
-        break;
-      case STATE_PLAY:
-        processGamePlay();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-      default:
-        return 1;
+      const u16 length = strlen(messageFullCurrent);
+
+      messageFullCurrent += length < 40 ? length : 40;
+    } while (*messageFullCurrent);
+
+    VDP_drawText("Cannot continue...", 0, column++);
+
+    while (1) {
+      // loop forever
     }
   }
-
-  return 0;
 }
