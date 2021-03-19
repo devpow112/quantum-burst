@@ -23,8 +23,8 @@
 #include <genesis.h>
 
 #include "actor.h"
-#include "actors/mine-homing.h"
-#include "actors/mine.h"
+#include "actors/enemies/mine-homing.h"
+#include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
@@ -95,8 +95,8 @@ static void setUpGamePlay() {
   PAL_setPalette(PAL0, k_stage1Palette.data);
   PAL_setPalette(PAL1, k_primarySpritePalette.data);
   setUpStage(&g_stage, PAL0);
-  setUpCamera(&g_camera, &cameraPositionCallback);
   setUpActors(&g_stage);
+  setUpCamera(&g_camera, &cameraPositionCallback, TRUE);
   JOY_setEventHandler(&joyHandlerGamePlay);
 
   g_paused = FALSE;

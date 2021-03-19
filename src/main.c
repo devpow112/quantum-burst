@@ -22,8 +22,8 @@
 
 #include <genesis.h>
 
-#include "actors/mine-homing.h"
-#include "actors/mine.h"
+#include "actors/enemies/mine-homing.h"
+#include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
