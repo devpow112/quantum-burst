@@ -66,40 +66,12 @@ void updateActor(Actor* _actor, const Stage* _stage) {
   _actor->updateCallback(_actor, _stage);
 }
 
-void updateActors(const Stage* _stage) {
-  if (_stage == NULL) {
-    return;
-  }
-
-  Actor* actor = g_firstActor;
-
-  while (actor != NULL) {
-    updateActor(actor, _stage);
-
-    actor = actor->next;
-  }
-}
-
 void drawActor(const Actor* _actor, const Camera* _camera) {
   if (_actor == NULL || _actor->drawCallback == NULL || _camera == NULL) {
     return;
   }
 
   _actor->drawCallback(_actor, _camera);
-}
-
-void drawActors(const Camera* _camera) {
-  if (_camera == NULL) {
-    return;
-  }
-
-  Actor* actor = g_firstActor;
-
-  while (actor != NULL) {
-    drawActor(actor, _camera);
-
-    actor = actor->next;
-  }
 }
 
 void destroyActor(Actor* _actor) {
@@ -118,6 +90,34 @@ void destroyActor(Actor* _actor) {
   }
 
   free(_actor);
+}
+
+void updateActors(const Stage* _stage) {
+  if (_stage == NULL) {
+    return;
+  }
+
+  Actor* actor = g_firstActor;
+
+  while (actor != NULL) {
+    updateActor(actor, _stage);
+
+    actor = actor->next;
+  }
+}
+
+void drawActors(const Camera* _camera) {
+  if (_camera == NULL) {
+    return;
+  }
+
+  Actor* actor = g_firstActor;
+
+  while (actor != NULL) {
+    drawActor(actor, _camera);
+
+    actor = actor->next;
+  }
 }
 
 void destroyActors() {
@@ -161,4 +161,27 @@ void setActorPosition(Actor* _actor, V2f32 _position) {
 
 void* getActorData(const Actor* _actor) {
   return _actor->data;
+}
+
+V2f32 getDirectionTowardsActor(const Actor* _actor, const Actor* _target) {
+  const V2f32 position1 = getActorPosition(_actor);
+  const V2f32 position2 = getActorPosition(_target);
+  const s32 deltaX = (s32)fix32Sub(position1.x, position2.x);
+  const s32 deltaY = (s32)fix32Sub(position1.y, position2.y);
+  const f32 magnitude = (f32)getApproximatedDistance(deltaX, deltaY);
+  const V2f32 direction = {
+    fix32Div((f32)deltaX, magnitude),  // x
+    fix32Div((f32)deltaY, magnitude)   // y
+  };
+
+  return direction;
+}
+
+f32 getDistanceBetweenActors(const Actor* _actor1, const Actor* _actor2) {
+  const V2f32 position1 = getActorPosition(_actor1);
+  const V2f32 position2 = getActorPosition(_actor2);
+  const s32 deltaX = (s32)fix32Sub(position1.x, position2.x);
+  const s32 deltaY = (s32)fix32Sub(position1.y, position2.y);
+
+  return (f32)getApproximatedDistance(deltaX, deltaY);
 }

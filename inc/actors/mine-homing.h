@@ -20,53 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QUANTUM_BURST_ACTORS_MINE_HOMING_H__
+#define __QUANTUM_BURST_ACTORS_MINE_HOMING_H__
+
 #include <genesis.h>
 
 #include "actor.h"
-#include "camera.h"
-#include "stage.h"
-#include "utilities.h"
 
-// global properties
+// life-cycle
 
-static V2f32 g_cameraOffset;
+void initMineHoming();
 
-// public functions
+Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player);
 
-void initCamera() {
-  g_cameraOffset.x = intToFix32(VDP_getScreenWidth() / 2);
-  g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
-}
-
-void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback) {
-  _camera->positionCallback = _positionCallback;
-}
-
-void updateCamera(Camera* _camera) {
-  CameraPositionCallback positionCallback = _camera->positionCallback;
-
-  if (positionCallback == NULL) {
-    return;
-  }
-
-  const V2f32 trackedPosition = positionCallback();
-  const V2f32 position = {
-    fix32Sub(trackedPosition.x, g_cameraOffset.x),  // x
-    fix32Sub(trackedPosition.y, g_cameraOffset.y)   // y
-  };
-
-  _camera->position = position;
-}
-
-void tearDownCamera(Camera* _camera) {
-  // nothing so far
-}
-
-V2s32 getCameraPositionRounded(const Camera* _camera) {
-  const V2s32 positionRounded = {
-    fix32ToRoundedInt(_camera->position.x),  // x
-    fix32ToRoundedInt(_camera->position.y)   // y
-  };
-
-  return positionRounded;
-}
+#endif  // __QUANTUM_BURST_ACTORS_MINE_HOMING_H__

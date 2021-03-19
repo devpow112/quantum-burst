@@ -23,6 +23,8 @@
 #include <genesis.h>
 
 #include "actor.h"
+#include "actors/mine-homing.h"
+#include "actors/mine.h"
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
@@ -51,10 +53,6 @@ static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
       return;  // don't process any more input events
     }
   }
-
-  if (_state & _changed & BUTTON_A) {
-    doPlayerHit(g_player, 10);
-  }
 }
 
 static V2f32 cameraPositionCallback() {
@@ -70,16 +68,37 @@ static V2f32 cameraPositionCallback() {
   return position;
 }
 
+void setUpActors(const Stage* _stage) {
+  g_player = createPlayer(PAL1, _stage->startPosition);
+
+  const V2f32 mine1Position = {
+    fix32Add(_stage->startPosition.x, intToFix32(200)),  // x
+    fix32Sub(_stage->startPosition.y, intToFix32(100))   // y
+  };
+  const V2f32 mine2Position = {
+    fix32Add(_stage->startPosition.x, intToFix32(400)),  // x
+    fix32Add(_stage->startPosition.y, intToFix32(100))   // y
+  };
+  const V2f32 mine3Position = {
+    fix32Add(_stage->startPosition.x, intToFix32(600)),  // x
+    fix32Sub(_stage->startPosition.y, intToFix32(100))   // y
+  };
+
+  createMine(PAL1, mine1Position, g_player);
+  createMineHoming(PAL1, mine2Position, g_player);
+  createMineHoming(PAL1, mine3Position, g_player);
+}
+
 // public functions
 
 static void setUpGamePlay() {
-  JOY_setEventHandler(&joyHandlerGamePlay);
   PAL_setPalette(PAL0, k_stage1Palette.data);
   PAL_setPalette(PAL1, k_primarySpritePalette.data);
   setUpStage(&g_stage, PAL0);
   setUpCamera(&g_camera, &cameraPositionCallback);
+  setUpActors(&g_stage);
+  JOY_setEventHandler(&joyHandlerGamePlay);
 
-  g_player = createPlayer(PAL1, g_stage.startPosition);
   g_paused = FALSE;
 }
 
@@ -93,10 +112,11 @@ static void updateGamePlay() {
 }
 
 static void tearDownGamePlay() {
+  JOY_setEventHandler(NULL);
   destroyActors();
   tearDownCamera(&g_camera);
   tearDownStage(&g_stage);
-  JOY_setEventHandler(NULL);
+  updateGamePlay();
 }
 
 void processGamePlay() {

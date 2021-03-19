@@ -35,9 +35,11 @@ Actor* createPlayer(u16 _palette, V2f32 _position);
 
 // actions
 
-void doPlayerHit(Actor* _actor, u8 _damageAmount);
+void doPlayerHit(Actor* _actor);
 
 // properties
+
+u8 getPlayerRadius(const Actor* _actor);
 
 bool isPlayerDead(const Actor* _actor);
 
