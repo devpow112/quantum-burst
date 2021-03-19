@@ -28,9 +28,9 @@
 void _assert(bool _exp, const char* _file, u16 _line, const char* _msg);
 
 #ifdef DEBUG
-#define ASSERT(_exp, _msg) (_assert(!!(_exp), __FILE__, __LINE__, _msg))
+#define assert(_exp, _msg) (_assert(!!(_exp), __FILE__, __LINE__, _msg))
 #else
-#define ASSERT(_exp, _msg)
+#define assert(_exp, _msg)
 #endif
 
 #endif  // __QUANTUM_BURST_ASSERT_H__
