@@ -30,23 +30,19 @@
 static V2f32 g_cameraOffset;
 
 void initCamera() {
-  g_cameraOffset.x = intToFix32(0);
+  g_cameraOffset.x = intToFix32(VDP_getScreenWidth() / 2);
   g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
 }
 
-void setUpCamera(Camera* _camera, const Actor* _actor, const Stage* _stage) {
-  _camera->position.x = fix32Sub(_stage->minimumX, g_cameraOffset.x);
-  _camera->position.y = fix32Sub(getActorPositionY(_actor), g_cameraOffset.y);
-  _camera->minimumY = intToFix32(0);
-  _camera->maximumY = intToFix32(_stage->height - VDP_getScreenHeight());
+void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback) {
+  _camera->positionCallback = _positionCallback;
 }
 
-void updateCamera(Camera* _camera, const Actor* _actor, const Stage* _stage) {
-  const f32 positionX = fix32Sub(_stage->minimumX, g_cameraOffset.x);
-  const f32 positionY = fix32Sub(getActorPositionY(_actor), g_cameraOffset.y);
+void updateCamera(Camera* _camera) {
+  const V2f32 trackedPosition = _camera->positionCallback();
   const V2f32 position = {
-    clamp(positionX, _stage->minimumX, _stage->maximumX),   // x
-    clamp(positionY, _camera->minimumY, _camera->maximumY)  // y
+    fix32Sub(trackedPosition.x, g_cameraOffset.x),  // x
+    fix32Sub(trackedPosition.y, g_cameraOffset.y)   // y
   };
 
   _camera->position = position;
