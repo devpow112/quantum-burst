@@ -31,7 +31,7 @@
 
 // constants
 
-#define MINE_HOMING_SPEED FIX32(1.25)
+#define MINE_HOMING_SPEED FIX32(1.5)
 #define MINE_HOMING_SPRITE_FLAGS                         \
   (SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_VRAM_ALLOC | \
    SPR_FLAG_AUTO_SPRITE_ALLOC | SPR_FLAG_AUTO_TILE_UPLOAD)
@@ -133,7 +133,7 @@ Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player) {
   const u16 spriteAttributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
   MineHomingData* data = malloc(sizeof(MineHomingData));
 
-  ASSERT(data != NULL, "Failed to allocate mine homing data");
+  assert(data != NULL, "Failed to allocate mine homing data");
 
   data->sprite =
     SPR_addSpriteExSafe(&k_mineSprite, spritePosition.x, spritePosition.y,
@@ -144,7 +144,7 @@ Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player) {
   const u8 explosionRadius = k_mineSprite.w / 2;
 
   data->explosionRadius = explosionRadius;
-  data->homingRadius = explosionRadius * 5;
+  data->homingRadius = explosionRadius * 10;
 
   return createActor(_position, data, &update, &draw, &destroy);
 }

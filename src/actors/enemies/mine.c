@@ -115,7 +115,7 @@ Actor* createMine(u16 _palette, V2f32 _position, Actor* _player) {
   const u16 spriteAttributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
   MineData* data = malloc(sizeof(MineData));
 
-  ASSERT(data != NULL, "Failed to allocate mine data");
+  assert(data != NULL, "Failed to allocate mine data");
 
   data->sprite =
     SPR_addSpriteExSafe(&k_mineSprite, spritePosition.x, spritePosition.y,
