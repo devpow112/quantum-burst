@@ -27,7 +27,6 @@
 #include "camera.h"
 #include "game.h"
 #include "maps.h"
-#include "math.h"
 #include "sprites.h"
 #include "stage.h"
 #include "utilities.h"
