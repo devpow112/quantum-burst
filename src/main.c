@@ -22,7 +22,7 @@
 
 #include <genesis.h>
 
-#include "actors/enemies/mine-homing.h"
+#include "actors/enemies/homing-mine.h"
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "camera.h"
@@ -60,7 +60,7 @@ static void init(bool _hardReset) {
   initManagedActors();
   initPlayer();
   initMine();
-  initMineHoming();
+  initHomingMine();
 }
 
 // program entry
