@@ -27,6 +27,8 @@
 #include "stage.h"
 #include "utilities.h"
 
+// public functions
+
 void initStage() {
   // nothing so far
 }

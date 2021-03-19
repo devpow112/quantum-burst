@@ -25,10 +25,14 @@
 #include "game.h"
 #include "utilities.h"
 
+// private functions
+
 static void initGameCredits() {
   JOY_setEventHandler(NULL);
   PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
 }
+
+// public functions
 
 void processGameCredits() {
   initGameCredits();

@@ -47,8 +47,6 @@ struct _Actor {
   Actor* next;
 };
 
-typedef struct _Actor Actor;
-
 // life-cycle
 
 Actor* createActor(V2f32 _position, void* _data,

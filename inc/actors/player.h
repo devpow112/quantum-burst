@@ -25,10 +25,7 @@
 
 #include <genesis.h>
 
-// forward declarations
-
-struct _Actor;
-typedef struct _Actor Actor;
+#include "actor.h"
 
 // life-cycle
 

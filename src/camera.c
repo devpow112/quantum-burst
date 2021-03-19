@@ -27,7 +27,11 @@
 #include "stage.h"
 #include "utilities.h"
 
+// global properties
+
 static V2f32 g_cameraOffset;
+
+// public functions
 
 void initCamera() {
   g_cameraOffset.x = intToFix32(VDP_getScreenWidth() / 2);
