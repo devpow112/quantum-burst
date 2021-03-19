@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_ACTORS_MINE_HOMING_H__
-#define __QUANTUM_BURST_ACTORS_MINE_HOMING_H__
+#ifndef __QUANTUM_BURST_ACTORS_HOMING_MINE_H__
+#define __QUANTUM_BURST_ACTORS_HOMING_MINE_H__
 
 #include <genesis.h>
 
@@ -29,8 +29,8 @@
 
 // life-cycle
 
-void initMineHoming();
+void initHomingMine();
 
-void createMineHoming(u16 _palette, V2f32 _position, Actor* _player);
+void createHomingMine(u16 _palette, V2f32 _position, Actor* _player);
 
-#endif  // __QUANTUM_BURST_ACTORS_MINE_HOMING_H__
+#endif  // __QUANTUM_BURST_ACTORS_HOMING_MINE_H__

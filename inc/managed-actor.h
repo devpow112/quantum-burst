@@ -57,4 +57,4 @@ void drawManagedActors(const Camera* _camera);
 
 void destroyManagedActors();
 
-#endif  // __QUANTUM_BURST_ACTOR_H__
+#endif  // __QUANTUM_BURST_MANAGED_ACTOR_H__

@@ -23,7 +23,7 @@
 #include <genesis.h>
 
 #include "actor.h"
-#include "actors/enemies/mine-homing.h"
+#include "actors/enemies/homing-mine.h"
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "camera.h"
@@ -86,8 +86,8 @@ static void setUpActors(const Stage* _stage) {
   };
 
   createMine(PAL1, mine1Position, g_player);
-  createMineHoming(PAL1, mine2Position, g_player);
-  createMineHoming(PAL1, mine3Position, g_player);
+  createHomingMine(PAL1, mine2Position, g_player);
+  createHomingMine(PAL1, mine3Position, g_player);
 }
 
 static void updateActors(const Stage* _stage) {
