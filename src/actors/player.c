@@ -32,13 +32,15 @@
 
 // constants
 
-#define PLAYER_SCREEN_BUFFER 2                               // pixels
-#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))        // seconds
-#define PLAYER_INVULNERABILITY_COOLDOWN_DURATION (FIX16(1))  // seconds
+#define PLAYER_SCREEN_BUFFER 2                         // pixels
+#define PLAYER_ATTACK_COOLDOWN_DEFAULT (FIX16(0))      // seconds
+#define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))  // seconds
+#define PLAYER_DAMAGE_COOLDOWN_DEFAULT (FIX16(0))      // seconds
+#define PLAYER_DAMAGE_COOLDOWN_DURATION (FIX16(1))     // seconds
 #define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
 #define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
-#define PLAYER_HEALTH_DEFAULT 100
+#define PLAYER_HEALTH_DEFAULT 2
 #define PLAYER_SPRITE_FLAGS                                \
   (SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | \
    SPR_FLAG_AUTO_TILE_UPLOAD)
@@ -47,7 +49,7 @@
 
 static V2f32 g_playerBuffer;        // pixels
 static V2s16 g_playerSpriteOffset;  // pixels
-static f32 g_playerVelocity;        // pixels/second
+static f32 g_playerVelocity;        // pixels/frame
 static f16 g_playerBankingRate;     // fps
 
 typedef struct {
@@ -55,6 +57,7 @@ typedef struct {
   f16 bankDirection;
   f16 attackCooldown;
   f16 damageCooldown;
+  u8 radius;
   u8 health;
 } PlayerData;
 
@@ -204,11 +207,12 @@ void initPlayer() {
     intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
     intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
   };
+  const u8 fps = getFrameRate();
 
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
-  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(getFrameRate()));
-  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(getFrameRate()));
+  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(fps));
+  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(fps));
 }
 
 Actor* createPlayer(u16 _palette, const V2f32 _position) {
@@ -225,32 +229,34 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
     SPR_addSpriteExSafe(&k_shipSprite, spritePosition.x, spritePosition.y,
                         spriteAttributes, 0, PLAYER_SPRITE_FLAGS);
   data->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
-  data->attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
-  data->damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
+  data->attackCooldown = PLAYER_ATTACK_COOLDOWN_DEFAULT;
+  data->damageCooldown = PLAYER_DAMAGE_COOLDOWN_DEFAULT;
   data->health = PLAYER_HEALTH_DEFAULT;
+  data->radius = k_shipSprite.w / 2;
 
   return createActor(_position, data, &update, &draw, &destroy);
 }
 
-void doPlayerHit(Actor* _actor, u8 _damageAmount) {
+void doPlayerHit(Actor* _actor) {
   PlayerData* data = (PlayerData*)getActorData(_actor);
   f16 damageCooldown = data->damageCooldown;
   u8 health = data->health;
 
-  if (health == 0 || damageCooldown > intToFix16(0)) {
+  if (health == 0 || damageCooldown > PLAYER_DAMAGE_COOLDOWN_DEFAULT) {
     return;
   }
 
-  damageCooldown = PLAYER_INVULNERABILITY_COOLDOWN_DURATION;
-
-  if (health < _damageAmount) {
-    health = 0;
-  } else {
-    health -= _damageAmount;
-  }
+  damageCooldown = PLAYER_DAMAGE_COOLDOWN_DURATION;
+  health--;
 
   data->health = health;
   data->damageCooldown = damageCooldown;
+}
+
+u8 getPlayerRadius(const Actor* _actor) {
+  const PlayerData* data = (const PlayerData*)getActorData(_actor);
+
+  return data->radius;
 }
 
 bool isPlayerDead(const Actor* _actor) {

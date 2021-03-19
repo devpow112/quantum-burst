@@ -47,7 +47,7 @@ struct _Actor {
   Actor* next;
 };
 
-// life-cycle
+// life-cycle (individual)
 
 Actor* createActor(V2f32 _position, void* _data,
                    ActorUpdateCallback _updateCallback,
@@ -56,17 +56,19 @@ Actor* createActor(V2f32 _position, void* _data,
 
 void updateActor(Actor* _actor, const Stage* _stage);
 
-void updateActors(const Stage* _stage);
-
 void drawActor(const Actor* _actor, const Camera* _camera);
-
-void drawActors(const Camera* _camera);
 
 void destroyActor(Actor* _actor);
 
+// life-cycle (all)
+
+void updateActors(const Stage* _stage);
+
+void drawActors(const Camera* _camera);
+
 void destroyActors();
 
-// properties
+// properties (individual)
 
 V2f32 getActorPosition(const Actor* _actor);
 
@@ -77,5 +79,11 @@ f32 getActorPositionY(const Actor* _actor);
 void setActorPosition(Actor* _actor, V2f32 _position);
 
 void* getActorData(const Actor* _actor);
+
+// utilities
+
+V2f32 getDirectionTowardsActor(const Actor* _actor, const Actor* _target);
+
+f32 getDistanceBetweenActors(const Actor* _actor1, const Actor* _actor2);
 
 #endif  // __QUANTUM_BURST_ACTOR_H__

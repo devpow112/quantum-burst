@@ -74,7 +74,7 @@ static void doFlash() {
 
 void processGameMenu() {
   JOY_setEventHandler(NULL);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+  VDP_resetScreen();
 
   const u16 screenWidth = VDP_getScreenWidth();
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
@@ -122,4 +122,6 @@ void processGameMenu() {
 
   setGameState(STATE_PLAY);
   SPR_releaseSprite(title);
+  SPR_update();
+  SYS_doVBlankProcess();
 }

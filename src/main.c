@@ -22,6 +22,8 @@
 
 #include <genesis.h>
 
+#include "actors/mine-homing.h"
+#include "actors/mine.h"
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
@@ -52,6 +54,8 @@ static void init(bool _hardReset) {
   initStage();
   initCamera();
   initPlayer();
+  initMine();
+  initMineHoming();
 }
 
 // program entry
