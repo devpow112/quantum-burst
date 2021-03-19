@@ -27,14 +27,22 @@
 #include "camera.h"
 #include "game.h"
 #include "maps.h"
+#include "math.h"
 #include "sprites.h"
 #include "stage.h"
 #include "utilities.h"
 
+// global entities
+
 static Stage g_stage;
 static Camera g_camera;
 static Actor* g_player;
+
+// global properties
+
 static bool g_paused;
+
+// private functions
 
 static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
@@ -50,18 +58,30 @@ static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
   }
 }
 
+static V2f32 cameraPositionCallback() {
+  const f32 playerPositionY = getActorPositionY(g_player);
+  const f32 halfScreenHeight = intToFix32(VDP_getScreenHeight() / 2);
+  const f32 minimumY = halfScreenHeight;
+  const f32 maximumY = fix32Sub(intToFix32(g_stage.height), halfScreenHeight);
+  const V2f32 position = {
+    fix32Avg(g_stage.minimumX, g_stage.maximumX),  // x
+    clamp(playerPositionY, minimumY, maximumY)     // y
+  };
+
+  return position;
+}
+
+// public functions
+
 static void setUpGamePlay() {
   JOY_setEventHandler(&joyHandlerGamePlay);
   PAL_setPalette(PAL0, k_stage1Palette.data);
   PAL_setPalette(PAL2, k_primarySpritePalette.data);
-
-  g_paused = FALSE;
-
   setUpStage(&g_stage, PAL0);
+  setUpCamera(&g_camera, &cameraPositionCallback);
 
   g_player = createPlayer(PAL1, g_stage.startPosition);
-
-  setUpCamera(&g_camera, g_player, &g_stage);
+  g_paused = FALSE;
 }
 
 static void updateGamePlay() {
@@ -87,7 +107,7 @@ void processGamePlay() {
     if (!g_paused) {
       updateStage(&g_stage);
       updateActors(&g_stage);
-      updateCamera(&g_camera, g_player, &g_stage);
+      updateCamera(&g_camera);
 
       if (isPlayerDead(g_player)) {
         setGameState(STATE_MENU);

@@ -25,18 +25,13 @@
 
 #include <genesis.h>
 
-// forward declarations
+#include "camera.h"
+#include "stage.h"
 
-struct _Camera;
-typedef struct _Camera Camera;
-
-struct _Stage;
-typedef struct _Stage Stage;
+// entity
 
 struct _Actor;
 typedef struct _Actor Actor;
-
-// entity
 
 typedef void (*ActorUpdateCallback)(Actor* _actor, const Stage* _stage);
 typedef void (*ActorDrawCallback)(const Actor* _actor, const Camera* _camera);

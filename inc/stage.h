@@ -25,10 +25,7 @@
 
 #include <genesis.h>
 
-// forward declarations
-
-struct _Camera;
-typedef struct _Camera Camera;
+#include "camera.h"
 
 // entity
 

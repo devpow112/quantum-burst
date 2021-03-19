@@ -20,34 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_CAMERA_H__
-#define __QUANTUM_BURST_CAMERA_H__
+#ifndef __QUANTUM_BURST_MATH_H__
+#define __QUANTUM_BURST_MATH_H__
 
 #include <genesis.h>
 
-// entity
+#define fix16Avg(val1, val2) (((val1) >> 1) + ((val2) >> 1))
 
-typedef V2f32 (*CameraPositionCallback)();
+#define fix32Avg(val1, val2) (((val1) >> 1) + ((val2) >> 1))
 
-struct _Camera {
-  V2f32 position;
-  CameraPositionCallback positionCallback;
-};
-
-typedef struct _Camera Camera;
-
-// life-cycle
-
-void initCamera();
-
-void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback);
-
-void updateCamera(Camera* _camera);
-
-void tearDownCamera(Camera* _camera);
-
-// properties
-
-V2s32 getCameraPositionRounded(const Camera* _camera);
-
-#endif  // __QUANTUM_BURST_CAMERA_H__
+#endif  // __QUANTUM_BURST_MATH_H__
