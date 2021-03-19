@@ -20,75 +20,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QUANTUM_BURST_MANAGED_ACTOR_H__
+#define __QUANTUM_BURST_MANAGED_ACTOR_H__
+
 #include <genesis.h>
 
-#include "actors/enemies/mine-homing.h"
-#include "actors/enemies/mine.h"
-#include "actors/player.h"
+#include "actor.h"
 #include "camera.h"
-#include "game.h"
-#include "managed-actor.h"
 #include "stage.h"
-#include "utilities.h"
 
-// private functions
+// entity
 
-static void init(bool _hardReset) {
-  VDP_init();
-  VDP_setScreenWidth320();
+struct _ManagedActor;
+typedef struct _ManagedActor ManagedActor;
 
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
+struct _ManagedActor {
+  Actor actor;
+  ManagedActor* previous;
+  ManagedActor* next;
+};
 
-  SPR_init();
+// life-cycle
 
-  if (_hardReset) {
-    setGameState(STATE_LOGO);
-  } else if (!isGameState(STATE_LOGO)) {
-    setGameState(STATE_MENU);
-  }
+void createManagedActor(V2f32 _position, void* _data,
+                        ActorUpdateCallback _updateCallback,
+                        ActorDrawCallback _drawCallback,
+                        ActorDestroyCallback _destroyCallback);
 
-  initUtilities();
-  initStage();
-  initCamera();
+// life-cycle
 
-  // init actors
+void initManagedActors();
 
-  initManagedActors();
-  initPlayer();
-  initMine();
-  initMineHoming();
-}
+void updateManagedActors(const Stage* _stage);
 
-// program entry
+void drawManagedActors(const Camera* _camera);
 
-int main(bool _hardReset) {
-  init(_hardReset);
+void destroyManagedActors();
 
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_LOAD:
-        processGameLoad();
-        break;
-      case STATE_PLAY:
-        processGamePlay();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-      default:
-        return 1;
-    }
-  }
-
-  return 0;
-}
+#endif  // __QUANTUM_BURST_ACTOR_H__

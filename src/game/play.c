@@ -28,6 +28,7 @@
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
+#include "managed-actor.h"
 #include "maps.h"
 #include "sprites.h"
 #include "stage.h"
@@ -37,7 +38,7 @@
 
 static Stage g_stage;
 static Camera g_camera;
-static Actor* g_player;
+static Actor* g_player = NULL;
 
 // global properties
 
@@ -68,7 +69,7 @@ static V2f32 cameraPositionCallback() {
   return position;
 }
 
-void setUpActors(const Stage* _stage) {
+static void setUpActors(const Stage* _stage) {
   g_player = createPlayer(PAL1, _stage->startPosition);
 
   const V2f32 mine1Position = {
@@ -89,7 +90,22 @@ void setUpActors(const Stage* _stage) {
   createMineHoming(PAL1, mine3Position, g_player);
 }
 
-// public functions
+static void updateActors(const Stage* _stage) {
+  updateActor(g_player, _stage);
+  updateManagedActors(_stage);
+}
+
+static void drawActors(const Camera* _camera) {
+  drawManagedActors(_camera);
+  drawActor(g_player, _camera);
+}
+
+static void tearDownActors() {
+  destroyManagedActors();
+  destroyActor(g_player);
+
+  g_player = NULL;
+}
 
 static void setUpGamePlay() {
   PAL_setPalette(PAL0, k_stage1Palette.data);
@@ -113,11 +129,13 @@ static void updateGamePlay() {
 
 static void tearDownGamePlay() {
   JOY_setEventHandler(NULL);
-  destroyActors();
   tearDownCamera(&g_camera);
+  tearDownActors();
   tearDownStage(&g_stage);
   updateGamePlay();
 }
+
+// public functions
 
 void processGamePlay() {
   setUpGamePlay();

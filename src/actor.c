@@ -24,11 +24,6 @@
 
 #include "actor.h"
 
-// global properties
-
-static Actor* g_firstActor = NULL;
-static Actor* g_lastActor = NULL;
-
 // public functions
 
 Actor* createActor(V2f32 _position, void* _data,
@@ -42,18 +37,6 @@ Actor* createActor(V2f32 _position, void* _data,
   actor->updateCallback = _updateCallback;
   actor->drawCallback = _drawCallback;
   actor->destroyCallback = _destroyCallback;
-  actor->next = NULL;
-
-  if (g_firstActor == NULL) {
-    actor->previous = NULL;
-
-    g_firstActor = actor;
-    g_lastActor = actor;
-  } else if (g_lastActor != NULL) {
-    actor->previous = g_lastActor;
-    g_lastActor->next = actor;
-    g_lastActor = actor;
-  }
 
   return actor;
 }
@@ -81,62 +64,7 @@ void destroyActor(Actor* _actor) {
 
   _actor->destroyCallback(_actor);
 
-  if (_actor->previous != NULL) {
-    _actor->previous->next = _actor->next;
-  }
-
-  if (_actor->next != NULL) {
-    _actor->next->previous = _actor->previous;
-  }
-
   free(_actor);
-}
-
-void updateActors(const Stage* _stage) {
-  if (_stage == NULL) {
-    return;
-  }
-
-  Actor* actor = g_firstActor;
-
-  while (actor != NULL) {
-    updateActor(actor, _stage);
-
-    actor = actor->next;
-  }
-}
-
-void drawActors(const Camera* _camera) {
-  if (_camera == NULL) {
-    return;
-  }
-
-  Actor* actor = g_firstActor;
-
-  while (actor != NULL) {
-    drawActor(actor, _camera);
-
-    actor = actor->next;
-  }
-}
-
-void destroyActors() {
-  Actor* actor = g_firstActor;
-
-  while (actor != NULL) {
-    if (actor->destroyCallback != NULL) {
-      actor->destroyCallback(actor);
-    }
-
-    Actor* next = actor->next;
-
-    free(actor);
-
-    actor = next;
-  }
-
-  g_firstActor = NULL;
-  g_lastActor = NULL;
 }
 
 V2f32 getActorPosition(const Actor* _actor) {

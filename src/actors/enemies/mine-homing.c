@@ -26,6 +26,7 @@
 #include "actors/enemies/mine-homing.h"
 #include "actors/player.h"
 #include "assert.h"
+#include "managed-actor.h"
 #include "sprites.h"
 #include "utilities.h"
 
@@ -125,7 +126,7 @@ void initMineHoming() {
   g_mineHomingSpeed = fix32Div(intToFix32(75), intToFix32(fps));
 }
 
-Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player) {
+void createMineHoming(u16 _palette, V2f32 _position, Actor* _player) {
   const V2u16 spritePosition = {
     fix32ToRoundedInt(_position.x) + g_mineHomingSpriteOffset.x,  // x
     fix32ToRoundedInt(_position.y) + g_mineHomingSpriteOffset.y   // y
@@ -146,5 +147,5 @@ Actor* createMineHoming(u16 _palette, V2f32 _position, Actor* _player) {
   data->explosionRadius = explosionRadius;
   data->homingRadius = explosionRadius * 10;
 
-  return createActor(_position, data, &update, &draw, &destroy);
+  createManagedActor(_position, data, &update, &draw, &destroy);
 }
