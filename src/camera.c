@@ -38,8 +38,19 @@ void initCamera() {
   g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
 }
 
-void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback) {
+void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback,
+                 bool _evaluateCallback) {
+  V2f32 position;
+
+  if (_positionCallback != NULL && _evaluateCallback) {
+    position = _positionCallback();
+  } else {
+    position.x = intToFix32(0);
+    position.y = position.x;
+  }
+
   _camera->positionCallback = _positionCallback;
+  _camera->position = position;
 }
 
 void updateCamera(Camera* _camera) {
@@ -49,10 +60,10 @@ void updateCamera(Camera* _camera) {
     return;
   }
 
-  const V2f32 trackedPosition = positionCallback();
+  const V2f32 newPosition = positionCallback();
   const V2f32 position = {
-    fix32Sub(trackedPosition.x, g_cameraOffset.x),  // x
-    fix32Sub(trackedPosition.y, g_cameraOffset.y)   // y
+    fix32Sub(newPosition.x, g_cameraOffset.x),  // x
+    fix32Sub(newPosition.y, g_cameraOffset.y)   // y
   };
 
   _camera->position = position;

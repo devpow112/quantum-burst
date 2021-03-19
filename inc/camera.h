@@ -38,7 +38,8 @@ typedef struct {
 
 void initCamera();
 
-void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback);
+void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback,
+                 bool _evaluateCallback);
 
 void updateCamera(Camera* _camera);
 
