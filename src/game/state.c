@@ -24,7 +24,11 @@
 
 #include "game.h"
 
+// global properties
+
 static GameState g_gameState;
+
+// public functions
 
 GameState getGameState() {
   return g_gameState;

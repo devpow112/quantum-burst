@@ -28,6 +28,8 @@
 #include "stage.h"
 #include "utilities.h"
 
+// private functions
+
 static void init(bool _hardReset) {
   JOY_init();
   VDP_init();
@@ -52,6 +54,8 @@ static void init(bool _hardReset) {
   initCamera();
   initPlayer();
 }
+
+// program entry
 
 int main(bool _hardReset) {
   init(_hardReset);

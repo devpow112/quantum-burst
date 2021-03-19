@@ -29,12 +29,10 @@
 
 typedef V2f32 (*CameraPositionCallback)();
 
-struct _Camera {
+typedef struct {
   V2f32 position;
   CameraPositionCallback positionCallback;
-};
-
-typedef struct _Camera Camera;
+} Camera;
 
 // life-cycle
 

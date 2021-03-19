@@ -24,11 +24,17 @@
 
 #include "utilities.h"
 
+// constants
+
 #define PAL_FRAME_RATE 50
 #define NTSC_FRAME_RATE 60
 
+// global properties
+
 static u8 g_utiltiesFrameRate;
 static f32 g_utiltiesFrameDeltaTime;
+
+// public functions
 
 void initUtilities() {
   const u8 fps = IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;

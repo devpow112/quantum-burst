@@ -57,6 +57,8 @@ typedef struct {
   u8 health;
 } PlayerData;
 
+// private functions
+
 static void processMovement(Actor* _actor, PlayerData* _data,
                             const Stage* _stage) {
   V2f32 position = getActorPosition(_actor);
@@ -189,6 +191,8 @@ static void destroy(Actor* _actor) {
   SPR_releaseSprite(data->sprite);
   free(data);
 }
+
+// public functions
 
 void initPlayer() {
   const V2s16 spriteOffset = {

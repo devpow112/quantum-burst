@@ -29,6 +29,8 @@
 static Actor* g_firstActor = NULL;
 static Actor* g_lastActor = NULL;
 
+// public functions
+
 Actor* createActor(V2f32 _position, void* _data,
                    ActorUpdateCallback _updateCallback,
                    ActorDrawCallback _drawCallback,

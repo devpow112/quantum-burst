@@ -26,14 +26,18 @@
 #include "sprites.h"
 #include "utilities.h"
 
-// menu constants
+// constants
+
 #define LOGO_FADE_IN_TIME (FIX16(0.3))   // seconds
 #define LOGO_FADE_OUT_TIME (FIX16(0.5))  // seconds
 #define FLASH_TIME (FIX16(0.1))          // seconds
 #define LOGO_END_POSITION_Y 64           // pixels
 
-// menu global properties
+// global properties
+
 static bool g_runMenuExit;
+
+// private functions
 
 static void joyHandlerMenu(u16 _joy, u16 _changed, u16 _state) {
   if (_state & _changed & BUTTON_START) {
@@ -65,6 +69,8 @@ static void doFlash() {
     SYS_doVBlankProcess();
   }
 }
+
+// public functions
 
 void processGameMenu() {
   JOY_setEventHandler(NULL);

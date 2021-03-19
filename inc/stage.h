@@ -29,7 +29,7 @@
 
 // entity
 
-struct _Stage {
+typedef struct {
   V2f32 startPosition;
   Map* map;
   u32 width;
@@ -37,9 +37,7 @@ struct _Stage {
   f32 minimumX;
   f32 maximumX;
   f32 speed;
-};
-
-typedef struct _Stage Stage;
+} Stage;
 
 // life-cycle
 

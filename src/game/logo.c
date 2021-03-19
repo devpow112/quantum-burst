@@ -25,9 +25,13 @@
 #include "game.h"
 #include "utilities.h"
 
+// private functions
+
 static void initGameLogo() {
   JOY_setEventHandler(NULL);
 }
+
+// public functions
 
 void processGameLogo() {
   initGameLogo();
