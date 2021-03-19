@@ -20,66 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QUANTUM_BURST_ASSERT_H__
+#define __QUANTUM_BURST_ASSERT_H__
+
 #include <genesis.h>
 
-#include "actors/player.h"
-#include "camera.h"
-#include "game.h"
-#include "stage.h"
-#include "utilities.h"
+void _assert(bool _exp, const char* _file, u16 _line, const char* _msg);
 
-// private functions
+#ifdef DEBUG
+#define ASSERT(_exp, _msg) (_assert(!!(_exp), __FILE__, __LINE__, _msg))
+#else
+#define ASSERT(_exp, _msg)
+#endif
 
-static void init(bool _hardReset) {
-  VDP_init();
-  VDP_setScreenWidth320();
-
-  if (IS_PALSYSTEM) {
-    VDP_setScreenHeight240();
-  } else {
-    VDP_setScreenHeight224();
-  }
-
-  SPR_init();
-
-  if (_hardReset) {
-    setGameState(STATE_LOGO);
-  } else if (!isGameState(STATE_LOGO)) {
-    setGameState(STATE_MENU);
-  }
-
-  initUtilities();
-  initStage();
-  initCamera();
-  initPlayer();
-}
-
-// program entry
-
-int main(bool _hardReset) {
-  init(_hardReset);
-
-  while (TRUE) {
-    switch (getGameState()) {
-      case STATE_LOGO:
-        processGameLogo();
-        break;
-      case STATE_MENU:
-        processGameMenu();
-        break;
-      case STATE_LOAD:
-        processGameLoad();
-        break;
-      case STATE_PLAY:
-        processGamePlay();
-        break;
-      case STATE_CREDITS:
-        processGameCredits();
-        break;
-      default:
-        return 1;
-    }
-  }
-
-  return 0;
-}
+#endif  // __QUANTUM_BURST_ASSERT_H__
