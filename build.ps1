@@ -4,7 +4,9 @@ param(
   [Int] $revision = 99,
   [ValidateSet('Debug', 'Release', 'Clean', 'ASM')]
   [Parameter(Mandatory = $false)]
-  [String] $buildType = 'Release'
+  [String] $buildType = 'Release',
+  [Parameter(Mandatory = $false)]
+  [Switch] $rebuild = $false
 )
 
 $callingLocation = Get-Location
@@ -23,6 +25,8 @@ try {
 
   Set-Content -Path src\boot\rom_head.c -Value $contents
 
+  $build = @('debug', 'release') -Contains $buildType
+
   # remove checksum corrected ROM
   if (Test-Path -Path 'out\rom_final.bin') {
     Remove-Item 'out\rom_final.bin'
@@ -31,6 +35,10 @@ try {
   # run build
   $buildType = $buildType.ToLower()
 
+  if ($build -And $rebuild) {
+    Invoke-Expression "ext\sgdk\bin\make -f ext\sgdk\makefile.gen clean"
+  }
+
   Invoke-Expression "ext\sgdk\bin\make -f ext\sgdk\makefile.gen $buildType"
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
@@ -38,7 +46,7 @@ try {
   }
 
   # correct ROM checksum
-  if (@('debug', 'release') -Contains $buildType) {
+  if ($build) {
     Write-Host 'Correcting checksum'
     Invoke-Expression 'python ext\sgcc\sgcc.py -s final out\rom.bin'
   }
