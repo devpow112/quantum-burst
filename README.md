@@ -19,7 +19,7 @@ Development can be done on **Windows** only, and has been tested only on
 Build scripts are provided for both `powershell` and `cmd`. They will process
 all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 `out` directory. After this is done the checksum will be calculated and
-`rom_cc.bin` generated with the correct checksum.
+`rom_final.bin` generated with the correct checksum.
 
 #### powershell
 
