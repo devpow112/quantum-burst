@@ -34,6 +34,20 @@
 // private functions
 
 static void init(bool _hardReset) {
+  initUtilities();
+  initStage();
+  initCamera();
+  initPlayer();
+  initMine();
+  initHomingMine();
+  initManagedActors();
+
+  if (_hardReset) {
+    setGameState(STATE_LOGO);
+  } else if (!isGameState(STATE_LOGO)) {
+    setGameState(STATE_MENU);
+  }
+
   VDP_init();
   VDP_setScreenWidth320();
 
@@ -44,23 +58,6 @@ static void init(bool _hardReset) {
   }
 
   SPR_init();
-
-  if (_hardReset) {
-    setGameState(STATE_LOGO);
-  } else if (!isGameState(STATE_LOGO)) {
-    setGameState(STATE_MENU);
-  }
-
-  initUtilities();
-  initStage();
-  initCamera();
-
-  // init actors
-
-  initManagedActors();
-  initPlayer();
-  initMine();
-  initHomingMine();
 }
 
 // program entry
