@@ -51,3 +51,5 @@ jobs:
           submodules: true
       - name: Build
         run: ./build.ps1 -BuildType ${{matrix.build-type}}
+      - name: Report size
+        run: du -hb out/rom_final.bin

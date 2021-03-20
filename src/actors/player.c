@@ -216,23 +216,22 @@ void initPlayer() {
 }
 
 Actor* createPlayer(u16 _palette, const V2f32 _position) {
-  const V2u16 spritePosition = {
-    fix32ToRoundedInt(_position.x) + g_playerSpriteOffset.x,  // x
-    fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y   // y
-  };
-  const u16 spriteAttributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
   PlayerData* data = malloc(sizeof(PlayerData));
 
   assert(data != NULL, "Failed to allocate player data");
 
-  data->sprite =
-    SPR_addSpriteExSafe(&k_shipSprite, spritePosition.x, spritePosition.y,
-                        spriteAttributes, 0, PLAYER_SPRITE_FLAGS);
   data->bankDirection = PLAYER_BANKING_DIRECTION_DEFAULT;
   data->attackCooldown = PLAYER_ATTACK_COOLDOWN_DEFAULT;
   data->damageCooldown = PLAYER_DAMAGE_COOLDOWN_DEFAULT;
   data->health = PLAYER_HEALTH_DEFAULT;
   data->radius = k_shipSprite.w / 2;
+
+  const u16 x = fix32ToRoundedInt(_position.x) + g_playerSpriteOffset.x;
+  const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
+  const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
+
+  data->sprite = SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, 0,
+                                     PLAYER_SPRITE_FLAGS);
 
   return createActor(_position, data, &update, &draw, &destroy);
 }
