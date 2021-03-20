@@ -25,12 +25,29 @@
 #include "actor.h"
 #include "managed-actor.h"
 
+// entity
+
+struct _ManagedActor;
+typedef struct _ManagedActor ManagedActor;
+
+struct _ManagedActor {
+  Actor actor;
+  ManagedActor* previous;
+  ManagedActor* next;
+  bool cleanUp;
+};
+
 // global properties
 
 static ManagedActor* g_firstManagedActor = NULL;
 static ManagedActor* g_lastManagedActor = NULL;
 
 // public functions
+
+void initManagedActors() {
+  g_firstManagedActor = NULL;
+  g_lastManagedActor = NULL;
+}
 
 void createManagedActor(V2f32 _position, void* _data,
                         ActorUpdateCallback _updateCallback,
@@ -39,12 +56,11 @@ void createManagedActor(V2f32 _position, void* _data,
   ManagedActor* managedActor = malloc(sizeof(ManagedActor));
   Actor* actor = &managedActor->actor;
 
-  actor->position = _position;
-  actor->data = _data;
-  actor->updateCallback = _updateCallback;
-  actor->drawCallback = _drawCallback;
-  actor->destroyCallback = _destroyCallback;
+  setUpActor(actor, _position, _data, _updateCallback, _drawCallback,
+             _destroyCallback);
+
   managedActor->next = NULL;
+  managedActor->cleanUp = FALSE;
 
   if (g_firstManagedActor == NULL) {
     managedActor->previous = NULL;
@@ -57,11 +73,6 @@ void createManagedActor(V2f32 _position, void* _data,
   }
 }
 
-void initManagedActors() {
-  g_firstManagedActor = NULL;
-  g_lastManagedActor = NULL;
-}
-
 void updateManagedActors(const Stage* _stage) {
   if (_stage == NULL) {
     return;
@@ -70,6 +81,25 @@ void updateManagedActors(const Stage* _stage) {
   ManagedActor* managedActor = g_firstManagedActor;
 
   while (managedActor != NULL) {
+    if (managedActor->cleanUp) {
+      Actor* actor = &managedActor->actor;
+
+      if (actor->destroyCallback != NULL) {
+        actor->destroyCallback(actor);
+      }
+
+      ManagedActor* managedActorNext = managedActor->next;
+
+      managedActor->previous->next = managedActorNext;
+      managedActor->next->previous = managedActor->previous;
+
+      free(managedActor);
+
+      managedActor = managedActorNext;
+
+      continue;
+    }
+
     updateActor(&managedActor->actor, _stage);
 
     managedActor = managedActor->next;
@@ -109,4 +139,10 @@ void destroyManagedActors() {
 
   g_firstManagedActor = NULL;
   g_lastManagedActor = NULL;
+}
+
+void setManagedActorCleanUp(Actor* _actor) {
+  ManagedActor* managedActor = (ManagedActor*)_actor;
+
+  managedActor->cleanUp = TRUE;
 }

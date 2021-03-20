@@ -32,13 +32,21 @@ Actor* createActor(V2f32 _position, void* _data,
                    ActorDestroyCallback _destroyCallback) {
   Actor* actor = malloc(sizeof(Actor));
 
-  actor->position = _position;
-  actor->data = _data;
-  actor->updateCallback = _updateCallback;
-  actor->drawCallback = _drawCallback;
-  actor->destroyCallback = _destroyCallback;
+  setUpActor(actor, _position, _data, _updateCallback, _drawCallback,
+             _destroyCallback);
 
   return actor;
+}
+
+void setUpActor(Actor* _actor, V2f32 _position, void* _data,
+                ActorUpdateCallback _updateCallback,
+                ActorDrawCallback _drawCallback,
+                ActorDestroyCallback _destroyCallback) {
+  _actor->position = _position;
+  _actor->data = _data;
+  _actor->updateCallback = _updateCallback;
+  _actor->drawCallback = _drawCallback;
+  _actor->destroyCallback = _destroyCallback;
 }
 
 void updateActor(Actor* _actor, const Stage* _stage) {

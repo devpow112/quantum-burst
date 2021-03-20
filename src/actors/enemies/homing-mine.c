@@ -73,6 +73,7 @@ static void update(Actor* _actor, const Stage* _stage) {
   if (magnitude <= explodeRadius) {
     exploded = TRUE;
 
+    setManagedActorCleanUp(_actor);
     doPlayerHit(player);
   } else if (magnitude <= homingRadius) {
     const f32 speedX = fix32Mul(fix32Div(deltaX, magnitude), g_homingMineSpeed);

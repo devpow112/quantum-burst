@@ -52,6 +52,11 @@ Actor* createActor(V2f32 _position, void* _data,
                    ActorDrawCallback _drawCallback,
                    ActorDestroyCallback _destroyCallback);
 
+void setUpActor(Actor* _actor, V2f32 _position, void* _data,
+                ActorUpdateCallback _updateCallback,
+                ActorDrawCallback _drawCallback,
+                ActorDestroyCallback _destroyCallback);
+
 void updateActor(Actor* _actor, const Stage* _stage);
 
 void drawActor(const Actor* _actor, const Camera* _camera);
