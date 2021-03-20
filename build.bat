@@ -12,5 +12,5 @@ if "%REVISION%" EQU "" (
 )
 
 pushd "%~dp0"
-powershell -File build.ps1 -BuildType %Type% -Revision %REVISION%
+powershell -File build.ps1 -BuildType %Type% -Revision %REVISION% -Rebuild
 popd

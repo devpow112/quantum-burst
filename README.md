@@ -16,10 +16,23 @@ Development can be done on **Windows** only, and has been tested only on
 
 ### Build
 
-Build scripts are provided for both `cmd` and `powershell`. They will process
+Build scripts are provided for both `powershell` and `cmd`. They will process
 all the files under `res`, `inc` and `src` to produce a `rom.bin` file in the
 `out` directory. After this is done the checksum will be calculated and
 `rom_cc.bin` generated with the correct checksum.
+
+#### powershell
+
+```pwsh
+.\build.ps1 [-BuildType] [-Revision] [-Rebuild]
+```
+
+- `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
+will default to `Release`
+- `-Revision` - Can be any integer value of `99` or less. If omitted will
+default to `99`
+- `-Rebuild` - Will run a `Clean` before a `Debug` or `Release` build. This has
+no effect on other build types.
 
 #### cmd
 
@@ -32,16 +45,7 @@ will default to `Release`
 - `revision` - Can be any integer value of `99` or less. If omitted will default
 to `99`
 
-#### powershell
-
-```pwsh
-.\build.ps1 [-BuildType] [-Revision]
-```
-
-- `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-will default to `Release`
-- `-Revision` - Can be any integer value of `99` or less. If omitted will
-default to `99`
+> **Note** this method will always do a rebuild.
 
 <!-- links -->
 [CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main
