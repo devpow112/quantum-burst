@@ -64,6 +64,7 @@ static void update(Actor* _actor, const Stage* _stage) {
   if (magnitude <= explodeRadius) {
     exploded = TRUE;
 
+    setManagedActorCleanUp(_actor);
     doPlayerHit(player);
   }
 

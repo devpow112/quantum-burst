@@ -29,32 +29,23 @@
 #include "camera.h"
 #include "stage.h"
 
-// entity
-
-struct _ManagedActor;
-typedef struct _ManagedActor ManagedActor;
-
-struct _ManagedActor {
-  Actor actor;
-  ManagedActor* previous;
-  ManagedActor* next;
-};
-
 // life-cycle
+
+void initManagedActors();
 
 void createManagedActor(V2f32 _position, void* _data,
                         ActorUpdateCallback _updateCallback,
                         ActorDrawCallback _drawCallback,
                         ActorDestroyCallback _destroyCallback);
 
-// life-cycle
-
-void initManagedActors();
-
 void updateManagedActors(const Stage* _stage);
 
 void drawManagedActors(const Camera* _camera);
 
 void destroyManagedActors();
+
+// properties
+
+void setManagedActorCleanUp(Actor* _actor);
 
 #endif  // __QUANTUM_BURST_MANAGED_ACTOR_H__
