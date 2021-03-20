@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_ACTORS_MINE_H__
-#define __QUANTUM_BURST_ACTORS_MINE_H__
+#ifndef __QUANTUM_BURST_ACTORS_ENEMIES_MINE_H__
+#define __QUANTUM_BURST_ACTORS_ENEMIES_MINE_H__
 
 #include <genesis.h>
 
@@ -33,4 +33,4 @@ void initMine();
 
 void createMine(u16 _palette, V2f32 _position, Actor* _player);
 
-#endif  // __QUANTUM_BURST_ACTORS_MINE_H__
+#endif  // __QUANTUM_BURST_ACTORS_ENEMIES_MINE_H__
