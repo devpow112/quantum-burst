@@ -23,6 +23,7 @@
 #include <genesis.h>
 
 #include "actor.h"
+#include "assert.h"
 #include "managed-actor.h"
 
 // entity
@@ -54,6 +55,9 @@ void createManagedActor(V2f32 _position, void* _data,
                         ActorDrawCallback _drawCallback,
                         ActorDestroyCallback _destroyCallback) {
   ManagedActor* managedActor = malloc(sizeof(ManagedActor));
+
+  assert(managedActor != NULL, "Failed to allocate managed actor");
+
   Actor* actor = &managedActor->actor;
 
   setUpActor(actor, _position, _data, _updateCallback, _drawCallback,

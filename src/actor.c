@@ -23,6 +23,7 @@
 #include <genesis.h>
 
 #include "actor.h"
+#include "assert.h"
 
 // public functions
 
@@ -32,6 +33,7 @@ Actor* createActor(V2f32 _position, void* _data,
                    ActorDestroyCallback _destroyCallback) {
   Actor* actor = malloc(sizeof(Actor));
 
+  assert(actor != NULL, "Failed to allocate actor");
   setUpActor(actor, _position, _data, _updateCallback, _drawCallback,
              _destroyCallback);
 
