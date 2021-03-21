@@ -19,9 +19,8 @@ jobs:
   check-formatting-markdown:
     name: Check Formatting (Markdown)
     runs-on: ubuntu-latest
+    container: ghcr.io/devpow112/markdownlint
     steps:
-      - name: Install packages
-        run: sudo npm i -g markdownlint-cli
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Check formatting
