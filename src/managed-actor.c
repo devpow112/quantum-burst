@@ -46,6 +46,10 @@ static ManagedActor* g_lastManagedActor = NULL;
 // public functions
 
 void initManagedActors() {
+  if (g_firstManagedActor != NULL) {
+    destroyManagedActors();
+  }
+
   g_firstManagedActor = NULL;
   g_lastManagedActor = NULL;
 }
