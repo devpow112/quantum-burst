@@ -1,6 +1,7 @@
 # Quantum Burst
 
-[![CI][CI Badge]][CI Workflows]
+[![License]](LICENSE)
+[![CI][CI Badge]][CI Workflow]
 
 A [bullet hell] style space shooter written for the [Sega Genesis].
 
@@ -48,7 +49,8 @@ to `99`
 > **Note** this method will always do a rebuild.
 
 <!-- links -->
+[License]: https://img.shields.io/github/license/devpow112/quantum-burst?label=License
 [CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main
-[CI Workflows]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml
+[CI Workflow]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml?query=branch%3Amain
 [Bullet Hell]: https://en.wikipedia.org/wiki/Shoot_%27em_up#Bullet_hell
 [Sega Genesis]: https://en.wikipedia.org/wiki/Sega_Genesis
