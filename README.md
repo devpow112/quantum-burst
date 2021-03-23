@@ -42,9 +42,9 @@ build.bat [build-type] [revision]
 ```
 
 - `build-type` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-will default to `Release`
+will default to same default as **powershell** script.
 - `revision` - Can be any integer value of `99` or less. If omitted will default
-to `99`
+to same default as **powershell** script.
 
 > **Note** this method will always do a rebuild.
 
