@@ -1,16 +1,17 @@
 @echo off
+setlocal
 
 set "TYPE=%1"
 set "REVISION=%2"
 
-if "%TYPE%" EQU "" (
-  set "TYPE=Release"
+if "%TYPE%" NEQ "" (
+  set "TYPE_COMMAND=-BuildType %TYPE%"
 )
 
-if "%REVISION%" EQU "" (
-  set "REVISION=99"
+if "%REVISION%" NEQ "" (
+  set "REVISION_COMMAND=-Revision %REVISION%"
 )
 
 pushd "%~dp0"
-powershell -File build.ps1 -BuildType %Type% -Revision %REVISION% -Rebuild
+powershell -File build.ps1 -Rebuild %TYPE_COMMAND% %REVISION_COMMAND%
 popd
