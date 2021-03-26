@@ -61,6 +61,8 @@ void updateActor(Actor* _actor, const Stage* _stage);
 
 void drawActor(const Actor* _actor, const Camera* _camera);
 
+void tearDownActor(Actor* _actor);
+
 void destroyActor(Actor* _actor);
 
 // properties
