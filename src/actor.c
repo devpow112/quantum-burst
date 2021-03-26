@@ -67,13 +67,16 @@ void drawActor(const Actor* _actor, const Camera* _camera) {
   _actor->drawCallback(_actor, _camera);
 }
 
-void destroyActor(Actor* _actor) {
-  if (_actor == NULL || _actor->destroyCallback == NULL) {
-    return;
+void tearDownActor(Actor* _actor) {
+  if (_actor->destroyCallback != NULL) {
+    _actor->destroyCallback(_actor);
   }
 
-  _actor->destroyCallback(_actor);
+  _actor->data = NULL;
+}
 
+void destroyActor(Actor* _actor) {
+  tearDownActor(_actor);
   free(_actor);
 }
 
