@@ -43,4 +43,4 @@ jobs:
         shell: cmd
         run: build ${{matrix.build-type}}
       - name: Report size
-        run: du -hb out/rom_final.bin
+        run: du -hb game/out/rom_final.bin

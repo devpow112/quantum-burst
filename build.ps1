@@ -12,43 +12,43 @@ param(
 $callingLocation = Get-Location
 
 try {
-  $buildRoot = $PSScriptRoot
+  $root = $PSScriptRoot
+  $externRoot = Join-Path $root extern
+  $gameRoot = Join-Path $root game
 
   # generate ROM header
   $year4Digits = (Get-Date -Format 'yyyy')
   $month3Letters = (Get-Date -Format 'MMM').ToUpper()
   $revision2Digits = $revision.ToString().PadLeft(2, '0')
-  $contents = Get-Content -Path "$buildRoot\src\boot\rom_head.c.in"
+  $contents = Get-Content -Path "$gameRoot\src\boot\rom_head.c.in"
   $contents = $contents.Replace('{Year4Digits}', $year4Digits)
   $contents = $contents.Replace('{Month3Letters}', $month3Letters)
   $contents = $contents.Replace('{Revision2Digits}', $revision2Digits)
 
-  Set-Content -Path "$buildRoot\src\boot\rom_head.c" -Value $contents
+  Set-Content -Path "$gameRoot\src\boot\rom_head.c" -Value $contents
 
   $buildType = $buildType.ToLower()
   $isBuild = @('debug', 'release') -Contains $buildType
 
   # remove checksum corrected ROM
   if ($isBuild -And $rebuild -Or $buildType -Eq 'clean') {
-    if (Test-Path -Path "$buildRoot\out\rom_final.bin") {
-      Remove-Item "$buildRoot\out\rom_final.bin"
+    if (Test-Path -Path "$gameRoot\out\rom_final.bin") {
+      Remove-Item "$gameRoot\out\rom_final.bin"
     }
   }
 
-  $extRoot = Join-Path $buildRoot ext
-
   # run build
-  Set-Location $buildRoot
+  Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
-    & "$extRoot\sgdk\bin\make" -f "$extRoot\sgdk\makefile.gen" clean
+    & "$externRoot\sgdk\bin\make" -f "$externRoot\sgdk\makefile.gen" clean
 
     if ($lastExitCode -Ne 0 -Or -Not $?) {
       throw "Clean failed!"
     }
   }
 
-  & "$extRoot\sgdk\bin\make" -f "$extRoot\sgdk\makefile.gen" $buildType
+  & "$externRoot\sgdk\bin\make" -f "$externRoot\sgdk\makefile.gen" $buildType
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
     throw "Build failed!"
@@ -58,7 +58,7 @@ try {
   if ($isBuild) {
     Write-Information 'Correcting checksum'
 
-    & python "$extRoot\sgcc\sgcc.py" -s final "$buildRoot\out\rom.bin"
+    & python "$externRoot\sgcc\sgcc.py" -s final "$gameRoot\out\rom.bin"
   }
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
