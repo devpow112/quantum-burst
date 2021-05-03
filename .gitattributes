@@ -1,4 +1,6 @@
 * text eol=lf
 *.c linguist-language=C
 *.h linguist-language=C
+*.ase binary
 *.png binary
+*.xcf binary
