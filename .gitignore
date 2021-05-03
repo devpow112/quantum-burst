@@ -1,5 +1,5 @@
 .vscode/
-extern/*/*
+externals/*/*
 game/out/
 game/res/*
 !game/res/*/
