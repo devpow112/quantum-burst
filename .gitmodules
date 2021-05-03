@@ -1,11 +1,11 @@
 [submodule "sgdk"]
-	path = extern/sgdk
+	path = externals/sgdk
 	url = https://github.com/Stephane-D/SGDK.git
 	branch = master
 	ignore = dirty
 	shallow = true
 [submodule "sgcc"]
-	path = extern/sgcc
+	path = externals/sgcc
 	url = https://github.com/devpow112/sgcc.git
 	branch = main
 	ignore = dirty

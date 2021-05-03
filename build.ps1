@@ -13,7 +13,7 @@ $callingLocation = Get-Location
 
 try {
   $root = $PSScriptRoot
-  $externRoot = Join-Path $root extern
+  $externalsRoot = Join-Path $root externals
   $gameRoot = Join-Path $root game
 
   # generate ROM header
@@ -40,15 +40,17 @@ try {
   # run build
   Set-Location $gameRoot
 
+  $sgdkRoot = Join-Path $externalsRoot sgdk
+
   if ($isBuild -And $rebuild) {
-    & "$externRoot\sgdk\bin\make" -f "$externRoot\sgdk\makefile.gen" clean
+    & "$sgdkRoot\bin\make" -f "$sgdkRoot\makefile.gen" clean
 
     if ($lastExitCode -Ne 0 -Or -Not $?) {
       throw "Clean failed!"
     }
   }
 
-  & "$externRoot\sgdk\bin\make" -f "$externRoot\sgdk\makefile.gen" $buildType
+  & "$sgdkRoot\bin\make" -f "$sgdkRoot\makefile.gen" $buildType
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
     throw "Build failed!"
@@ -58,7 +60,7 @@ try {
   if ($isBuild) {
     Write-Information 'Correcting checksum'
 
-    & python "$externRoot\sgcc\sgcc.py" -s final "$gameRoot\out\rom.bin"
+    & python "$externalsRoot\sgcc\sgcc.py" -s final "$gameRoot\out\rom.bin"
   }
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
