@@ -6,6 +6,9 @@ on:
     paths:
       - .github/workflows/sync-labels.yml
       - .github/labels.yml
+permissions:
+  contents: read
+  issues: write
 jobs:
   sync-labels:
     name: Sync Labels
