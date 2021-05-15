@@ -23,7 +23,7 @@ jobs:
       - name: Determine year
         id: year
         run: echo "::set-output name=value::$(date +%Y)"
-      - name: Update license
+      - name: Update licenses
         run: >
           find . -type f -not -path './.git/*' -and \( -iname '*.h' -or -iname
           '*.c' -or -iname '*.h.in' -or -iname '*.s' -or -iname 'LICENSE' \)
