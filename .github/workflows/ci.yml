@@ -28,7 +28,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Check formatting
-        uses: actionshub/markdownlint@2.0.2
+        uses: github/super-linter@v3.17.1
+        env:
+          VALIDATE_MARKDOWN: true
   build:
     name: Build
     runs-on: windows-latest
