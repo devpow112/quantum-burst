@@ -29,11 +29,11 @@ calculated and `rom_final.bin` generated with the correct checksum.
 ```
 
 - `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-  will default to `Release`.
+will default to `Release`
 - `-Revision` - Can be any integer value of `99` or less. If omitted will
-  default to `99`.
+default to `99`
 - `-Rebuild` - Will run a `Clean` before a `Debug` or `Release` build. This has
-  no effect on other build types.
+no effect on other build types.
 
 #### cmd
 
@@ -42,9 +42,9 @@ build.bat [build-type] [revision]
 ```
 
 - `build-type` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-  will default to same default as **powershell** script.
+will default to same default as **powershell** script.
 - `revision` - Can be any integer value of `99` or less. If omitted will default
-  to same default as **powershell** script.
+to same default as **powershell** script.
 
 > **Note** this method will always do a rebuild.
 
