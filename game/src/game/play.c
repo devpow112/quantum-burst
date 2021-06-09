@@ -108,8 +108,8 @@ static void tearDownActors() {
 }
 
 static void setUpGamePlay() {
-  PAL_setPalette(PAL0, k_stage1Palette.data);
-  PAL_setPalette(PAL1, k_primarySpritePalette.data);
+  PAL_setPalette(PAL0, k_stage1Palette.data, CPU);
+  PAL_setPalette(PAL1, k_primarySpritePalette.data, CPU);
   setUpStage(&g_stage, PAL0);
   setUpActors(&g_stage);
   setUpCamera(&g_camera, &cameraPositionCallback, TRUE);
