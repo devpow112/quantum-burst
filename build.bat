@@ -13,5 +13,5 @@ if "%REVISION%" NEQ "" (
 )
 
 pushd "%~dp0"
-powershell -File build.ps1 -Rebuild %TYPE_COMMAND% %REVISION_COMMAND%
+powershell -executionpolicy bypass -File build.ps1 -Rebuild %TYPE_COMMAND% %REVISION_COMMAND%
 popd
