@@ -1,4 +1,4 @@
-* text eol=lf
+* text=auto eol=lf
 *.c linguist-language=C
 *.h linguist-language=C
 *.ase binary
