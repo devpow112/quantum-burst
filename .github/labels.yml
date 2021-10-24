@@ -35,7 +35,7 @@
   description: Further information is requested
   color: d876e3
 - name: submodules
-  description: Pull requests that updates Submodule references
+  description: Pull requests that update Submodule references
   color: 000000
 - name: won't fix
   description: This will not be worked on
