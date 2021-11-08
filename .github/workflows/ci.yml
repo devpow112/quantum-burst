@@ -14,7 +14,7 @@ jobs:
     container: ghcr.io/devpow112/clang-format
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Check formatting
         shell: bash
         run: |
@@ -27,7 +27,7 @@ jobs:
     container: ghcr.io/devpow112/markdownlint
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Check formatting
         shell: bash
         run: find . -type f -iname '*.md' -print0 | xargs -0 markdownlint
@@ -43,7 +43,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
         with:
           submodules: true
       - name: Build
