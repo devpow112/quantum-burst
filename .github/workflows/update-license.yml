@@ -26,6 +26,8 @@ jobs:
           find . -type f -not -path './.git/*' -and \( -iname '*.h' -or -iname
           '*.c' -or -iname '*.h.in' -or -iname '*.s' -or -iname 'LICENSE' \)
           -exec sed -i -E "s/$REGEX/\1${{steps.year.outputs.value}}\4/" {} \;
+        env:
+          REGEX: '^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$'
       - name: Check for changes
         id: changes
         run: git diff --exit-code || echo "::set-output name=exist::true"
