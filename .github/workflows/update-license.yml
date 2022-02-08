@@ -5,6 +5,7 @@ on:
     paths: .github/workflows/update-license.yml
   schedule:
     - cron: '0 0 1 1 *'
+  workflow_dispatch:
 permissions:
   contents: write
 concurrency: update-license
@@ -13,6 +14,9 @@ jobs:
     name: Update License
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      BRANCH: auto/update-license
+      REGEX: ^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
@@ -21,28 +25,73 @@ jobs:
       - name: Determine year
         id: year
         run: echo "::set-output name=value::$(date +%Y)"
-      - name: Update licenses
-        run: >
-          find . -type f -not -path './.git/*' -and \( -iname '*.h' -or -iname
-          '*.c' -or -iname '*.h.in' -or -iname '*.s' -or -iname 'LICENSE' \)
-          -exec sed -i -E "s/$REGEX/\1${{steps.year.outputs.value}}\4/" {} \;
+      - name: Switch to '${{env.BRANCH}}'
+        run: |
+          CREDENTIALS="x-access-token:$GITHUB_TOKEN"
+          URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
+          git remote set-url origin $URL
+          git fetch origin +refs/heads/$BRANCH:refs/heads/$BRANCH || true
+          git checkout $BRANCH || git checkout -b $BRANCH
         env:
-          REGEX: '^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$'
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
+      - name: Update LICENSE
+        run: >
+          find . -type f -not -path './.git/*' -and
+          -iregex '^.*\(\.\(h\|c\|inl\|h\.in\|s\)\|LICENSE\)$'
+          -exec sed -i -E "s/$REGEX/\1${{steps.year.outputs.value}}\4/" {} \;
       - name: Check for changes
         id: changes
-        run: git diff --exit-code || echo "::set-output name=exist::true"
+        run: git diff --exit-code || echo '::set-output name=exist::true'
       - name: Push commit
         if: steps.changes.outputs.exist
         run: |
-          git config user.name $COMMIT_USERNAME
-          git config user.email $COMMIT_EMAIL
+          git reset --hard origin/main
+          find . -type f -not -path './.git/*' -and \
+          -iregex '^.*\(\.\(h\|c\|inl\|h\.in\|s\)\|LICENSE\)$' \
+          -exec sed -i -E "s/$REGEX/\1${{steps.year.outputs.value}}\4/" {} \;
+          git config user.name ${{secrets.AUTOMATION_USER}}
+          git config user.email ${{secrets.AUTOMATION_EMAIL}}
           git add -u
           git commit -m 'Update license year to ${{steps.year.outputs.value}}'
           CREDENTIALS="x-access-token:$GITHUB_TOKEN"
           URL="https://$CREDENTIALS@github.com/${{github.repository}}.git"
           git remote set-url origin $URL
-          git push origin main
+          git push --force origin $BRANCH
         env:
-          GITHUB_TOKEN: ${{secrets.PERSONAL_GITHUB_TOKEN}}
-          COMMIT_USERNAME: github-actions[bot]
-          COMMIT_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
+      - name: Create pull request
+        if: steps.changes.outputs.exist
+        uses: actions/github-script@v5.1.0
+        with:
+          script: |
+            const year = '${{steps.year.outputs.value}}';
+            const title = `Update license year to ${year}`;
+            const [owner, repo] = '${{github.repository}}'.split('/');
+            const base = 'refs/heads/main';
+            const head = 'refs/heads/${{env.BRANCH}}';
+            const labels = ['auto'];
+            const pullRequests = await github.rest.pulls.list({
+              head: `${owner}:${head}`,
+              owner, repo, base
+            });
+            if (pullRequests.data.length === 0) {
+              const createResult = await github.rest.pulls.create({
+                title, owner, repo, head, base
+              });
+              github.rest.issues.addLabels({
+                issue_number: createResult.data.number,
+                owner, repo, labels
+              });
+              console.log('Created new pull request');
+              return createResult.data.number;
+            } else {
+              const prNumber = pullRequests.data[0].number;
+              github.rest.issues.update({
+                issue_number: prNumber,
+                title, owner, repo, labels
+              });
+              console.log(`Pull request already exists, updated #${prNumber}`);
+              return prNumber;
+            }
+          result-encoding: string
+          github-token: ${{secrets.AUTOMATION_TOKEN}}
