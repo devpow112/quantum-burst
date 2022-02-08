@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: gitsubmodule
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
       day: monday
       time: '04:00'
       timezone: America/Toronto
@@ -12,12 +12,10 @@ updates:
       - auto
       - dependencies
       - submodules
-    reviewers:
-      - devpow112
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
+      interval: daily
       day: monday
       time: '04:00'
       timezone: America/Toronto
@@ -26,5 +24,3 @@ updates:
       - auto
       - dependencies
       - github-actions
-    reviewers:
-      - devpow112
