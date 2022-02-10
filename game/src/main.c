@@ -51,7 +51,7 @@ static void init(bool _hardReset) {
   VDP_init();
   VDP_setScreenWidth320();
 
-  if (IS_PALSYSTEM) {
+  if (IS_PAL_SYSTEM) {
     VDP_setScreenHeight240();
   } else {
     VDP_setScreenHeight224();
