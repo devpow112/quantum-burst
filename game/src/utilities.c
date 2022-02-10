@@ -37,7 +37,7 @@ static f32 g_utiltiesFrameDeltaTime;
 // public functions
 
 void initUtilities() {
-  const u8 fps = IS_PALSYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;
+  const u8 fps = IS_PAL_SYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;
 
   g_utiltiesFrameRate = fps;
   g_utiltiesFrameDeltaTime = fix32Div(intToFix32(1), intToFix32(fps));
