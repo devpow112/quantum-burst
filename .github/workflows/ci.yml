@@ -21,13 +21,13 @@ jobs:
     name: Check Formatting (Markdown)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    container: ghcr.io/devpow112/markdownlint
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Check formatting
-        shell: bash
-        run: find . -type f -iname '*.md' -print0 | xargs -0 markdownlint
+        uses: davidanson/markdownlint-cli2-action@v5.1.0
+        with:
+          globs: '**/*.md'
   build:
     name: Build
     runs-on: windows-latest
