@@ -1,0 +1,11 @@
+name: Release
+on:
+  push:
+    branches: main
+concurrency: release
+permissions:
+  contents: read
+jobs:
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml

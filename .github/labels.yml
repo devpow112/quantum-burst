@@ -4,6 +4,9 @@
 - name: bug
   description: Something isn't working
   color: d73a4a
+- name: c
+  description: Pull requests that updates C code
+  color: a8b9cc
 - name: clean-up
   description: Clean-up or refactor of something already existing
   color: a7afe5
