@@ -61,7 +61,7 @@ jobs:
           GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
       - name: Create pull request
         if: steps.changes.outputs.exist
-        uses: actions/github-script@v5.1.0
+        uses: actions/github-script@v6
         with:
           script: |
             const year = '${{steps.year.outputs.value}}';
