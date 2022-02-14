@@ -8,15 +8,13 @@ jobs:
     name: Check Formatting (C)
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    container: ghcr.io/devpow112/clang-format
     steps:
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Check formatting
-        shell: bash
-        run: |
-          find . -type f -iregex '^.*\.\(c\|c.in\|h\)$' -print0 |
-          xargs -0 clang-format --dry-run --Werror
+        uses: jidicula/clang-format-action@v4.5.0
+        with:
+          clang-format-version: 12
   check-formatting-markdown:
     name: Check Formatting (Markdown)
     runs-on: ubuntu-latest
