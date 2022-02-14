@@ -1,0 +1,9 @@
+c:
+  - '*.c'
+  - '*.h'
+documentation:
+  - '*.md'
+github-actions:
+  - .github/workflows/*.yml
+submodules:
+  - externals/*
