@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3.0.0
       - name: Check formatting
-        uses: jidicula/clang-format-action@v4.6.1
+        uses: jidicula/clang-format-action@v4.6.2
         with:
           clang-format-version: 12
   check-formatting-markdown:
