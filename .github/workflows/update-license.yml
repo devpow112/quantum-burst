@@ -55,8 +55,7 @@ jobs:
           GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
       - name: Enable auto-merge
         if: steps.changes.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1.2.0
-        with:
-          token: ${{secrets.AUTOMATION_TOKEN}}
-          pull-request-number: ${{steps.changes.outputs.pull-request-number}}
-          merge-method: squash
+        run: gh pr merge --auto --squash "$PULL_REQUEST_URL"
+        env:
+          PULL_REQUEST_URL: ${{steps.changes.outputs.pull-request-url}}
+          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
