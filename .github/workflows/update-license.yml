@@ -55,7 +55,7 @@ jobs:
           GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
       - name: Enable auto-merge
         if: steps.changes.outputs.pull-request-operation == 'created'
-        uses: peter-evans/enable-pull-request-automerge@v1.2.0
+        uses: peter-evans/enable-pull-request-automerge@v2
         with:
           token: ${{secrets.AUTOMATION_TOKEN}}
           pull-request-number: ${{steps.changes.outputs.pull-request-number}}
