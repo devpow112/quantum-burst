@@ -37,10 +37,15 @@ try {
     }
   }
 
-  # run build
-  Set-Location $gameRoot
-
+  # build lib
   $sgdkRoot = Join-Path $externalsRoot sgdk
+
+  Set-Location $sgdkRoot
+
+  & "$sgdkRoot\bin\make" -f "$sgdkRoot\makelib.gen"
+
+  # build game
+  Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
     & "$sgdkRoot\bin\make" -f "$sgdkRoot\makefile.gen" clean
