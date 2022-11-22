@@ -1,6 +1,6 @@
 # Quantum Burst
 
-[![License]](LICENSE)
+[![License][License]](LICENSE)
 [![CI][CI Badge]][CI Workflow]
 
 A [bullet hell] style space shooter written for the [Sega Genesis].
