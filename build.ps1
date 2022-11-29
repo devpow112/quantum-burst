@@ -42,7 +42,7 @@ try {
 
   Set-Location $sgdkRoot
 
-  & "$sgdkRoot\bin\make" -f "$sgdkRoot\makelib.gen"
+  & "$sgdkRoot\bin\make" -f "$sgdkRoot\makelib.gen" $buildType
 
   # build game
   Set-Location $gameRoot
