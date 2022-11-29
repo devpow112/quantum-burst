@@ -41,9 +41,6 @@
 #define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
 #define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
 #define PLAYER_HEALTH_DEFAULT 2
-#define PLAYER_SPRITE_FLAGS                                \
-  (SPR_FLAG_AUTO_VRAM_ALLOC | SPR_FLAG_AUTO_SPRITE_ALLOC | \
-   SPR_FLAG_AUTO_TILE_UPLOAD)
 
 // global properties
 
@@ -230,8 +227,7 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, 0,
-                                     PLAYER_SPRITE_FLAGS);
+  data->sprite = SPR_addSpriteSafe(&k_shipSprite, x, y, attributes);
 
   return createActor(_position, data, &update, &draw, &destroy);
 }

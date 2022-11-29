@@ -1,5 +1,6 @@
 BasedOnStyle: Google
 Language: Cpp
+AlignEscapedNewlinesLeft: false
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortEnumsOnASingleLine: true

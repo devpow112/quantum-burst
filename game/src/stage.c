@@ -79,5 +79,5 @@ void drawStage(const Stage* _stage, const Camera* _camera) {
 }
 
 void tearDownStage(Stage* _stage) {
-  MEM_free(_stage->map);
+  MAP_release(_stage->map);
 }
