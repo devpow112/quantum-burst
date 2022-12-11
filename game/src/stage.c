@@ -43,7 +43,7 @@ void setUpStage(Stage* _stage, u16 _palette) {
 
   _stage->width = k_stage1Map.w * 128;
   _stage->height = k_stage1Map.h * 128;
-  _stage->minimumX = intToFix32(0);
+  _stage->minimumX = 0;
   _stage->maximumX = fix32Add(_stage->minimumX, screenWidth);
   _stage->speed = fix32Div(intToFix32(120), fps);
 
@@ -59,7 +59,7 @@ void updateStage(Stage* _stage) {
   const f32 width = intToFix32(_stage->width);
   const f32 speed = _stage->speed;
   const f32 screenWidth = intToFix32(VDP_getScreenWidth());
-  const f32 minimumXLow = intToFix32(0);
+  const f32 minimumXLow = 0;
   const f32 minimumXHigh = fix32Sub(width, screenWidth);
   const f32 maximumXLow = screenWidth;
   const f32 maximumXHigh = width;

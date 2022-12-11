@@ -33,14 +33,17 @@
 // constants
 
 #define PLAYER_SCREEN_BUFFER 2                         // pixels
-#define PLAYER_ATTACK_COOLDOWN_DEFAULT (FIX16(0))      // seconds
+#define PLAYER_ATTACK_COOLDOWN_DEFAULT 0               // seconds
 #define PLAYER_ATTACK_COOLDOWN_DURATION (FIX16(0.05))  // seconds
-#define PLAYER_DAMAGE_COOLDOWN_DEFAULT (FIX16(0))      // seconds
+#define PLAYER_DAMAGE_COOLDOWN_DEFAULT 0               // seconds
 #define PLAYER_DAMAGE_COOLDOWN_DURATION (FIX16(1))     // seconds
-#define PLAYER_BANKING_DIRECTION_DEFAULT (FIX16(0))
-#define PLAYER_BANKING_DIRECTION_MAX_RIGHT (FIX16(2))
-#define PLAYER_BANKING_DIRECTION_MAX_LEFT (-PLAYER_BANKING_DIRECTION_MAX_RIGHT)
+#define PLAYER_BANKING_DIRECTION_DEFAULT 0
+#define PLAYER_BANKING_DIRECTION_MAX_DOWN (FIX16(2))
+#define PLAYER_BANKING_DIRECTION_MAX_UP (-PLAYER_BANKING_DIRECTION_MAX_DOWN)
 #define PLAYER_HEALTH_DEFAULT 2
+#define PLAYER_SPRITE_FLAGS                                                    \
+  (SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_VRAM_ALLOC |                       \
+   SPR_FLAG_AUTO_TILE_UPLOAD)
 
 // global properties
 
@@ -101,13 +104,14 @@ static void processMovement(Actor* _actor, PlayerData* _data,
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
       bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
-  } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_LEFT) {
+  } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_UP) {
     bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
-  } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_RIGHT) {
+  } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_DOWN) {
     bankDirection = fix16Add(bankDirection, g_playerBankingRate);
   }
 
-  _data->bankDirection = bankDirection;
+  _data->bankDirection = clamp(bankDirection, PLAYER_BANKING_DIRECTION_MAX_UP,
+                               PLAYER_BANKING_DIRECTION_MAX_DOWN);
 
   setActorPosition(_actor, position);
 }
@@ -116,7 +120,7 @@ static void processAttack(PlayerData* _data) {
   const u16 inputState = JOY_readJoypad(JOY_1);
   f16 attackCooldown = _data->attackCooldown;
 
-  if (attackCooldown > intToFix16(0)) {
+  if (attackCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
     attackCooldown = fix16Sub(attackCooldown, deltaTime);
@@ -130,7 +134,7 @@ static void processAttack(PlayerData* _data) {
 static void processDamage(PlayerData* _data) {
   f16 damageCooldown = _data->damageCooldown;
 
-  if (damageCooldown > intToFix16(0)) {
+  if (damageCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
     damageCooldown = fix16Sub(damageCooldown, deltaTime);
@@ -159,12 +163,12 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
   const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
   const PlayerData* data = (const PlayerData*)getActorData(_actor);
-  const s8 bankDirectionRounded = fix16ToRoundedInt(data->bankDirection);
-  const u8 bankDirectionIndex = abs(bankDirectionRounded);
+  const f16 bankDirection = data->bankDirection;
+  const f16 bankMagnitude = abs(bankDirection);
   Sprite* sprite = data->sprite;
   SpriteVisibility visibility;
 
-  if (data->damageCooldown > intToFix16(0)) {
+  if (data->damageCooldown > 0) {
     visibility = SPR_isVisible(sprite, FALSE) ? HIDDEN : VISIBLE;
   } else {
     visibility = VISIBLE;
@@ -177,10 +181,12 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   }
 
   SPR_setPosition(sprite, positionX, positionY);
+  SPR_setVFlip(sprite, bankDirection > 0);
 
-  if (bankDirectionIndex > 0) {
-    SPR_setVFlip(sprite, bankDirectionRounded > 0);
-    SPR_setAnimAndFrame(sprite, 1, bankDirectionIndex - 1);
+  if (bankMagnitude >= FIX16(2)) {
+    SPR_setAnimAndFrame(sprite, 1, 1);
+  } else if (bankMagnitude >= FIX16(1)) {
+    SPR_setAnimAndFrame(sprite, 1, 0);
   } else {
     SPR_setAnim(sprite, 0);
   }
@@ -227,7 +233,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteSafe(&k_shipSprite, x, y, attributes);
+  data->sprite = SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, 0,
+                                     PLAYER_SPRITE_FLAGS);
 
   return createActor(_position, data, &update, &draw, &destroy);
 }

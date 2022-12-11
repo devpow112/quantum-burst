@@ -33,6 +33,9 @@
 // constants
 
 #define HOMING_MINE_SPEED FIX32(1.5)
+#define HOMING_MINE_SPRITE_FLAGS                                               \
+  (SPR_FLAG_AUTO_VISIBILITY | SPR_FLAG_AUTO_VRAM_ALLOC |                       \
+   SPR_FLAG_AUTO_TILE_UPLOAD)
 
 // global properties
 
@@ -137,7 +140,8 @@ void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
   const f32 y = fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteSafe(&k_mineSprite, x, y, attributes);
+  data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, 0,
+                                     HOMING_MINE_SPRITE_FLAGS);
 
   createManagedActor(_position, data, &update, &draw, &destroy);
 }
