@@ -45,7 +45,7 @@ void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback,
   if (_positionCallback != NULL && _evaluateCallback) {
     position = _positionCallback();
   } else {
-    position.x = intToFix32(0);
+    position.x = 0;
     position.y = position.x;
   }
 
