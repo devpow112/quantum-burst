@@ -33,7 +33,7 @@ jobs:
       - name: Update licenses
         run: >
           find . -type f -not -path './.git/*' -and
-          -iregex '^.*\(\.\(h\|c\|h\.in\|s\)\|LICENSE\)$'
+          -iregex '^.*\(\.\(h\|c\|c\.in\)\|LICENSE\)$'
           -exec sed -i -E "s/$REGEX/\1$YEAR\4/" {} \;
         env:
           YEAR: ${{steps.info.outputs.license-year}}
