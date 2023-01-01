@@ -44,7 +44,7 @@ jobs:
           token: ${{secrets.AUTOMATION_TOKEN}}
           commit-message: ${{steps.info.outputs.update-title}}
           committer: ${{env.GIT_USER}}
-          add-paths: '*.h,*.h.in,*.c,*.s,LICENSE'
+          add-paths: '*.h,*.c,*.c.in,LICENSE'
           author: ${{env.GIT_USER}}
           branch: auto/update-license
           delete-branch: true
