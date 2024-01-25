@@ -1,7 +1,7 @@
 # Quantum Burst
 
 [![License][License]](LICENSE)
-[![CI][CI Badge]][CI Workflow]
+[![Release][Release Badge]][Release Workflow]
 
 A [bullet hell] style space shooter written for the [Sega Genesis].
 
@@ -50,7 +50,7 @@ to same default as **powershell** script.
 
 <!-- links -->
 [License]: https://img.shields.io/github/license/devpow112/quantum-burst?label=License
-[CI Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml/badge.svg?branch=main
-[CI Workflow]: https://github.com/devpow112/quantum-burst/actions/workflows/ci.yml?query=branch%3Amain
+[Release Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/release.yml/badge.svg?branch=main
+[Release Workflow]: https://github.com/devpow112/quantum-burst/actions/workflows/release.yml?query=branch%3Amain
 [Bullet Hell]: https://en.wikipedia.org/wiki/Shoot_%27em_up#Bullet_hell
 [Sega Genesis]: https://en.wikipedia.org/wiki/Sega_Genesis
