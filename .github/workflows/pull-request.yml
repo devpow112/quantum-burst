@@ -18,5 +18,3 @@ jobs:
     steps:
       - name: Apply labels
         uses: actions/labeler@v5.0.0
-        with:
-          repo-token: ${{github.token}}
