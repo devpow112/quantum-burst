@@ -1,10 +1,19 @@
 c:
-  - '*.c'
-  - '*.h'
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.c'
+      - '**/*.h'
 documentation:
-  - '*.md'
-  - LICENSE
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - .github/CODEOWNERS
+      - LICENSE
 github-actions:
-  - .github/workflows/*.yml
+  - changed-files:
+    - any-glob-to-any-file:
+      - .github/workflows/*.yml
 submodules:
-  - externals/*
+  - changed-files:
+    - any-glob-to-any-file:
+      - externals/*
