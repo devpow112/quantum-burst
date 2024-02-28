@@ -38,7 +38,7 @@ jobs:
         env:
           YEAR: ${{steps.info.outputs.license-year}}
       - name: Handle changes
-        uses: peter-evans/create-pull-request@v6.0.0
+        uses: peter-evans/create-pull-request@v6.0.1
         id: changes
         with:
           token: ${{secrets.AUTOMATION_TOKEN}}
