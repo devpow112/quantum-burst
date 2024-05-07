@@ -18,7 +18,7 @@ jobs:
       REGEX: ^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v4.1.5
       - name: Determine info
         shell: bash
         id: info
