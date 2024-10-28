@@ -18,7 +18,7 @@ jobs:
       REGEX: ^(((\/\/|#) )?Copyright \(c\) )[0-9]{4}( Devon Powell)$
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.7
+        uses: actions/checkout@v4.2.2
       - name: Determine info
         shell: bash
         id: info
@@ -38,7 +38,7 @@ jobs:
         env:
           YEAR: ${{steps.info.outputs.license-year}}
       - name: Handle changes
-        uses: peter-evans/create-pull-request@v7.0.3
+        uses: peter-evans/create-pull-request@v7.0.5
         id: changes
         with:
           token: ${{secrets.AUTOMATION_TOKEN}}
