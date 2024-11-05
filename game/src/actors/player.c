@@ -100,14 +100,14 @@ static void processMovement(Actor* _actor, PlayerData* _data,
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+      bankDirection = bankDirection + g_playerBankingRate;
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
       bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
     }
   } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_UP) {
     bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
   } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_DOWN) {
-    bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+    bankDirection = bankDirection + g_playerBankingRate;
   }
 
   _data->bankDirection = clamp(bankDirection, PLAYER_BANKING_DIRECTION_MAX_UP,
