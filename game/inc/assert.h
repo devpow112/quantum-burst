@@ -27,6 +27,10 @@
 
 void _assert(bool _exp, const char* _file, u16 _line, const char* _msg);
 
+#ifdef assert
+#undef assert
+#endif
+
 #ifdef DEBUG
 #define assert(_exp, _msg) (_assert(!!(_exp), __FILE__, __LINE__, _msg))
 #else
