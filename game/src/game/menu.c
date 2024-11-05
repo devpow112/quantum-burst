@@ -91,7 +91,7 @@ void processGameMenu() {
   const f32 increment = fix32Div(distance, intToFix32(fadeInFrameCount));
 
   while (PAL_isDoingFade()) {
-    titlePositionY = fix32Add(titlePositionY, increment);
+    titlePositionY = titlePositionY + increment;
 
     SPR_setPosition(title, titlePositionX, fix32ToInt(titlePositionY));
     SPR_update();

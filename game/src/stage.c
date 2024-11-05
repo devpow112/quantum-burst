@@ -44,7 +44,7 @@ void setUpStage(Stage* _stage, u16 _palette) {
   _stage->width = k_stage1Map.w * 128;
   _stage->height = k_stage1Map.h * 128;
   _stage->minimumX = 0;
-  _stage->maximumX = fix32Add(_stage->minimumX, screenWidth);
+  _stage->maximumX = _stage->minimumX + screenWidth;
   _stage->speed = fix32Div(intToFix32(120), fps);
 
   const V2f32 position = {
@@ -66,8 +66,8 @@ void updateStage(Stage* _stage) {
   f32 minimumX = _stage->minimumX;
   f32 maximumX = _stage->maximumX;
 
-  minimumX = clamp(fix32Add(minimumX, speed), minimumXLow, minimumXHigh);
-  maximumX = clamp(fix32Add(maximumX, speed), maximumXLow, maximumXHigh);
+  minimumX = clamp(minimumX + speed, minimumXLow, minimumXHigh);
+  maximumX = clamp(maximumX + speed, maximumXLow, maximumXHigh);
   _stage->minimumX = minimumX;
   _stage->maximumX = maximumX;
 }

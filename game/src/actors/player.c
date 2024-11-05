@@ -70,14 +70,14 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   const u16 inputState = JOY_readJoypad(JOY_1);
   f16 bankDirection = _data->bankDirection;
 
-  position.x = fix32Add(position.x, _stage->speed);
+  position.x = position.x + _stage->speed;
 
   if (inputState & BUTTON_LEFT) {
     position.x = fix32Sub(position.x, g_playerVelocity);
   }
 
   if (inputState & BUTTON_RIGHT) {
-    position.x = fix32Add(position.x, g_playerVelocity);
+    position.x = position.x + g_playerVelocity;
   }
 
   if (inputState & BUTTON_UP) {
@@ -85,10 +85,10 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   }
 
   if (inputState & BUTTON_DOWN) {
-    position.y = fix32Add(position.y, g_playerVelocity);
+    position.y = position.y + g_playerVelocity;
   }
 
-  const f32 minimumX = fix32Add(_stage->minimumX, g_playerBuffer.x);
+  const f32 minimumX = _stage->minimumX + g_playerBuffer.x;
   const f32 maximumX = fix32Sub(_stage->maximumX, g_playerBuffer.x);
   const f32 minimumY = g_playerBuffer.y;
   const f32 maximumY = fix32Sub(intToFix32(_stage->height), g_playerBuffer.y);
