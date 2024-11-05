@@ -37,6 +37,9 @@ no effect on other build types.
 
 #### cmd
 
+> [!Note]
+> This method will always do a rebuild.
+
 ```cmd
 build.bat [build-type] [revision]
 ```
@@ -45,8 +48,6 @@ build.bat [build-type] [revision]
 will default to same default as **powershell** script.
 - `revision` - Can be any integer value of `99` or less. If omitted will default
 to same default as **powershell** script.
-
-> **Note** this method will always do a rebuild.
 
 <!-- links -->
 [License]: https://img.shields.io/github/license/devpow112/quantum-burst?label=License
