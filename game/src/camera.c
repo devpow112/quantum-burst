@@ -62,8 +62,8 @@ void updateCamera(Camera* _camera) {
 
   const V2f32 newPosition = positionCallback();
   const V2f32 position = {
-    fix32Sub(newPosition.x, g_cameraOffset.x),  // x
-    fix32Sub(newPosition.y, g_cameraOffset.y)   // y
+    newPosition.x - g_cameraOffset.x,  // x
+    newPosition.y - g_cameraOffset.y   // y
   };
 
   _camera->position = position;

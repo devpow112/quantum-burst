@@ -87,11 +87,11 @@ void processGameMenu() {
   PAL_fadeInPalette(PAL1, k_titleSprite.palette->data, fadeInFrameCount, TRUE);
 
   const f32 logoEndPositionY = intToFix32(LOGO_END_POSITION_Y);
-  const f32 distance = fix32Sub(logoEndPositionY, titlePositionY);
+  const f32 distance = logoEndPositionY - titlePositionY;
   const f32 increment = fix32Div(distance, intToFix32(fadeInFrameCount));
 
   while (PAL_isDoingFade()) {
-    titlePositionY = fix32Add(titlePositionY, increment);
+    titlePositionY = titlePositionY + increment;
 
     SPR_setPosition(title, titlePositionX, fix32ToInt(titlePositionY));
     SPR_update();

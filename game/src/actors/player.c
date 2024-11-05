@@ -70,44 +70,44 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   const u16 inputState = JOY_readJoypad(JOY_1);
   f16 bankDirection = _data->bankDirection;
 
-  position.x = fix32Add(position.x, _stage->speed);
+  position.x = position.x + _stage->speed;
 
   if (inputState & BUTTON_LEFT) {
-    position.x = fix32Sub(position.x, g_playerVelocity);
+    position.x = position.x - g_playerVelocity;
   }
 
   if (inputState & BUTTON_RIGHT) {
-    position.x = fix32Add(position.x, g_playerVelocity);
+    position.x = position.x + g_playerVelocity;
   }
 
   if (inputState & BUTTON_UP) {
-    position.y = fix32Sub(position.y, g_playerVelocity);
+    position.y = position.y - g_playerVelocity;
   }
 
   if (inputState & BUTTON_DOWN) {
-    position.y = fix32Add(position.y, g_playerVelocity);
+    position.y = position.y + g_playerVelocity;
   }
 
-  const f32 minimumX = fix32Add(_stage->minimumX, g_playerBuffer.x);
-  const f32 maximumX = fix32Sub(_stage->maximumX, g_playerBuffer.x);
+  const f32 minimumX = _stage->minimumX + g_playerBuffer.x;
+  const f32 maximumX = _stage->maximumX - g_playerBuffer.x;
   const f32 minimumY = g_playerBuffer.y;
-  const f32 maximumY = fix32Sub(intToFix32(_stage->height), g_playerBuffer.y);
+  const f32 maximumY = intToFix32(_stage->height) - g_playerBuffer.y;
 
   position.x = clamp(position.x, minimumX, maximumX);
   position.y = clamp(position.y, minimumY, maximumY);
 
-  const s8 deltaY = fix32ToRoundedInt(fix32Sub(previousPositionY, position.y));
+  const s8 deltaY = fix32ToRoundedInt(previousPositionY - position.y);
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+      bankDirection = bankDirection + g_playerBankingRate;
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+      bankDirection = bankDirection - g_playerBankingRate;
     }
   } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_UP) {
-    bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+    bankDirection = bankDirection - g_playerBankingRate;
   } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_DOWN) {
-    bankDirection = fix16Add(bankDirection, g_playerBankingRate);
+    bankDirection = bankDirection + g_playerBankingRate;
   }
 
   _data->bankDirection = clamp(bankDirection, PLAYER_BANKING_DIRECTION_MAX_UP,
@@ -123,7 +123,7 @@ static void processAttack(PlayerData* _data) {
   if (attackCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
-    attackCooldown = fix16Sub(attackCooldown, deltaTime);
+    attackCooldown = attackCooldown - deltaTime;
   } else if ((inputState & BUTTON_A)) {
     attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
@@ -137,7 +137,7 @@ static void processDamage(PlayerData* _data) {
   if (damageCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
-    damageCooldown = fix16Sub(damageCooldown, deltaTime);
+    damageCooldown = damageCooldown - deltaTime;
   }
 
   _data->damageCooldown = damageCooldown;
@@ -233,8 +233,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, 0,
-                                     PLAYER_SPRITE_FLAGS);
+  data->sprite =
+    SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, PLAYER_SPRITE_FLAGS);
 
   return createActor(_position, data, &update, &draw, &destroy);
 }

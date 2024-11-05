@@ -107,8 +107,8 @@ void* getActorData(const Actor* _actor) {
 V2f32 getDirectionTowardsActor(const Actor* _actor, const Actor* _target) {
   const V2f32 position1 = getActorPosition(_actor);
   const V2f32 position2 = getActorPosition(_target);
-  const s32 deltaX = (s32)fix32Sub(position1.x, position2.x);
-  const s32 deltaY = (s32)fix32Sub(position1.y, position2.y);
+  const s32 deltaX = (s32)(position1.x - position2.x);
+  const s32 deltaY = (s32)(position1.y - position2.y);
   const f32 magnitude = (f32)getApproximatedDistance(deltaX, deltaY);
   const V2f32 direction = {
     fix32Div((f32)deltaX, magnitude),  // x
@@ -121,8 +121,8 @@ V2f32 getDirectionTowardsActor(const Actor* _actor, const Actor* _target) {
 f32 getDistanceBetweenActors(const Actor* _actor1, const Actor* _actor2) {
   const V2f32 position1 = getActorPosition(_actor1);
   const V2f32 position2 = getActorPosition(_actor2);
-  const s32 deltaX = (s32)fix32Sub(position1.x, position2.x);
-  const s32 deltaY = (s32)fix32Sub(position1.y, position2.y);
+  const s32 deltaX = (s32)(position1.x - position2.x);
+  const s32 deltaY = (s32)(position1.y - position2.y);
 
   return (f32)getApproximatedDistance(deltaX, deltaY);
 }
