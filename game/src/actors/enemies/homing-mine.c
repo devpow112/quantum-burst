@@ -63,8 +63,8 @@ static void update(Actor* _actor, const Stage* _stage) {
   Actor* player = data->player;
   V2f32 position = getActorPosition(_actor);
   const V2f32 playerPosition = getActorPosition(player);
-  const f32 deltaX = fix32Sub(position.x, playerPosition.x);
-  const f32 deltaY = fix32Sub(position.y, playerPosition.y);
+  const f32 deltaX = position.x - playerPosition.x;
+  const f32 deltaY = position.y - playerPosition.y;
   const u8 radius = getPlayerRadius(player);
   const f32 homingRadius = intToFix32(g_homingMineHomingRadius + radius);
   const f32 explodeRadius = intToFix32(g_homingMineExplosionRadius + radius);
@@ -79,8 +79,8 @@ static void update(Actor* _actor, const Stage* _stage) {
     const f32 speedX = fix32Mul(fix32Div(deltaX, magnitude), g_homingMineSpeed);
     const f32 speedY = fix32Mul(fix32Div(deltaY, magnitude), g_homingMineSpeed);
 
-    position.x = fix32Sub(position.x, speedX);
-    position.y = fix32Sub(position.y, speedY);
+    position.x = position.x - speedX;
+    position.y = position.y - speedY;
 
     setActorPosition(_actor, position);
   }

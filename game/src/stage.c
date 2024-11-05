@@ -60,7 +60,7 @@ void updateStage(Stage* _stage) {
   const f32 speed = _stage->speed;
   const f32 screenWidth = intToFix32(VDP_getScreenWidth());
   const f32 minimumXLow = 0;
-  const f32 minimumXHigh = fix32Sub(width, screenWidth);
+  const f32 minimumXHigh = width - screenWidth;
   const f32 maximumXLow = screenWidth;
   const f32 maximumXHigh = width;
   f32 minimumX = _stage->minimumX;

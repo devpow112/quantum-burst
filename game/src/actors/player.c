@@ -73,7 +73,7 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   position.x = position.x + _stage->speed;
 
   if (inputState & BUTTON_LEFT) {
-    position.x = fix32Sub(position.x, g_playerVelocity);
+    position.x = position.x - g_playerVelocity;
   }
 
   if (inputState & BUTTON_RIGHT) {
@@ -81,7 +81,7 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   }
 
   if (inputState & BUTTON_UP) {
-    position.y = fix32Sub(position.y, g_playerVelocity);
+    position.y = position.y - g_playerVelocity;
   }
 
   if (inputState & BUTTON_DOWN) {
@@ -89,14 +89,14 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   }
 
   const f32 minimumX = _stage->minimumX + g_playerBuffer.x;
-  const f32 maximumX = fix32Sub(_stage->maximumX, g_playerBuffer.x);
+  const f32 maximumX = _stage->maximumX - g_playerBuffer.x;
   const f32 minimumY = g_playerBuffer.y;
-  const f32 maximumY = fix32Sub(intToFix32(_stage->height), g_playerBuffer.y);
+  const f32 maximumY = intToFix32(_stage->height) - g_playerBuffer.y;
 
   position.x = clamp(position.x, minimumX, maximumX);
   position.y = clamp(position.y, minimumY, maximumY);
 
-  const s8 deltaY = fix32ToRoundedInt(fix32Sub(previousPositionY, position.y));
+  const s8 deltaY = fix32ToRoundedInt(previousPositionY - position.y);
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
