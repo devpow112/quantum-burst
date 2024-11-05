@@ -102,10 +102,10 @@ static void processMovement(Actor* _actor, PlayerData* _data,
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
       bankDirection = bankDirection + g_playerBankingRate;
     } else if (bankDirection > PLAYER_BANKING_DIRECTION_DEFAULT) {
-      bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+      bankDirection = bankDirection - g_playerBankingRate;
     }
   } else if (deltaY > 0 && bankDirection > PLAYER_BANKING_DIRECTION_MAX_UP) {
-    bankDirection = fix16Sub(bankDirection, g_playerBankingRate);
+    bankDirection = bankDirection - g_playerBankingRate;
   } else if (deltaY < 0 && bankDirection < PLAYER_BANKING_DIRECTION_MAX_DOWN) {
     bankDirection = bankDirection + g_playerBankingRate;
   }
@@ -123,7 +123,7 @@ static void processAttack(PlayerData* _data) {
   if (attackCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
-    attackCooldown = fix16Sub(attackCooldown, deltaTime);
+    attackCooldown = attackCooldown - deltaTime;
   } else if ((inputState & BUTTON_A)) {
     attackCooldown = PLAYER_ATTACK_COOLDOWN_DURATION;
   }
@@ -137,7 +137,7 @@ static void processDamage(PlayerData* _data) {
   if (damageCooldown > 0) {
     const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
 
-    damageCooldown = fix16Sub(damageCooldown, deltaTime);
+    damageCooldown = damageCooldown - deltaTime;
   }
 
   _data->damageCooldown = damageCooldown;
