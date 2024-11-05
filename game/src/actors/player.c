@@ -233,8 +233,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, 0,
-                                     PLAYER_SPRITE_FLAGS);
+  data->sprite =
+    SPR_addSpriteExSafe(&k_shipSprite, x, y, attributes, PLAYER_SPRITE_FLAGS);
 
   return createActor(_position, data, &update, &draw, &destroy);
 }

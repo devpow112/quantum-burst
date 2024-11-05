@@ -121,7 +121,7 @@ void createMine(u16 _palette, V2f32 _position, Actor* _player) {
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
   data->sprite =
-    SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, 0, MINE_SPRITE_FLAGS);
+    SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, MINE_SPRITE_FLAGS);
 
   createManagedActor(_position, data, &update, &draw, &destroy);
 }

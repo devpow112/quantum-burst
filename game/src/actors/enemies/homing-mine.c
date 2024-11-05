@@ -140,7 +140,7 @@ void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
   const f32 y = fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
-  data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes, 0,
+  data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes,
                                      HOMING_MINE_SPRITE_FLAGS);
 
   createManagedActor(_position, data, &update, &draw, &destroy);
