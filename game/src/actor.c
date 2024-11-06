@@ -23,7 +23,7 @@
 #include <genesis.h>
 
 #include "actor.h"
-#include "assert.h"
+#include "helpers/assert.h"
 
 // public functions
 

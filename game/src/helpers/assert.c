@@ -22,7 +22,7 @@
 
 #include <genesis.h>
 
-#include "assert.h"
+#include "helpers/assert.h"
 
 void _assert(bool _exp, const char* _file, u16 _line, const char* _msg) {
   if (!_exp) {

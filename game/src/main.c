@@ -27,6 +27,7 @@
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
+#include "helpers/log.h"
 #include "managed-actor.h"
 #include "stage.h"
 #include "utilities.h"
@@ -34,6 +35,7 @@
 // private functions
 
 static void init(bool _hardReset) {
+  log("Initializing subsystems...");
   initUtilities();
   initStage();
   initCamera();
@@ -41,6 +43,7 @@ static void init(bool _hardReset) {
   initMine();
   initHomingMine();
   initManagedActors();
+  log("Done");
 
   if (_hardReset) {
     setGameState(STATE_LOGO);
