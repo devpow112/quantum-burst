@@ -27,9 +27,9 @@ jobs:
           NEW_YEAR=$(date +%Y)
           UPDATE_TITLE="Bump license year from $OLD_YEAR to $NEW_YEAR"
           UPDATE_BODY="$UPDATE_TITLE."
-          echo "::set-output name=license-year::$NEW_YEAR"
-          echo "::set-output name=update-title::$UPDATE_TITLE"
-          echo "::set-output name=update-body::$UPDATE_BODY"
+          echo "license-year=$NEW_YEAR" >> $GITHUB_OUTPUT
+          echo "update-title=$UPDATE_TITLE" >> $GITHUB_OUTPUT
+          echo "update-body=$UPDATE_BODY" >> $GITHUB_OUTPUT
       - name: Update licenses
         run: >
           find . -type f -not -path './.git/*' -and
