@@ -49,9 +49,16 @@ will default to same default as **powershell** script.
 - `revision` - Can be any integer value of `99` or less. If omitted will default
 to same default as **powershell** script.
 
+### Debugging
+
+Sadly, most tooling doesn't allow good, feature rich, debugging, it's
+recommended to use the `log()` helper along with the [Gens KMod] emulator to do
+log based debugging.
+
 <!-- links -->
 [License]: https://img.shields.io/github/license/devpow112/quantum-burst?label=License
 [Release Badge]: https://github.com/devpow112/quantum-burst/actions/workflows/release.yml/badge.svg?branch=main
 [Release Workflow]: https://github.com/devpow112/quantum-burst/actions/workflows/release.yml?query=branch%3Amain
 [Bullet Hell]: https://en.wikipedia.org/wiki/Shoot_%27em_up#Bullet_hell
 [Sega Genesis]: https://en.wikipedia.org/wiki/Sega_Genesis
+[Gens KMod]: https://segaretro.org/Gens_KMod
