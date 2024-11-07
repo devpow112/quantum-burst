@@ -35,7 +35,8 @@
 // private functions
 
 static void init(bool _hardReset) {
-  log("Initializing subsystems...");
+  log("initializing subsystems...");
+
   initUtilities();
   initStage();
   initCamera();
@@ -43,24 +44,38 @@ static void init(bool _hardReset) {
   initMine();
   initHomingMine();
   initManagedActors();
-  log("Done");
+
+  log("initializing subsystems...done");
 
   if (_hardReset) {
+    log("Hard reset");
+
     setGameState(STATE_LOGO);
   } else if (!isGameState(STATE_LOGO)) {
     setGameState(STATE_MENU);
   }
 
+  log("initializing vdp...");
+
   VDP_init();
   VDP_setScreenWidth320();
 
   if (IS_PAL_SYSTEM) {
+    log("system type: pal");
+
     VDP_setScreenHeight240();
   } else {
+    log("system type: ntsc");
+
     VDP_setScreenHeight224();
   }
 
+  log("initializing vdp...done");
+  log("initializing sprite engine...");
+
   SPR_init();
+
+  log("initializing sprite engine...done");
 }
 
 // program entry
@@ -71,19 +86,34 @@ int main(bool _hardReset) {
   while (TRUE) {
     switch (getGameState()) {
       case STATE_LOGO:
+        log("game state: logo");
+
         processGameLogo();
+
         break;
       case STATE_MENU:
+        log("game state: menu");
+
         processGameMenu();
+
         break;
       case STATE_LOAD:
+        log("game state: load");
+
         processGameLoad();
+
         break;
       case STATE_PLAY:
+        log("game state: play");
+
         processGamePlay();
+
         break;
       case STATE_CREDITS:
+        log("game state: credits");
+
         processGameCredits();
+
         break;
       default:
         return 1;

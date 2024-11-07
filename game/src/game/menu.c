@@ -70,11 +70,15 @@ static void doFlash() {
   }
 }
 
+static void setUpGameMenu() {
+  JOY_setEventHandler(NULL);
+  VDP_resetScreen();
+}
+
 // public functions
 
 void processGameMenu() {
-  JOY_setEventHandler(NULL);
-  VDP_resetScreen();
+  setUpGameMenu();
 
   const u16 screenWidth = VDP_getScreenWidth();
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;

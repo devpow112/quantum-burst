@@ -108,6 +108,7 @@ static void tearDownActors() {
 }
 
 static void setUpGamePlay() {
+  VDP_resetScreen();
   PAL_setPalette(PAL0, k_stage1Palette.data, CPU);
   PAL_setPalette(PAL1, k_primarySpritePalette.data, CPU);
   setUpStage(&g_stage, PAL0);
@@ -129,6 +130,7 @@ static void updateGamePlay() {
 
 static void tearDownGamePlay() {
   JOY_setEventHandler(NULL);
+  VDP_resetScreen();
   tearDownCamera(&g_camera);
   tearDownActors();
   tearDownStage(&g_stage);
@@ -147,7 +149,7 @@ void processGamePlay() {
       updateCamera(&g_camera);
 
       if (isPlayerDead(g_player)) {
-        setGameState(STATE_MENU);
+        setGameState(STATE_CREDITS);
       }
     }
 
