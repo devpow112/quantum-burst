@@ -20,21 +20,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef __QUANTUM_BURST_ASSERT_H__
-#define __QUANTUM_BURST_ASSERT_H__
+#ifndef __QUANTUM_BURST_HELPERS_LOG_H__
+#define __QUANTUM_BURST_HELPERS_LOG_H__
 
 #include <genesis.h>
 
-void _assert(bool _exp, const char* _file, u16 _line, const char* _msg);
-
-#ifdef assert
-#undef assert
-#endif
-
 #ifdef DEBUG
-#define assert(_exp, _msg) (_assert(!!(_exp), __FILE__, __LINE__, _msg))
+#define log(_format, ...) (kprintf(_format, ##__VA_ARGS__))
 #else
-#define assert(_exp, _msg)
+#define log(_format, ...)
 #endif
 
-#endif  // __QUANTUM_BURST_ASSERT_H__
+#endif  // __QUANTUM_BURST_HELPERS_LOG_H__

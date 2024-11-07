@@ -25,7 +25,7 @@
 #include "actor.h"
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
-#include "assert.h"
+#include "helpers/assert.h"
 #include "managed-actor.h"
 #include "sprites.h"
 
