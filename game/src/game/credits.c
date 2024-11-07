@@ -30,6 +30,7 @@
 static void setUpGameCredits() {
   JOY_setEventHandler(NULL);
   VDP_resetScreen();
+  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
 }
 
 // public functions
@@ -45,10 +46,9 @@ void processGameCredits() {
 
     if (timer == 0) {
       setGameState(STATE_MENU);
+      clearText(14);
     }
 
     SYS_doVBlankProcess();
   }
-
-  clearText(14);
 }

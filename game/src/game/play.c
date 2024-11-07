@@ -108,29 +108,24 @@ static void tearDownActors() {
 }
 
 static void setUpGamePlay() {
+  JOY_setEventHandler(&joyHandlerGamePlay);
   VDP_resetScreen();
-  PAL_setPalette(PAL0, k_stage1Palette.data, CPU);
-  PAL_setPalette(PAL1, k_primarySpritePalette.data, CPU);
+  PAL_setPalette(PAL0, k_stage1Palette.data, DMA);
+  PAL_setPalette(PAL1, k_primarySpritePalette.data, DMA);
   setUpStage(&g_stage, PAL0);
   setUpActors(&g_stage);
   setUpCamera(&g_camera, &cameraPositionCallback, TRUE);
-  JOY_setEventHandler(&joyHandlerGamePlay);
 
   g_paused = FALSE;
 }
 
 static void updateGamePlay() {
-#ifdef DEBUG
-  VDP_showFPS(TRUE);
-#endif
-
   SPR_update();
   SYS_doVBlankProcess();
 }
 
 static void tearDownGamePlay() {
   JOY_setEventHandler(NULL);
-  VDP_resetScreen();
   tearDownCamera(&g_camera);
   tearDownActors();
   tearDownStage(&g_stage);

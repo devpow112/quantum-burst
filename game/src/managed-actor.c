@@ -97,9 +97,19 @@ void updateManagedActors(const Stage* _stage) {
       }
 
       ManagedActor* managedActorNext = managedActor->next;
+      ManagedActor* managedActorPrevious = managedActor->previous;
 
-      managedActor->previous->next = managedActorNext;
-      managedActor->next->previous = managedActor->previous;
+      if (managedActorPrevious) {
+        managedActorPrevious->next = managedActorNext;
+      } else {
+        g_firstManagedActor = managedActorNext;
+      }
+
+      if (managedActorNext) {
+        managedActorNext->previous = managedActor->previous;
+      } else {
+        g_lastManagedActor = managedActorPrevious;
+      }
 
       free(managedActor);
 

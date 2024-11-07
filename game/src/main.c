@@ -48,10 +48,12 @@ static void init(bool _hardReset) {
   log("initializing subsystems...done");
 
   if (_hardReset) {
-    log("Hard reset");
+    log("hard reset: yes");
 
     setGameState(STATE_LOGO);
   } else if (!isGameState(STATE_LOGO)) {
+    log("hard reset: no");
+
     setGameState(STATE_MENU);
   }
 
