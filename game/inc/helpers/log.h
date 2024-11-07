@@ -26,7 +26,7 @@
 #include <genesis.h>
 
 #ifdef DEBUG
-#define log(_format, ...) (kprintf(_format, __VA_ARGS__))
+#define log(_format, ...) (kprintf(_format, ##__VA_ARGS__))
 #else
 #define log(_format, ...)
 #endif
