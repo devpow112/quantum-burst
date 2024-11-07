@@ -45,10 +45,9 @@ void processGameLogo() {
 
     if (timer == 0) {
       setGameState(STATE_MENU);
+      clearText(14);
     }
 
     SYS_doVBlankProcess();
   }
-
-  clearText(14);
 }

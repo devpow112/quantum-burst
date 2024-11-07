@@ -36,7 +36,7 @@ void initStage() {
 void setUpStage(Stage* _stage, u16 _palette) {
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
-  _stage->map = MAP_create(&k_stage1Map, BG_A, attributes);
+  _stage->map = MAP_create(&k_stage1Map, BG_B, attributes);
 
   const f32 fps = intToFix32(getFrameRate());
   const f32 screenWidth = intToFix32(VDP_getScreenWidth());

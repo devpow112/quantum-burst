@@ -69,8 +69,8 @@ static V2f32 cameraPositionCallback() {
   return position;
 }
 
-static void setUpActors(const Stage* _stage) {
-  g_player = createPlayer(PAL1, _stage->startPosition);
+static void setUpActors(const Stage* _stage, u16 _palette) {
+  g_player = createPlayer(PAL2, _stage->startPosition);
 
   const V2f32 mine1Position = {
     _stage->startPosition.x + intToFix32(200),  // x
@@ -85,9 +85,9 @@ static void setUpActors(const Stage* _stage) {
     _stage->startPosition.y - intToFix32(100)   // y
   };
 
-  createMine(PAL1, mine1Position, g_player);
-  createHomingMine(PAL1, mine2Position, g_player);
-  createHomingMine(PAL1, mine3Position, g_player);
+  createMine(_palette, mine1Position, g_player);
+  createHomingMine(_palette, mine2Position, g_player);
+  createHomingMine(_palette, mine3Position, g_player);
 }
 
 static void updateActors(const Stage* _stage) {
@@ -108,29 +108,30 @@ static void tearDownActors() {
 }
 
 static void setUpGamePlay() {
-  VDP_resetScreen();
-  PAL_setPalette(PAL0, k_stage1Palette.data, CPU);
-  PAL_setPalette(PAL1, k_primarySpritePalette.data, CPU);
-  setUpStage(&g_stage, PAL0);
-  setUpActors(&g_stage);
-  setUpCamera(&g_camera, &cameraPositionCallback, TRUE);
   JOY_setEventHandler(&joyHandlerGamePlay);
+  VDP_resetScreen();
+  PAL_setPalette(PAL1, k_stage1Palette.data, DMA);
+  PAL_setPalette(PAL2, k_primarySpritePalette.data, DMA);
+  setUpStage(&g_stage, PAL1);
+  setUpActors(&g_stage, PAL2);
+  setUpCamera(&g_camera, &cameraPositionCallback, TRUE);
 
   g_paused = FALSE;
 }
 
 static void updateGamePlay() {
+  SPR_update();
+
 #ifdef DEBUG
-  VDP_showFPS(TRUE);
+  VDP_showFPS(FALSE);
+  VDP_showCPULoad();
 #endif
 
-  SPR_update();
   SYS_doVBlankProcess();
 }
 
 static void tearDownGamePlay() {
   JOY_setEventHandler(NULL);
-  VDP_resetScreen();
   tearDownCamera(&g_camera);
   tearDownActors();
   tearDownStage(&g_stage);
