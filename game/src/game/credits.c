@@ -27,15 +27,15 @@
 
 // private functions
 
-static void initGameCredits() {
+static void setUpGameCredits() {
   JOY_setEventHandler(NULL);
-  PAL_setColor(0, RGB24_TO_VDPCOLOR(0x000000));
+  VDP_resetScreen();
 }
 
 // public functions
 
 void processGameCredits() {
-  initGameCredits();
+  setUpGameCredits();
   showText("CREDITS", 14);
 
   u16 timer = 500;

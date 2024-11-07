@@ -27,14 +27,15 @@
 
 // private functions
 
-static void initGameLogo() {
+static void setUpGameLogo() {
   JOY_setEventHandler(NULL);
+  VDP_resetScreen();
 }
 
 // public functions
 
 void processGameLogo() {
-  initGameLogo();
+  setUpGameLogo();
   showText("LOGO", 14);
 
   u8 timer = 200;
