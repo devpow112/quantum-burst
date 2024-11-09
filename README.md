@@ -7,8 +7,8 @@ A [bullet hell] style space shooter written for the [Sega Genesis].
 
 ## Development
 
-Development can be done on **Windows** only, and has been tested only on
-**Windows 10**.
+Development is set-up for **Windows** only, and has been tested only on
+**Windows 10** and **Windows 11**.
 
 ### Prerequisites
 
@@ -22,23 +22,24 @@ all the files under `game/res`, `game/inc` and `game/src` to produce a `rom.bin`
 file in the `game/out` directory. After this is done the checksum will be
 calculated and `rom_final.bin` generated with the correct checksum.
 
-#### powershell
+#### `powershell`
 
-```pwsh
+```powershell
 .\build.ps1 [-BuildType] [-Revision] [-Rebuild]
 ```
 
 - `-BuildType` - Can be any of `Debug`, `Release`, `Clean` or `ASM`. If omitted
-will default to `Release`
+will default to `Release`.
 - `-Revision` - Can be any integer value of `99` or less. If omitted will
-default to `99`
+default to `99`.
 - `-Rebuild` - Will run a `Clean` before a `Debug` or `Release` build. This has
 no effect on other build types.
 
-#### cmd
+> [!NOTE]
+> When running `powershell` you may need to start your shell with
+> `-ExecutionPolicy Bypass` in order to run the script.
 
-> [!Note]
-> This method will always do a rebuild.
+#### `cmd`
 
 ```cmd
 build.bat [build-type] [revision]
@@ -48,6 +49,9 @@ build.bat [build-type] [revision]
 will default to same default as **powershell** script.
 - `revision` - Can be any integer value of `99` or less. If omitted will default
 to same default as **powershell** script.
+
+> [!NOTE]
+> This method will always do a rebuild.
 
 ### Debugging
 
