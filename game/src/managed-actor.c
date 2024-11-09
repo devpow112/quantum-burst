@@ -23,7 +23,7 @@
 #include <genesis.h>
 
 #include "actor.h"
-#include "helpers/assert.h"
+#include "assert.h"
 #include "managed-actor.h"
 
 // entity

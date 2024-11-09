@@ -24,8 +24,8 @@
 
 #include "actor.h"
 #include "actors/player.h"
+#include "assert.h"
 #include "camera.h"
-#include "helpers/assert.h"
 #include "sprites.h"
 #include "stage.h"
 #include "utilities.h"
