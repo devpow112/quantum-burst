@@ -24,37 +24,14 @@
 
 #include "helpers/assert.h"
 
-void _assert(bool _exp, const char* _file, u16 _line, const char* _msg) {
-  if (!_exp) {
-    SYS_setInterruptMaskLevel(7);
-
-    if (SPR_isInitialized()) {
-      SPR_end();
-    }
-
-    VDP_init();
-
-    char messageFull[720] = {0};
-
-    sprintf(messageFull, "[%s:%d] %s", _file, _line, _msg);
-
-    char* messageFullCurrent = messageFull;
-    u8 column = 0;
-
-    VDP_drawText("Assert!", 0, column++);
-
-    do {
-      VDP_drawText(messageFullCurrent, 0, column++);
-
-      const u16 length = strlen(messageFullCurrent);
-
-      messageFullCurrent += length < 40 ? length : 40;
-    } while (*messageFullCurrent);
-
-    VDP_drawText("Cannot continue...", 0, column++);
-
-    while (1) {
-      // loop forever
-    }
+void _assert(bool _exp, const char* _file, u16 _line, const char* _function,
+             const char* _msg) {
+  if (_exp) {
+    return;
   }
+
+  char location[256] = {0};
+
+  sprintf(location, "[%s:%d] %s", _file, _line, _function);
+  SYS_die(location, _msg);
 }

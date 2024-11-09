@@ -14,7 +14,7 @@ jobs:
       - name: Check formatting
         uses: jidicula/clang-format-action@v4.13.0
         with:
-          clang-format-version: 12
+          clang-format-version: 18
   check-formatting-markdown:
     name: Check Formatting (Markdown)
     runs-on: ubuntu-latest
