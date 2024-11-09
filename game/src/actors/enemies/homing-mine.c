@@ -25,7 +25,7 @@
 #include "actor.h"
 #include "actors/enemies/homing-mine.h"
 #include "actors/player.h"
-#include "helpers/assert.h"
+#include "assert.h"
 #include "managed-actor.h"
 #include "sprites.h"
 #include "utilities.h"

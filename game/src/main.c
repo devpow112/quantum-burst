@@ -27,7 +27,7 @@
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
-#include "helpers/log.h"
+#include "log.h"
 #include "managed-actor.h"
 #include "stage.h"
 #include "utilities.h"

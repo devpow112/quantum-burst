@@ -20,18 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef __QUANTUM_BURST_ASSERT_H__
+#define __QUANTUM_BURST_ASSERT_H__
+
 #include <genesis.h>
 
-#include "helpers/assert.h"
-
 void _assert(bool _exp, const char* _file, u16 _line, const char* _function,
-             const char* _msg) {
-  if (_exp) {
-    return;
-  }
+             const char* _msg);
 
-  char location[256] = {0};
+#ifdef assert
+#undef assert
+#endif
 
-  sprintf(location, "[%s:%d] %s", _file, _line, _function);
-  SYS_die(location, _msg);
-}
+#ifdef DEBUG
+#define assert(_exp, _msg)                                                     \
+  (_assert(!!(_exp), __FILE__, __LINE__, __FUNCTION__, _msg))
+#else
+#define assert(_exp, _msg)
+#endif
+
+#endif  // __QUANTUM_BURST_ASSERT_H__
