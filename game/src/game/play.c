@@ -123,8 +123,8 @@ static void updateGamePlay() {
   SPR_update();
 
 #ifdef DEBUG
-  VDP_showFPS(FALSE);
-  VDP_showCPULoad();
+  VDP_showFPS(FALSE, 1, 1);
+  VDP_showCPULoad(1, 2);
 #endif
 
   SYS_doVBlankProcess();
