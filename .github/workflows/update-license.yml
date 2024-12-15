@@ -37,25 +37,46 @@ jobs:
           -exec sed -i -E "s/$REGEX/\1$YEAR\4/" {} \;
         env:
           YEAR: ${{steps.info.outputs.license-year}}
+      - name: Generate app token
+        id: app-token
+        uses: actions/create-github-app-token@v1.11.0
+        with:
+          app-id: ${{secrets.GH_APP_ID}}
+          private-key: ${{secrets.GH_APP_PRIVATE_KEY}}
+      - name: Generate user info
+        id: user-info
+        run: |
+          USER_NAME="$GH_APP_SLUG[bot]"
+          USER_ID=$(gh api "/users/$USER_NAME" --jq .id)
+          USER_EMAIL="$USER_ID+$USER_NAME@users.noreply.github.com"
+          echo "id=$USER_ID" >> $GITHUB_OUTPUT
+          echo "name=$USER_NAME" >> $GITHUB_OUTPUT
+          echo "email=$USER_ID+$USER_NAME@users.noreply.github.com" >> $GITHUB_OUTPUT
+          echo "commit-author=$USER_NAME <$USER_EMAIL>" >> $GITHUB_OUTPUT
+        env:
+          GH_APP_SLUG: ${{steps.app-token.outputs.app-slug}}
+          GH_TOKEN: ${{steps.app-token.outputs.token}}
       - name: Handle changes
         uses: peter-evans/create-pull-request@v7.0.5
         id: changes
         with:
-          token: ${{secrets.AUTOMATION_TOKEN}}
+          token: ${{steps.app-token.outputs.token}}
           commit-message: ${{steps.info.outputs.update-title}}
-          committer: ${{env.GIT_USER}}
-          add-paths: '*.h,*.c,*.c.in,LICENSE'
-          author: ${{env.GIT_USER}}
+          author: ${{steps.user-info.outputs.commit-author}}
+          committer: ${{steps.user-info.outputs.commit-author}}
+          add-paths: |
+            LICENSE
+            *.c.in
+            *.h
+            *.c
           branch: auto/update-license
           delete-branch: true
           title: ${{steps.info.outputs.update-title}}
           body: ${{steps.info.outputs.update-body}}
           labels: auto
-        env:
-          GIT_USER: ${{secrets.AUTOMATION_USER}} <${{secrets.AUTOMATION_EMAIL}}>
       - name: Enable auto-merge
         if: steps.changes.outputs.pull-request-operation == 'created'
         run: gh pr merge --auto --squash "$PULL_REQUEST_URL"
         env:
           PULL_REQUEST_URL: ${{steps.changes.outputs.pull-request-url}}
-          GITHUB_TOKEN: ${{secrets.AUTOMATION_TOKEN}}
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
