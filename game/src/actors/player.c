@@ -215,7 +215,7 @@ void initPlayer() {
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
   g_playerVelocity = F32_div(FIX32(120), FIX32(fps));
-  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(fps));
+  g_playerBankingRate = F16_div(intToFix16(20), intToFix16(fps));
 }
 
 Actor* createPlayer(u16 _palette, const V2f32 _position) {
