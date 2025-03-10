@@ -75,8 +75,8 @@ void tearDownCamera(Camera* _camera) {
 
 V2s32 getCameraPositionRounded(const Camera* _camera) {
   const V2s32 positionRounded = {
-    fix32ToRoundedInt(_camera->position.x),  // x
-    fix32ToRoundedInt(_camera->position.y)   // y
+    F32_toRoundedInt(_camera->position.x),  // x
+    F32_toRoundedInt(_camera->position.y)   // y
   };
 
   return positionRounded;

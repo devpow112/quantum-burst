@@ -103,8 +103,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_homingMineSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_homingMineSpriteOffset.y + cameraPosition.y;
-  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
-  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const u16 positionX = F32_toRoundedInt(position.x) - offsetX;
+  const u16 positionY = F32_toRoundedInt(position.y) - offsetY;
 
   SPR_setPosition(sprite, positionX, positionY);
 }
@@ -136,8 +136,8 @@ void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
   data->player = _player;
   data->exploded = FALSE;
 
-  const f32 x = fix32ToRoundedInt(_position.x) + g_homingMineSpriteOffset.x;
-  const f32 y = fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
+  const f32 x = F32_toRoundedInt(_position.x) + g_homingMineSpriteOffset.x;
+  const f32 y = F32_toRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
   data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes,

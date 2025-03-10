@@ -96,7 +96,7 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   position.x = clamp(position.x, minimumX, maximumX);
   position.y = clamp(position.y, minimumY, maximumY);
 
-  const s8 deltaY = fix32ToRoundedInt(previousPositionY - position.y);
+  const s8 deltaY = F32_toRoundedInt(previousPositionY - position.y);
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
@@ -160,8 +160,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_playerSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
-  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
-  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const u16 positionX = F32_toRoundedInt(position.x) - offsetX;
+  const u16 positionY = F32_toRoundedInt(position.y) - offsetY;
   const PlayerData* data = (const PlayerData*)getActorData(_actor);
   const f16 bankDirection = data->bankDirection;
   const f16 bankMagnitude = abs(bankDirection);
@@ -229,8 +229,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   data->health = PLAYER_HEALTH_DEFAULT;
   data->radius = k_shipSprite.w / 2;
 
-  const u16 x = fix32ToRoundedInt(_position.x) + g_playerSpriteOffset.x;
-  const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
+  const u16 x = F32_toRoundedInt(_position.x) + g_playerSpriteOffset.x;
+  const u16 y = F32_toRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
   data->sprite =
