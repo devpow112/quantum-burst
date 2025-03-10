@@ -214,7 +214,7 @@ void initPlayer() {
 
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
-  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(fps));
+  g_playerVelocity = F32_div(intToFix32(120), intToFix32(fps));
   g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(fps));
 }
 

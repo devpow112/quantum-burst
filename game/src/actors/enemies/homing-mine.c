@@ -76,8 +76,8 @@ static void update(Actor* _actor, const Stage* _stage) {
     setManagedActorCleanUp(_actor);
     doPlayerHit(player);
   } else if (magnitude <= homingRadius) {
-    const f32 speedX = fix32Mul(fix32Div(deltaX, magnitude), g_homingMineSpeed);
-    const f32 speedY = fix32Mul(fix32Div(deltaY, magnitude), g_homingMineSpeed);
+    const f32 speedX = fix32Mul(F32_div(deltaX, magnitude), g_homingMineSpeed);
+    const f32 speedY = fix32Mul(F32_div(deltaY, magnitude), g_homingMineSpeed);
 
     position.x = position.x - speedX;
     position.y = position.y - speedY;
@@ -125,7 +125,7 @@ void initHomingMine() {
   g_homingMineSpriteOffset.x = k_mineSprite.h / 2;
   g_homingMineExplosionRadius = spriteHalfWidth;
   g_homingMineHomingRadius = spriteHalfWidth * 10;
-  g_homingMineSpeed = fix32Div(intToFix32(75), intToFix32(getFrameRate()));
+  g_homingMineSpeed = F32_div(intToFix32(75), intToFix32(getFrameRate()));
 }
 
 void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {

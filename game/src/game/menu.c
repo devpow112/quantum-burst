@@ -92,7 +92,7 @@ void processGameMenu() {
 
   const f32 logoEndPositionY = intToFix32(LOGO_END_POSITION_Y);
   const f32 distance = logoEndPositionY - titlePositionY;
-  const f32 increment = fix32Div(distance, intToFix32(fadeInFrameCount));
+  const f32 increment = F32_div(distance, intToFix32(fadeInFrameCount));
 
   while (PAL_isDoingFade()) {
     titlePositionY = titlePositionY + increment;

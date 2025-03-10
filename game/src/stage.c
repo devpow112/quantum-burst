@@ -45,7 +45,7 @@ void setUpStage(Stage* _stage, u16 _palette) {
   _stage->height = k_stage1Map.h * 128;
   _stage->minimumX = 0;
   _stage->maximumX = _stage->minimumX + screenWidth;
-  _stage->speed = fix32Div(intToFix32(120), fps);
+  _stage->speed = F32_div(intToFix32(120), fps);
 
   const V2f32 position = {
     0,                              // x
