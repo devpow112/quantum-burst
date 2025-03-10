@@ -48,7 +48,7 @@ void setUpStage(Stage* _stage, u16 _palette) {
   _stage->speed = F32_div(FIX32(120), fps);
 
   const V2f32 position = {
-    0,                              // x
+    0,                         // x
     FIX32(_stage->height / 2)  // y
   };
 
