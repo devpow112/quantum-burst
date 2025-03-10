@@ -83,9 +83,9 @@ void processGameMenu() {
   const u16 screenWidth = VDP_getScreenWidth();
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
   f32 titlePositionY = FIX32(-k_titleSprite.h);
-  Sprite* title = SPR_addSpriteSafe(&k_titleSprite, titlePositionX,
-                                    F32_toInt(titlePositionY),
-                                    TILE_ATTR(PAL1, 0, FALSE, FALSE));
+  Sprite* title =
+    SPR_addSpriteSafe(&k_titleSprite, titlePositionX, F32_toInt(titlePositionY),
+                      TILE_ATTR(PAL1, 0, FALSE, FALSE));
   const u16 fadeInFrameCount = secondsToFrames(LOGO_FADE_IN_TIME);
 
   PAL_fadeInPalette(PAL1, k_titleSprite.palette->data, fadeInFrameCount, TRUE);
