@@ -57,7 +57,7 @@ static void update(Actor* _actor, const Stage* _stage) {
 
   Actor* player = data->player;
   const u8 radius = getPlayerRadius(player);
-  const f32 explodeRadius = intToFix32(g_mineExplosionRadius + radius);
+  const f32 explodeRadius = FIX32(g_mineExplosionRadius + radius);
   const f32 magnitude = getDistanceBetweenActors(_actor, player);
 
   if (magnitude <= explodeRadius) {

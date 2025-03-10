@@ -66,8 +66,8 @@ static void update(Actor* _actor, const Stage* _stage) {
   const f32 deltaX = position.x - playerPosition.x;
   const f32 deltaY = position.y - playerPosition.y;
   const u8 radius = getPlayerRadius(player);
-  const f32 homingRadius = intToFix32(g_homingMineHomingRadius + radius);
-  const f32 explodeRadius = intToFix32(g_homingMineExplosionRadius + radius);
+  const f32 homingRadius = FIX32(g_homingMineHomingRadius + radius);
+  const f32 explodeRadius = FIX32(g_homingMineExplosionRadius + radius);
   const f32 magnitude = (f32)getApproximatedDistance((s32)deltaX, (s32)deltaY);
 
   if (magnitude <= explodeRadius) {
@@ -125,7 +125,7 @@ void initHomingMine() {
   g_homingMineSpriteOffset.x = k_mineSprite.h / 2;
   g_homingMineExplosionRadius = spriteHalfWidth;
   g_homingMineHomingRadius = spriteHalfWidth * 10;
-  g_homingMineSpeed = F32_div(intToFix32(75), intToFix32(getFrameRate()));
+  g_homingMineSpeed = F32_div(FIX32(75), FIX32(getFrameRate()));
 }
 
 void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {

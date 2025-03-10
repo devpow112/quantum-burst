@@ -91,7 +91,7 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   const f32 minimumX = _stage->minimumX + g_playerBuffer.x;
   const f32 maximumX = _stage->maximumX - g_playerBuffer.x;
   const f32 minimumY = g_playerBuffer.y;
-  const f32 maximumY = intToFix32(_stage->height) - g_playerBuffer.y;
+  const f32 maximumY = FIX32(_stage->height) - g_playerBuffer.y;
 
   position.x = clamp(position.x, minimumX, maximumX);
   position.y = clamp(position.y, minimumY, maximumY);
@@ -207,14 +207,14 @@ void initPlayer() {
     k_shipSprite.h / 2   // y
   };
   const V2f32 buffer = {
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
+    FIX32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
+    FIX32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
   };
   const u8 fps = getFrameRate();
 
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
-  g_playerVelocity = F32_div(intToFix32(120), intToFix32(fps));
+  g_playerVelocity = F32_div(FIX32(120), FIX32(fps));
   g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(fps));
 }
 
