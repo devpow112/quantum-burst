@@ -91,12 +91,12 @@ static void processMovement(Actor* _actor, PlayerData* _data,
   const f32 minimumX = _stage->minimumX + g_playerBuffer.x;
   const f32 maximumX = _stage->maximumX - g_playerBuffer.x;
   const f32 minimumY = g_playerBuffer.y;
-  const f32 maximumY = intToFix32(_stage->height) - g_playerBuffer.y;
+  const f32 maximumY = FIX32(_stage->height) - g_playerBuffer.y;
 
   position.x = clamp(position.x, minimumX, maximumX);
   position.y = clamp(position.y, minimumY, maximumY);
 
-  const s8 deltaY = fix32ToRoundedInt(previousPositionY - position.y);
+  const s8 deltaY = F32_toRoundedInt(previousPositionY - position.y);
 
   if (deltaY == 0) {
     if (bankDirection < PLAYER_BANKING_DIRECTION_DEFAULT) {
@@ -121,7 +121,7 @@ static void processAttack(PlayerData* _data) {
   f16 attackCooldown = _data->attackCooldown;
 
   if (attackCooldown > 0) {
-    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+    const f16 deltaTime = F32_toFix16(getFrameDeltaTime());
 
     attackCooldown = attackCooldown - deltaTime;
   } else if ((inputState & BUTTON_A)) {
@@ -135,7 +135,7 @@ static void processDamage(PlayerData* _data) {
   f16 damageCooldown = _data->damageCooldown;
 
   if (damageCooldown > 0) {
-    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+    const f16 deltaTime = F32_toFix16(getFrameDeltaTime());
 
     damageCooldown = damageCooldown - deltaTime;
   }
@@ -160,8 +160,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_playerSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_playerSpriteOffset.y + cameraPosition.y;
-  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
-  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const u16 positionX = F32_toRoundedInt(position.x) - offsetX;
+  const u16 positionY = F32_toRoundedInt(position.y) - offsetY;
   const PlayerData* data = (const PlayerData*)getActorData(_actor);
   const f16 bankDirection = data->bankDirection;
   const f16 bankMagnitude = abs(bankDirection);
@@ -207,15 +207,15 @@ void initPlayer() {
     k_shipSprite.h / 2   // y
   };
   const V2f32 buffer = {
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
-    intToFix32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
+    FIX32(PLAYER_SCREEN_BUFFER + spriteOffset.x),  // x
+    FIX32(PLAYER_SCREEN_BUFFER + spriteOffset.y),  // y
   };
   const u8 fps = getFrameRate();
 
   g_playerSpriteOffset = spriteOffset;
   g_playerBuffer = buffer;
-  g_playerVelocity = fix32Div(intToFix32(120), intToFix32(fps));
-  g_playerBankingRate = fix16Div(intToFix16(20), intToFix16(fps));
+  g_playerVelocity = F32_div(FIX32(120), FIX32(fps));
+  g_playerBankingRate = F16_div(FIX16(20), FIX16(fps));
 }
 
 Actor* createPlayer(u16 _palette, const V2f32 _position) {
@@ -229,8 +229,8 @@ Actor* createPlayer(u16 _palette, const V2f32 _position) {
   data->health = PLAYER_HEALTH_DEFAULT;
   data->radius = k_shipSprite.w / 2;
 
-  const u16 x = fix32ToRoundedInt(_position.x) + g_playerSpriteOffset.x;
-  const u16 y = fix32ToRoundedInt(_position.y) + g_playerSpriteOffset.y;
+  const u16 x = F32_toRoundedInt(_position.x) + g_playerSpriteOffset.x;
+  const u16 y = F32_toRoundedInt(_position.y) + g_playerSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, TRUE, FALSE, FALSE);
 
   data->sprite =

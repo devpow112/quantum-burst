@@ -66,8 +66,8 @@ static void update(Actor* _actor, const Stage* _stage) {
   const f32 deltaX = position.x - playerPosition.x;
   const f32 deltaY = position.y - playerPosition.y;
   const u8 radius = getPlayerRadius(player);
-  const f32 homingRadius = intToFix32(g_homingMineHomingRadius + radius);
-  const f32 explodeRadius = intToFix32(g_homingMineExplosionRadius + radius);
+  const f32 homingRadius = FIX32(g_homingMineHomingRadius + radius);
+  const f32 explodeRadius = FIX32(g_homingMineExplosionRadius + radius);
   const f32 magnitude = (f32)getApproximatedDistance((s32)deltaX, (s32)deltaY);
 
   if (magnitude <= explodeRadius) {
@@ -76,8 +76,8 @@ static void update(Actor* _actor, const Stage* _stage) {
     setManagedActorCleanUp(_actor);
     doPlayerHit(player);
   } else if (magnitude <= homingRadius) {
-    const f32 speedX = fix32Mul(fix32Div(deltaX, magnitude), g_homingMineSpeed);
-    const f32 speedY = fix32Mul(fix32Div(deltaY, magnitude), g_homingMineSpeed);
+    const f32 speedX = F32_mul(F32_div(deltaX, magnitude), g_homingMineSpeed);
+    const f32 speedY = F32_mul(F32_div(deltaY, magnitude), g_homingMineSpeed);
 
     position.x = position.x - speedX;
     position.y = position.y - speedY;
@@ -103,8 +103,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_homingMineSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_homingMineSpriteOffset.y + cameraPosition.y;
-  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
-  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const u16 positionX = F32_toRoundedInt(position.x) - offsetX;
+  const u16 positionY = F32_toRoundedInt(position.y) - offsetY;
 
   SPR_setPosition(sprite, positionX, positionY);
 }
@@ -125,7 +125,7 @@ void initHomingMine() {
   g_homingMineSpriteOffset.x = k_mineSprite.h / 2;
   g_homingMineExplosionRadius = spriteHalfWidth;
   g_homingMineHomingRadius = spriteHalfWidth * 10;
-  g_homingMineSpeed = fix32Div(intToFix32(75), intToFix32(getFrameRate()));
+  g_homingMineSpeed = F32_div(FIX32(75), FIX32(getFrameRate()));
 }
 
 void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
@@ -136,8 +136,8 @@ void createHomingMine(u16 _palette, V2f32 _position, Actor* _player) {
   data->player = _player;
   data->exploded = FALSE;
 
-  const f32 x = fix32ToRoundedInt(_position.x) + g_homingMineSpriteOffset.x;
-  const f32 y = fix32ToRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
+  const f32 x = F32_toRoundedInt(_position.x) + g_homingMineSpriteOffset.x;
+  const f32 y = F32_toRoundedInt(_position.y) + g_homingMineSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
   data->sprite = SPR_addSpriteExSafe(&k_mineSprite, x, y, attributes,

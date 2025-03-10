@@ -58,12 +58,12 @@ static void joyHandlerGamePlay(u16 _joy, u16 _changed, u16 _state) {
 
 static V2f32 cameraPositionCallback() {
   const f32 playerPositionY = getActorPositionY(g_player);
-  const f32 halfScreenHeight = intToFix32(VDP_getScreenHeight() / 2);
+  const f32 halfScreenHeight = FIX32(VDP_getScreenHeight() / 2);
   const f32 minimumY = halfScreenHeight;
-  const f32 maximumY = intToFix32(g_stage.height) - halfScreenHeight;
+  const f32 maximumY = FIX32(g_stage.height) - halfScreenHeight;
   const V2f32 position = {
-    fix32Avg(g_stage.minimumX, g_stage.maximumX),  // x
-    clamp(playerPositionY, minimumY, maximumY)     // y
+    F32_avg(g_stage.minimumX, g_stage.maximumX),  // x
+    clamp(playerPositionY, minimumY, maximumY)    // y
   };
 
   return position;
@@ -73,16 +73,16 @@ static void setUpActors(const Stage* _stage, u16 _palette) {
   g_player = createPlayer(PAL2, _stage->startPosition);
 
   const V2f32 mine1Position = {
-    _stage->startPosition.x + intToFix32(200),  // x
-    _stage->startPosition.y - intToFix32(100)   // y
+    _stage->startPosition.x + FIX32(200),  // x
+    _stage->startPosition.y - FIX32(100)   // y
   };
   const V2f32 mine2Position = {
-    _stage->startPosition.x + intToFix32(400),  // x
-    _stage->startPosition.y + intToFix32(100)   // y
+    _stage->startPosition.x + FIX32(400),  // x
+    _stage->startPosition.y + FIX32(100)   // y
   };
   const V2f32 mine3Position = {
-    _stage->startPosition.x + intToFix32(600),  // x
-    _stage->startPosition.y - intToFix32(100)   // y
+    _stage->startPosition.x + FIX32(600),  // x
+    _stage->startPosition.y - FIX32(100)   // y
   };
 
   createMine(_palette, mine1Position, g_player);

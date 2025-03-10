@@ -34,8 +34,8 @@ static V2f32 g_cameraOffset;
 // public functions
 
 void initCamera() {
-  g_cameraOffset.x = intToFix32(VDP_getScreenWidth() / 2);
-  g_cameraOffset.y = intToFix32(VDP_getScreenHeight() / 2);
+  g_cameraOffset.x = FIX32(VDP_getScreenWidth() / 2);
+  g_cameraOffset.y = FIX32(VDP_getScreenHeight() / 2);
 }
 
 void setUpCamera(Camera* _camera, CameraPositionCallback _positionCallback,
@@ -75,8 +75,8 @@ void tearDownCamera(Camera* _camera) {
 
 V2s32 getCameraPositionRounded(const Camera* _camera) {
   const V2s32 positionRounded = {
-    fix32ToRoundedInt(_camera->position.x),  // x
-    fix32ToRoundedInt(_camera->position.y)   // y
+    F32_toRoundedInt(_camera->position.x),  // x
+    F32_toRoundedInt(_camera->position.y)   // y
   };
 
   return positionRounded;
