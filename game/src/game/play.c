@@ -62,8 +62,8 @@ static V2f32 cameraPositionCallback() {
   const f32 minimumY = halfScreenHeight;
   const f32 maximumY = FIX32(g_stage.height) - halfScreenHeight;
   const V2f32 position = {
-    fix32Avg(g_stage.minimumX, g_stage.maximumX),  // x
-    clamp(playerPositionY, minimumY, maximumY)     // y
+    F32_avg(g_stage.minimumX, g_stage.maximumX),  // x
+    clamp(playerPositionY, minimumY, maximumY)    // y
   };
 
   return position;
