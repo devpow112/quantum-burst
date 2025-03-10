@@ -38,27 +38,27 @@ void setUpStage(Stage* _stage, u16 _palette) {
 
   _stage->map = MAP_create(&k_stage1Map, BG_B, attributes);
 
-  const f32 fps = intToFix32(getFrameRate());
-  const f32 screenWidth = intToFix32(VDP_getScreenWidth());
+  const f32 fps = FIX32(getFrameRate());
+  const f32 screenWidth = FIX32(VDP_getScreenWidth());
 
   _stage->width = k_stage1Map.w * 128;
   _stage->height = k_stage1Map.h * 128;
   _stage->minimumX = 0;
   _stage->maximumX = _stage->minimumX + screenWidth;
-  _stage->speed = fix32Div(intToFix32(120), fps);
+  _stage->speed = F32_div(FIX32(120), fps);
 
   const V2f32 position = {
-    0,                              // x
-    intToFix32(_stage->height / 2)  // y
+    0,                         // x
+    FIX32(_stage->height / 2)  // y
   };
 
   _stage->startPosition = position;
 }
 
 void updateStage(Stage* _stage) {
-  const f32 width = intToFix32(_stage->width);
+  const f32 width = FIX32(_stage->width);
   const f32 speed = _stage->speed;
-  const f32 screenWidth = intToFix32(VDP_getScreenWidth());
+  const f32 screenWidth = FIX32(VDP_getScreenWidth());
   const f32 minimumXLow = 0;
   const f32 minimumXHigh = width - screenWidth;
   const f32 maximumXLow = screenWidth;

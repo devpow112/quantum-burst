@@ -57,7 +57,7 @@ static void update(Actor* _actor, const Stage* _stage) {
 
   Actor* player = data->player;
   const u8 radius = getPlayerRadius(player);
-  const f32 explodeRadius = intToFix32(g_mineExplosionRadius + radius);
+  const f32 explodeRadius = FIX32(g_mineExplosionRadius + radius);
   const f32 magnitude = getDistanceBetweenActors(_actor, player);
 
   if (magnitude <= explodeRadius) {
@@ -85,8 +85,8 @@ static void draw(const Actor* _actor, const Camera* _camera) {
   const V2s32 cameraPosition = getCameraPositionRounded(_camera);
   const u32 offsetX = g_mineSpriteOffset.x + cameraPosition.x;
   const u32 offsetY = g_mineSpriteOffset.y + cameraPosition.y;
-  const u16 positionX = fix32ToRoundedInt(position.x) - offsetX;
-  const u16 positionY = fix32ToRoundedInt(position.y) - offsetY;
+  const u16 positionX = F32_toRoundedInt(position.x) - offsetX;
+  const u16 positionY = F32_toRoundedInt(position.y) - offsetY;
 
   SPR_setPosition(sprite, positionX, positionY);
 }
@@ -116,8 +116,8 @@ void createMine(u16 _palette, V2f32 _position, Actor* _player) {
   data->player = _player;
   data->exploded = FALSE;
 
-  const f32 x = fix32ToRoundedInt(_position.x) + g_mineSpriteOffset.x;
-  const f32 y = fix32ToRoundedInt(_position.y) + g_mineSpriteOffset.y;
+  const f32 x = F32_toRoundedInt(_position.x) + g_mineSpriteOffset.x;
+  const f32 y = F32_toRoundedInt(_position.y) + g_mineSpriteOffset.y;
   const u16 attributes = TILE_ATTR(_palette, FALSE, FALSE, FALSE);
 
   data->sprite =

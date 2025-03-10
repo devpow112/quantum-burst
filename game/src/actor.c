@@ -111,8 +111,8 @@ V2f32 getDirectionTowardsActor(const Actor* _actor, const Actor* _target) {
   const s32 deltaY = (s32)(position1.y - position2.y);
   const f32 magnitude = (f32)getApproximatedDistance(deltaX, deltaY);
   const V2f32 direction = {
-    fix32Div((f32)deltaX, magnitude),  // x
-    fix32Div((f32)deltaY, magnitude)   // y
+    F32_div((f32)deltaX, magnitude),  // x
+    F32_div((f32)deltaY, magnitude)   // y
   };
 
   return direction;

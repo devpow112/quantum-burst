@@ -40,7 +40,7 @@ void initUtilities() {
   const u8 fps = IS_PAL_SYSTEM ? PAL_FRAME_RATE : NTSC_FRAME_RATE;
 
   g_utiltiesFrameRate = fps;
-  g_utiltiesFrameDeltaTime = fix32Div(intToFix32(1), intToFix32(fps));
+  g_utiltiesFrameDeltaTime = F32_div(FIX32(1), FIX32(fps));
 }
 
 void showText(char _text[], u8 _column) {
@@ -60,5 +60,5 @@ f32 getFrameDeltaTime() {
 }
 
 u16 secondsToFrames(f16 _seconds) {
-  return fix16ToRoundedInt(fix16Mul(_seconds, intToFix16(getFrameRate())));
+  return F16_toRoundedInt(F16_mul(_seconds, FIX16(getFrameRate())));
 }
