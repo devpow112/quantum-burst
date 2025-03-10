@@ -76,8 +76,8 @@ static void update(Actor* _actor, const Stage* _stage) {
     setManagedActorCleanUp(_actor);
     doPlayerHit(player);
   } else if (magnitude <= homingRadius) {
-    const f32 speedX = fix32Mul(F32_div(deltaX, magnitude), g_homingMineSpeed);
-    const f32 speedY = fix32Mul(F32_div(deltaY, magnitude), g_homingMineSpeed);
+    const f32 speedX = F32_mul(F32_div(deltaX, magnitude), g_homingMineSpeed);
+    const f32 speedY = F32_mul(F32_div(deltaY, magnitude), g_homingMineSpeed);
 
     position.x = position.x - speedX;
     position.y = position.y - speedY;
