@@ -121,7 +121,7 @@ static void processAttack(PlayerData* _data) {
   f16 attackCooldown = _data->attackCooldown;
 
   if (attackCooldown > 0) {
-    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+    const f16 deltaTime = F32_toFix16(getFrameDeltaTime());
 
     attackCooldown = attackCooldown - deltaTime;
   } else if ((inputState & BUTTON_A)) {
@@ -135,7 +135,7 @@ static void processDamage(PlayerData* _data) {
   f16 damageCooldown = _data->damageCooldown;
 
   if (damageCooldown > 0) {
-    const f16 deltaTime = fix32ToFix16(getFrameDeltaTime());
+    const f16 deltaTime = F32_toFix16(getFrameDeltaTime());
 
     damageCooldown = damageCooldown - deltaTime;
   }
