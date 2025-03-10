@@ -84,7 +84,7 @@ void processGameMenu() {
   const s16 titlePositionX = (screenWidth - k_titleSprite.w) / 2;
   f32 titlePositionY = FIX32(-k_titleSprite.h);
   Sprite* title = SPR_addSpriteSafe(&k_titleSprite, titlePositionX,
-                                    fix32ToInt(titlePositionY),
+                                    F32_toInt(titlePositionY),
                                     TILE_ATTR(PAL1, 0, FALSE, FALSE));
   const u16 fadeInFrameCount = secondsToFrames(LOGO_FADE_IN_TIME);
 
@@ -97,7 +97,7 @@ void processGameMenu() {
   while (PAL_isDoingFade()) {
     titlePositionY = titlePositionY + increment;
 
-    SPR_setPosition(title, titlePositionX, fix32ToInt(titlePositionY));
+    SPR_setPosition(title, titlePositionX, F32_toInt(titlePositionY));
     SPR_update();
     SYS_doVBlankProcess();
   }
