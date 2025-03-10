@@ -60,5 +60,5 @@ f32 getFrameDeltaTime() {
 }
 
 u16 secondsToFrames(f16 _seconds) {
-  return fix16ToRoundedInt(fix16Mul(_seconds, intToFix16(getFrameRate())));
+  return F16_toRoundedInt(fix16Mul(_seconds, intToFix16(getFrameRate())));
 }
