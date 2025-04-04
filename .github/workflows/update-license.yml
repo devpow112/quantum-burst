@@ -39,7 +39,7 @@ jobs:
           YEAR: ${{steps.info.outputs.license-year}}
       - name: Generate app token
         id: app-token
-        uses: actions/create-github-app-token@v1.12.0
+        uses: actions/create-github-app-token@v2.0.2
         with:
           app-id: ${{secrets.GH_APP_ID}}
           private-key: ${{secrets.GH_APP_PRIVATE_KEY}}
