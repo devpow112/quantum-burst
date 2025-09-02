@@ -12,9 +12,10 @@ param(
 $callingLocation = Get-Location
 
 try {
-  $root = $PSScriptRoot
-  $externalsRoot = Join-Path $root externals
-  $gameRoot = Join-Path $root game
+  Set-Location $PSScriptRoot
+
+  $externalsRoot = './externals'
+  $gameRoot = './game'
 
   # generate ROM header
   $year4Digits = (Get-Date -Format 'yyyy')
