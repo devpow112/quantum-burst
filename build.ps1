@@ -14,8 +14,8 @@ $callingLocation = Get-Location
 try {
   Set-Location $PSScriptRoot
 
-  $externalsRoot = './externals'
-  $gameRoot = './game'
+  $externalsRoot = 'externals'
+  $gameRoot = 'game'
 
   # generate ROM header
   $year4Digits = (Get-Date -Format 'yyyy')
