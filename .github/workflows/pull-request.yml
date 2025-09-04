@@ -17,4 +17,4 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Apply labels
-        uses: actions/labeler@v5.0.0
+        uses: actions/labeler@v6.0.0
