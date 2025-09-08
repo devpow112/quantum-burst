@@ -17,6 +17,8 @@ try {
   $gameRoot = Join-Path $root 'game'
 
   # generate ROM header
+  Write-Host 'Generate ROM header ...'
+  
   $year4Digits = (Get-Date -Format 'yyyy')
   $month3Letters = (Get-Date -Format 'MMM').ToUpper()
   $revision2Digits = $revision.ToString().PadLeft(2, '0')
@@ -30,7 +32,7 @@ try {
   $buildType = $buildType.ToLower()
   $isBuild = @('debug', 'release') -Contains $buildType
 
-  # remove checksum corrected ROM
+  # remove checksum corrected ROM   
   if ($isBuild -And $rebuild -Or $buildType -Eq 'clean') {
     if (Test-Path -Path "$gameRoot/out/rom_final.bin") {
       Remove-Item "$gameRoot/out/rom_final.bin"
@@ -40,12 +42,16 @@ try {
   $sgdkRoot = Join-Path $externalsRoot 'sgdk'
   $env:SGDK_PATH = $sgdkRoot
   
-  # build lib
+  # build SGDK lib
+  Write-Host 'Build SGDK lib ...'
+  
   Set-Location $sgdkRoot
     
   & './bin/make' -f './makelib.gen' $buildType
 
   # build game
+  Write-Host 'Build game ...'
+  
   Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
@@ -64,13 +70,13 @@ try {
 
   # correct ROM checksum
   if ($isBuild) {
-    Write-Information 'Correcting checksum'
+    Write-Host 'Correcting checksum ...'
 
     & python "$externalsRoot/sgcc/sgcc.py" -s final "$gameRoot/out/rom.bin"
-  }
-
-  if ($lastExitCode -Ne 0 -Or -Not $?) {
-    throw "Checksum correction failed!"
+    
+    if ($lastExitCode -Ne 0 -Or -Not $?) {
+      throw "Checksum correction failed!"
+    }
   }
 } catch {
   Write-Error $_
