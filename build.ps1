@@ -13,7 +13,7 @@ $callingLocation = Get-Location
 
 try {
   $root = $PSScriptRoot
-  $externalsRoot = Join-Path $root 'externals'
+  $externalsRoot = Join-Path $root 'externals'  
   $gameRoot = Join-Path $root 'game'
 
   # generate ROM header
@@ -37,11 +37,12 @@ try {
     }
   }
 
-  # build lib
   $sgdkRoot = Join-Path $externalsRoot 'sgdk'
-
+  $env:SGDK_PATH = $sgdkRoot
+  
+  # build lib
   Set-Location $sgdkRoot
-
+    
   & './bin/make' -f './makelib.gen' $buildType
 
   # build game
