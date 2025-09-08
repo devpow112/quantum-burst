@@ -48,14 +48,14 @@ try {
   Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
-    & '../externals/sgdk/bin/make' -f "../externals/sgdk/makefile.gen" clean
+    & '../externals/sgdk/bin/make' -f '../externals/sgdk/makefile.gen' clean
 
     if ($lastExitCode -Ne 0 -Or -Not $?) {
       throw "Clean failed!"
     }
   }
 
-  & "../externals/sgdk/bin/make" -f "../externals/sgdk/makefile.gen" $buildType
+  & '../externals/sgdk/bin/make' -f '../externals/sgdk/makefile.gen' $buildType
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
     throw "Build failed!"
