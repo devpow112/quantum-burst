@@ -13,9 +13,12 @@ $callingLocation = Get-Location
 
 try {
   $root = $PSScriptRoot
-  $externalsRoot = Join-Path $root 'externals'  
+  $externalsRoot = Join-Path $root 'externals'
   $gameRoot = Join-Path $root 'game'
 
+  Write-Host "Game root: $gameRoot"
+  Write-Host "External root: $externalsRoot"
+  
   # generate ROM header
   Write-Host 'Generate ROM header ...'
 
@@ -40,14 +43,11 @@ try {
   }
 
   $sgdkRoot = Join-Path $externalsRoot 'sgdk'
-  $env:SGDK_PATH = $sgdkRoot
 
   # build SGDK lib
   Write-Host 'Build SGDK lib ...'
 
-  Set-Location $sgdkRoot
-
-  & './bin/make' -f './makelib.gen' $buildType
+  & "$sgdkRoot/bin/make" -f "$sgdkRoot/makelib.gen" $buildType
 
   # build game
   Write-Host 'Build game ...'
@@ -55,14 +55,14 @@ try {
   Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
-    & '../externals/sgdk/bin/make' -f '../externals/sgdk/makefile.gen' clean
+    & "$sgdkRoot/bin/make" -f "$sgdkRoot/makefile.gen" clean
 
     if ($lastExitCode -Ne 0 -Or -Not $?) {
       throw "Clean failed!"
     }
   }
 
-  & '../externals/sgdk/bin/make' -f '../externals/sgdk/makefile.gen' $buildType
+  & "$sgdkRoot/bin/make" -f "$sgdkRoot/makefile.gen" $buildType
 
   if ($lastExitCode -Ne 0 -Or -Not $?) {
     throw "Build failed!"
