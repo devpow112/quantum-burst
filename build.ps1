@@ -41,7 +41,7 @@ try {
 
   $sgdkRoot = Join-Path $externalsRoot 'sgdk'
   $env:SGDK_PATH = $sgdkRoot
-  
+
   # build SGDK lib
   Write-Host 'Build SGDK lib ...'
 
@@ -73,7 +73,7 @@ try {
     Write-Host 'Correcting checksum ...'
 
     & python "$externalsRoot/sgcc/sgcc.py" -s final "$gameRoot/out/rom.bin"
-    
+
     if ($lastExitCode -Ne 0 -Or -Not $?) {
       throw "Checksum correction failed!"
     }
