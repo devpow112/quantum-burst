@@ -18,7 +18,7 @@ try {
 
   # generate ROM header
   Write-Host 'Generate ROM header ...'
-  
+
   $year4Digits = (Get-Date -Format 'yyyy')
   $month3Letters = (Get-Date -Format 'MMM').ToUpper()
   $revision2Digits = $revision.ToString().PadLeft(2, '0')
@@ -44,14 +44,14 @@ try {
   
   # build SGDK lib
   Write-Host 'Build SGDK lib ...'
-  
+
   Set-Location $sgdkRoot
-    
+
   & './bin/make' -f './makelib.gen' $buildType
 
   # build game
   Write-Host 'Build game ...'
-  
+
   Set-Location $gameRoot
 
   if ($isBuild -And $rebuild) {
