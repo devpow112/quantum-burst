@@ -10,7 +10,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
       - name: Check formatting
         uses: jidicula/clang-format-action@v4.16.0
         with:
@@ -21,7 +21,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
       - name: Check formatting
         uses: davidanson/markdownlint-cli2-action@v22.0.0
         with:
@@ -38,7 +38,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           submodules: true
       - name: Build
