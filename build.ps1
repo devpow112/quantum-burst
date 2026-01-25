@@ -20,12 +20,12 @@ try {
   $year4Digits = (Get-Date -Format 'yyyy')
   $month3Letters = (Get-Date -Format 'MMM').ToUpper()
   $revision2Digits = $revision.ToString().PadLeft(2, '0')
-  $contents = Get-Content -Path "$gameRoot\src\boot\rom_head.c.in"
+  $contents = Get-Content -Path "$gameRoot\src\rom_header.c.in"
   $contents = $contents.Replace('{Year4Digits}', $year4Digits)
   $contents = $contents.Replace('{Month3Letters}', $month3Letters)
   $contents = $contents.Replace('{Revision2Digits}', $revision2Digits)
 
-  Set-Content -Path "$gameRoot\src\boot\rom_head.c" -Value $contents
+  Set-Content -Path "$gameRoot\src\rom_header.c" -Value $contents
 
   $buildType = $buildType.ToLower()
   $isBuild = @('debug', 'release') -Contains $buildType
