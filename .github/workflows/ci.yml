@@ -4,6 +4,19 @@ on:
 permissions:
   contents: read
 jobs:
+  check-formatting-all:
+    name: Check Formatting (All)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+      - name: Set up node
+        uses: actions/setup-node@v6.2.0
+        with:
+          node-version: lts/*
+      - name: Check formatting
+        run: npx editorconfig-checker
   check-formatting-c:
     name: Check Formatting (C)
     runs-on: ubuntu-latest
@@ -14,7 +27,7 @@ jobs:
       - name: Check formatting
         uses: jidicula/clang-format-action@v4.16.0
         with:
-          clang-format-version: 18
+          clang-format-version: 21
   check-formatting-markdown:
     name: Check Formatting (Markdown)
     runs-on: ubuntu-latest
