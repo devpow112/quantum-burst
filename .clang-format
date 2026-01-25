@@ -1,7 +1,7 @@
 BasedOnStyle: Google
 Language: Cpp
 AccessModifierOffset: -2
-AlignEscapedNewlines: Left
+AlignEscapedNewlines: Right
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortEnumsOnASingleLine: true
