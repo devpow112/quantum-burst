@@ -22,13 +22,13 @@
 
 #include <genesis.h>
 
-#include "actors/enemies/homing-mine.h"
+#include "actors/enemies/homing_mine.h"
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "camera.h"
 #include "game.h"
 #include "log.h"
-#include "managed-actor.h"
+#include "managed_actor.h"
 #include "stage.h"
 #include "utilities.h"
 

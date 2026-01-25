@@ -26,7 +26,7 @@
 #include "actors/enemies/mine.h"
 #include "actors/player.h"
 #include "assert.h"
-#include "managed-actor.h"
+#include "managed_actor.h"
 #include "sprites.h"
 
 // constants
