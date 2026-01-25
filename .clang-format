@@ -1,10 +1,11 @@
 BasedOnStyle: Google
 Language: Cpp
-AlignEscapedNewlinesLeft: false
+AccessModifierOffset: -2
+AlignEscapedNewlines: Left
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortEnumsOnASingleLine: true
-AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: Empty
 AllowShortLoopsOnASingleLine: false
