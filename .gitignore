@@ -7,4 +7,4 @@ game/res/*
 game/res/*/*
 !game/res/*/*.png
 game/src/boot/*
-!game/src/boot/rom_head.c.in
+game/src/rom_header.c

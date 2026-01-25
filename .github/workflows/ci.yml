@@ -42,8 +42,8 @@ jobs:
         with:
           submodules: true
       - name: Build
-        shell: cmd
-        run: build ${{matrix.build-type}}
+        shell: bash
+        run: ./build.sh -b ${{matrix.build-type}}
       - name: Upload result
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v6.0.0
