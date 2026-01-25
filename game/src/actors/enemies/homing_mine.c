@@ -23,10 +23,10 @@
 #include <genesis.h>
 
 #include "actor.h"
-#include "actors/enemies/homing-mine.h"
+#include "actors/enemies/homing_mine.h"
 #include "actors/player.h"
 #include "assert.h"
-#include "managed-actor.h"
+#include "managed_actor.h"
 #include "sprites.h"
 #include "utilities.h"
 

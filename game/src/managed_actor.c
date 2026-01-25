@@ -24,7 +24,7 @@
 
 #include "actor.h"
 #include "assert.h"
-#include "managed-actor.h"
+#include "managed_actor.h"
 
 // entity
 

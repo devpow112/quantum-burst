@@ -50,8 +50,7 @@ GAME_ROOT="$ROOT/game"
 YEAR_4_DIGITS=$(date +%Y)
 MONTH_3_LETTERS=$(date +%b | tr '[:lower:]' '[:upper:]')
 REVISION_2_DIGITS=$(printf "%02d" "$REVISION")
-
-CONTENTS=$(<"$GAME_ROOT/src/rom_header.c.in")
+CONTENTS=$(<"$GAME_ROOT/cfg/rom_header.c.in")
 CONTENTS="${CONTENTS//\{Year4Digits\}/$YEAR_4_DIGITS}"
 CONTENTS="${CONTENTS//\{Month3Letters\}/$MONTH_3_LETTERS}"
 CONTENTS="${CONTENTS//\{Revision2Digits\}/$REVISION_2_DIGITS}"
