@@ -36,7 +36,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
       - name: Check formatting
-        uses: davidanson/markdownlint-cli2-action@v22.0.0
+        uses: davidanson/markdownlint-cli2-action@v23.0.0
         with:
           globs: '**/*.md'
   build:
