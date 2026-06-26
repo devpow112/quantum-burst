@@ -10,9 +10,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7
       - name: Set up node
-        uses: actions/setup-node@v6.4.0
+        uses: actions/setup-node@v6
         with:
           node-version: lts/*
       - name: Check formatting
@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7
       - name: Check formatting
         uses: jidicula/clang-format-action@v4.18.0
         with:
@@ -34,9 +34,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7
       - name: Check formatting
-        uses: davidanson/markdownlint-cli2-action@v23.2.0
+        uses: davidanson/markdownlint-cli2-action@v23
         with:
           globs: '**/*.md'
   build:
@@ -51,7 +51,7 @@ jobs:
           - Release
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7
         with:
           submodules: true
       - name: Build
@@ -59,7 +59,7 @@ jobs:
         run: ./build.sh -b ${{matrix.build-type}}
       - name: Upload result
         if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7
         with:
           name: Build (${{matrix.build-type}})
           path: game/out/rom_final.bin
